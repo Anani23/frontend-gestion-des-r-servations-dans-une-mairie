@@ -1,0 +1,21 @@
+<h2>Dossiers à traiter</h2>
+
+<div class="dossier-container">
+  <div class="card" *ngFor="let d of dossiers">
+    <div class="card-header">
+      <h3>{{ d.type }}</h3>
+      <span class="status" [ngClass]="d.statut.toLowerCase()">{{ d.statut }}</span>
+    </div>
+
+    <div class="card-body">
+      <p><strong>Citoyen :</strong> {{ d.citoyen }}</p>
+      <p><strong>Date de dépôt :</strong> {{ d.date | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Description :</strong> {{ d.description }}</p>
+    </div>
+
+    <div class="card-footer actions">
+      <button class="btn-validate" (click)="valider(d)">Valider</button>
+      <button class="btn-refuse" (click)="refuser(d)">Refuser</button>
+    </div>
+  </div>
+</div>

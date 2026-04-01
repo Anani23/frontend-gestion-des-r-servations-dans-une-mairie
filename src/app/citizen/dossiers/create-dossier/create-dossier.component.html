@@ -1,0 +1,38 @@
+<div class="create-dossier">
+
+  <h2>Créer un dossier</h2>
+
+  <form (ngSubmit)="creerDossier()" #dossierForm="ngForm">
+
+    <div class="form-group">
+      <label for="service">Service concerné <span class="required">*</span></label>
+      <select id="service" [(ngModel)]="serviceId" name="service" required>
+        <option [ngValue]="null" disabled selected>-- Choisir un service --</option>
+        <option *ngFor="let s of services" [value]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="type">Type de dossier <span class="required">*</span></label>
+      <input id="type" type="text" [(ngModel)]="type" name="type" placeholder="Ex: Acte de naissance" required>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" [(ngModel)]="description" name="description" placeholder="Détails supplémentaires"></textarea>
+    </div>
+
+    <div *ngIf="serviceId">
+      <h3>Informations spécifiques pour {{ selectedServiceName }}</h3>
+      <div class="form-group" *ngFor="let f of serviceFields[serviceId]">
+        <label>{{ f.label }} <span *ngIf="f.required" class="required">*</span></label>
+        <input *ngIf="f.type !== 'textarea'" [type]="f.type" [(ngModel)]="details[f.key]" [name]="f.key" [placeholder]="f.placeholder">
+        <textarea *ngIf="f.type === 'textarea'" [(ngModel)]="details[f.key]" [name]="f.key" [placeholder]="f.placeholder"></textarea>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!dossierForm.form.valid" class="btn-submit">Créer le dossier</button>
+
+  </form>
+
+</div>

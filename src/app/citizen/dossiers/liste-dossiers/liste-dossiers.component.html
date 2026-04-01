@@ -1,0 +1,24 @@
+<h2>Mes dossiers</h2>
+
+<table class="dossier-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Type de dossier</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of paginatedDossiers; let i = index">
+      <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+      <td>{{ d.type }}</td>
+      <td><span class="badge" [ngClass]="getBadgeClass(d.statut)">{{ d.statut }}</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="page === 1">Précédent</button>
+  <span>Page {{ page }} / {{ Math.ceil(dossiers.length / pageSize) }}</span>
+  <button (click)="nextPage()" [disabled]="page * pageSize >= dossiers.length">Suivant</button>
+</div>

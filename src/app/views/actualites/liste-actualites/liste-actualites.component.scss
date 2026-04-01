@@ -1,0 +1,73 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    input, textarea {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+  }
+
+  button {
+    width: 150px;
+    padding: 8px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #003f7f;
+    }
+  }
+}
+
+.news {
+  margin-top: 20px;
+
+  .item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    position: relative;
+
+    h3 {
+      margin: 0 0 5px 0;
+    }
+
+    small {
+      color: #666;
+    }
+
+    button.danger {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #d9534f;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #c9302c;
+      }
+    }
+  }
+}

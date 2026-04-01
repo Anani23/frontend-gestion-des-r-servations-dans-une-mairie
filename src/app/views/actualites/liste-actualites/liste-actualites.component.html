@@ -1,0 +1,38 @@
+<h1>Actualités de la mairie</h1>
+
+<!-- FORMULAIRE -->
+<h2>Ajouter une actualité</h2>
+<form (ngSubmit)="ajouterActualite()">
+
+  <div class="form-group">
+    <label>Titre *</label>
+    <input type="text" [(ngModel)]="titre" name="titre" required>
+  </div>
+
+  <div class="form-group">
+    <label>Description *</label>
+    <textarea [(ngModel)]="description" name="description" required></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Date</label>
+    <input type="date" [(ngModel)]="date" name="date">
+  </div>
+
+  <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+<!-- LISTE DES ACTUALITÉS -->
+<h2>Actualités existantes</h2>
+<div class="news" *ngIf="actualites.length > 0">
+  <div class="item" *ngFor="let a of actualites; let i = index">
+    <h3>{{ a.titre }}</h3>
+    <p>{{ a.description }}</p>
+    <small>{{ a.date }}</small>
+    <button class="danger" (click)="supprimerActualite(i)">Supprimer</button>
+  </div>
+</div>
+
+<p *ngIf="actualites.length === 0">Aucune actualité pour le moment.</p>

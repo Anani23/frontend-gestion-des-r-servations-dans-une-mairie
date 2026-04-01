@@ -1,0 +1,70 @@
+.dashboard-citoyen {
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h2 {
+    color: #0056b3;
+    margin-bottom: 15px;
+  }
+
+  .welcome-text {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 25px;
+    line-height: 1.5;
+  }
+
+  .actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+      text-decoration: none;
+
+      &.btn-primary {
+        background-color: #0056b3;
+        color: #fff;
+
+        &:hover {
+          background-color: #003f7f;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+
+        &:hover {
+          background-color: #495057;
+        }
+      }
+
+      &.btn-success {
+        background-color: #28a745;
+        color: #fff;
+
+        &:hover {
+          background-color: #1e7e34;
+        }
+      }
+
+      &.btn-info {
+        background-color: #17a2b8;
+        color: #fff;
+
+        &:hover {
+          background-color: #117a8b;
+        }
+      }
+    }
+  }
+}

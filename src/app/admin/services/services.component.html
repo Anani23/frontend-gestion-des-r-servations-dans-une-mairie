@@ -1,0 +1,13 @@
+<h2>Gestion des services</h2>
+
+<div class="add-service">
+  <input type="text" [(ngModel)]="nouveau" placeholder="Nom du nouveau service">
+  <button (click)="ajouter()">Ajouter</button>
+</div>
+
+<div class="services-list">
+  <div class="service-card" *ngFor="let s of services; let i = index">
+    <span>{{ s }}</span>
+    <button class="danger" (click)="supprimer(i)">Supprimer</button>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<h2>Gestion des utilisateurs</h2>
+
+<!-- FORMULAIRE AJOUT -->
+<div class="form-ajout">
+  <input type="text" [(ngModel)]="nouveauNom" placeholder="Nom de l'utilisateur">
+  
+  <select [(ngModel)]="nouveauRole">
+    <option value="CITOYEN">CITOYEN</option>
+    <option value="AGENT">AGENT</option>
+    <option value="ADMIN">ADMIN</option>
+  </select>
+
+  <button (click)="ajouter()">Ajouter</button>
+</div>
+
+<!-- TABLEAU DES UTILISATEURS -->
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Rôle</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let u of users; let i = index">
+      <td>{{ u.nom }}</td>
+      <td>{{ u.role }}</td>
+      <td>
+        <button class="supprimer" (click)="supprimer(i)">Supprimer</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

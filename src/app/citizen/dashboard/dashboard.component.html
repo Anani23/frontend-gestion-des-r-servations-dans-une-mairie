@@ -1,0 +1,33 @@
+<div class="dashboard-citoyen">
+
+  <h2>Bienvenue {{ nomCitoyen }}</h2>
+
+  <p class="welcome-text">
+    Bienvenue sur votre espace citoyen.  
+    Vous pouvez prendre rendez-vous avec les services de la mairie  
+    et consulter vos rendez-vous, ainsi que gérer vos dossiers.
+  </p>
+
+  <div class="actions">
+
+    <!-- 🔹 Rendez-vous -->
+    <button routerLink="/citizen/prendre-rdv" class="btn-primary">
+      Prendre un rendez-vous
+    </button>
+
+    <button routerLink="/citizen/mes-rdv" class="btn-secondary">
+      Mes rendez-vous
+    </button>
+
+    <!-- 🔹 Dossiers -->
+    <button routerLink="/citizen/dossier/create" class="btn-success">
+      Créer un dossier
+    </button>
+
+    <button routerLink="/citizen/dossiers" class="btn-info">
+      Liste des dossiers
+    </button>
+
+  </div>
+
+</div>

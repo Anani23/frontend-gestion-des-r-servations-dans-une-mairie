@@ -1,0 +1,34 @@
+<div class="dashboard">
+
+  <h2>Bienvenue {{ adminNom }}</h2>
+
+  <!-- 🔢 STATISTIQUES -->
+  <div class="stats">
+
+    <div class="card card-users">
+      <h3>Utilisateurs</h3>
+      <p>{{ stats.users }}</p>
+      <button routerLink="/admin/utilisateurs">Gérer</button>
+    </div>
+
+    <div class="card card-agents">
+      <h3>Agents</h3>
+      <p>{{ stats.agents }}</p>
+      <button routerLink="/admin/utilisateurs">Gérer</button>
+    </div>
+
+    <div class="card card-rdvs">
+      <h3>Rendez-vous</h3>
+      <p>{{ stats.rdvs }}</p>
+      <button routerLink="/admin/statistiques">Voir</button>
+    </div>
+
+    <div class="card card-dossiers">
+      <h3>Dossiers</h3>
+      <p>{{ stats.dossiers }}</p>
+      <button routerLink="/admin/services">Voir</button>
+    </div>
+
+  </div>
+
+</div>

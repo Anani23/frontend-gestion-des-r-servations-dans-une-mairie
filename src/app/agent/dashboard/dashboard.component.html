@@ -1,0 +1,40 @@
+<div class="dashboard">
+
+  <h2>Bienvenue {{ agentNom }}</h2>
+
+  <!-- 🔢 STATISTIQUES -->
+  <div class="stats">
+
+    <div class="card card-dossiers-attente">
+      <h3>Dossiers en attente</h3>
+      <p>{{ stats.dossiersEnAttente }}</p>
+    </div>
+
+    <div class="card card-rdv-aujourdhui">
+      <h3>RDV aujourd'hui</h3>
+      <p>{{ stats.rdvAujourdHui }}</p>
+    </div>
+
+    <div class="card card-dossiers-traites">
+      <h3>Dossiers traités</h3>
+      <p>{{ stats.dossiersTraites }}</p>
+    </div>
+
+  </div>
+
+  <!-- 📅 RDV DU JOUR -->
+  <div class="rdv">
+    <h3>Rendez-vous du jour</h3>
+
+    <div *ngFor="let r of rdvs" class="rdv-item">
+      <span class="rdv-nom">{{ r.nom }}</span> - <span class="rdv-heure">{{ r.heure }}</span>
+    </div>
+  </div>
+
+  <!-- ⚡ ACTIONS RAPIDES -->
+  <div class="actions">
+    <button routerLink="/agent/rdv" class="btn-primary">Gérer les rendez-vous</button>
+    <button routerLink="/agent/dossiers" class="btn-secondary">Traiter les dossiers</button>
+  </div>
+
+</div>

@@ -1,0 +1,45 @@
+.table-rdv {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #0056b3;
+    color: white;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  button {
+    padding: 5px 12px;
+    border: none;
+    background-color: #0056b3;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
+  }
+
+  span {
+    font-weight: bold;
+  }
+}

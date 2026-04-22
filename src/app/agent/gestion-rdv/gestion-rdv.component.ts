@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RdvService } from '../../services/rdv.service';
 
@@ -11,86 +11,48 @@ import { RdvService } from '../../services/rdv.service';
   styleUrls: ['./gestion-rdv.component.scss']
 })
 export class GestionRdvComponent implements OnInit {
+  private rdvService = inject(RdvService);
 
   rdvs: any[] = [];
   filteredRdvs: any[] = [];
   pagedRdvs: any[] = [];
-
+  
   searchText = '';
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 6;
   totalPages = 1;
 
-  sortField: string = 'nom';
-  sortDesc: boolean = false;
-
-  constructor(private rdvService: RdvService) {}
-
   ngOnInit() {
-    this.rdvs = this.rdvService.getRdvs();
-    this.filteredRdvs = [...this.rdvs];
-    this.totalPages = Math.ceil(this.filteredRdvs.length / this.pageSize);
-    this.updatePaged();
+    this.rdvService.getRdvs().subscribe(data => {
+      this.rdvs = data;
+      this.applyFilter();
+    });
   }
 
   applyFilter() {
-    const search = this.searchText.toLowerCase();
+    const search = this.searchText.toLowerCase().trim();
     this.filteredRdvs = this.rdvs.filter(r =>
-      r.nom.toLowerCase().includes(search) ||
-      r.service.toLowerCase().includes(search)
+      r.nom.toLowerCase().includes(search) || r.service.toLowerCase().includes(search)
     );
-    this.currentPage = 1;
-    this.totalPages = Math.ceil(this.filteredRdvs.length / this.pageSize);
-    this.updatePaged();
+    this.updatePagination();
   }
 
-  sortColumn(field: string) {
-    if (this.sortField === field) this.sortDesc = !this.sortDesc;
-    else { this.sortField = field; this.sortDesc = false; }
-
-    this.filteredRdvs.sort((a, b) => {
-      const valA = a[field];
-      const valB = b[field];
-      if (valA < valB) return this.sortDesc ? 1 : -1;
-      if (valA > valB) return this.sortDesc ? -1 : 1;
-      return 0;
-    });
-
-    this.updatePaged();
-  }
-
-  updatePaged() {
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredRdvs.length / this.pageSize) || 1;
     const start = (this.currentPage - 1) * this.pageSize;
-    const end = start + this.pageSize;
-    this.pagedRdvs = this.filteredRdvs.slice(start, end);
+    this.pagedRdvs = this.filteredRdvs.slice(start, start + this.pageSize);
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaged();
+  changerStatut(id: number, statut: string) {
+    this.rdvService.updateStatus(id, statut);
+  }
+
+  supprimer(id: number) {
+    if(confirm("Supprimer ce rendez-vous ?")) {
+      this.rdvService.supprimerRdv(id);
     }
   }
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaged();
-    }
-  }
-
-  valider(i: number) {
-    const index = (this.currentPage - 1) * this.pageSize + i;
-    this.rdvService.updateStatut(index, 'VALIDÉ');
-    this.rdvs[index].status = 'VALIDÉ';
-    this.updatePaged();
-  }
-
-  refuser(i: number) {
-    const index = (this.currentPage - 1) * this.pageSize + i;
-    this.rdvService.updateStatut(index, 'REFUSÉ');
-    this.rdvs[index].status = 'REFUSÉ';
-    this.updatePaged();
-  }
-
+  nextPage() { if (this.currentPage < this.totalPages) { this.currentPage++; this.updatePagination(); } }
+  prevPage() { if (this.currentPage > 1) { this.currentPage--; this.updatePagination(); } }
 }

@@ -1,53 +1,115 @@
-.dossier-table {
+$primary: #4f46e5;
+$bg-body: #f8fafc;
+$white: #ffffff;
+
+.mes-dossiers-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+// Header avec Titres en Blanc
+.page-header {
+  background: linear-gradient(135deg, $primary, #6366f1);
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: -40px; // Effet d'imbrication avec le tableau
+  padding-bottom: 80px;
+
+  .header-overlay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media (max-width: 600px) { flex-direction: column; text-align: center; gap: 20px; }
+  }
+
+  .text-white { color: $white; font-size: 2rem; font-weight: 800; margin: 0; }
+  .text-white-soft { color: rgba($white, 0.8); margin: 8px 0 0; font-size: 1.1rem; }
+}
+
+.btn-new {
+  background: $white; color: $primary; border: none; padding: 12px 24px;
+  border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;
+  &:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+}
+
+// Table Style
+.table-card {
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+  position: relative;
+  z-index: 2;
+}
+
+.modern-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #0056b3;
-    color: white;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-}
-
-.badge {
-  padding: 5px 10px;
-  border-radius: 12px;
-  color: white;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.badge-valid { background-color: #28a745; }
-.badge-pending { background-color: #ffc107; color: black; }
-.badge-refused { background-color: #dc3545; }
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-
-  button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #0056b3;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    
-    &:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+  
+  thead {
+    background: #f1f5f9;
+    th {
+      padding: 18px 20px;
+      text-align: left;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      font-weight: 700;
     }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: 0.2s;
+    &:hover { background: #f8faff; }
+    &:last-child { border: none; }
+  }
+
+  td { padding: 18px 20px; color: #1e293b; font-size: 0.95rem; }
+}
+
+.type-cell {
+  display: flex; align-items: center; gap: 12px;
+  .type-icon { font-size: 1.2rem; }
+  .type-name { font-weight: 600; }
+}
+
+.ref-tag {
+  background: #f1f5f9; padding: 4px 8px; border-radius: 6px;
+  font-family: 'Monaco', monospace; font-size: 0.85rem; color: $primary;
+}
+
+// Badges
+.badge {
+  padding: 6px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 700;
+  &-valid { background: #dcfce7; color: #15803d; }
+  &-pending { background: #fef3c7; color: #b45309; }
+  &-refused { background: #fee2e2; color: #b91c1c; }
+}
+
+.btn-action {
+  background: transparent; border: 1px solid #e2e8f0; padding: 6px 16px;
+  border-radius: 8px; color: $primary; font-weight: 600; cursor: pointer;
+  &:hover { background: $primary; color: $white; border-color: $primary; }
+}
+
+.text-center { text-align: center; }
+
+// Pagination
+.pagination-footer {
+  margin-top: 20px; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 5px;
+  .count-info { color: #94a3b8; font-size: 0.9rem; }
+}
+
+.nav-controls {
+  display: flex; align-items: center; gap: 15px;
+  .nav-arrow {
+    background: $white; border: 1px solid #e2e8f0; width: 40px; height: 40px;
+    border-radius: 10px; cursor: pointer; transition: 0.2s;
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+    &:not(:disabled):hover { border-color: $primary; color: $primary; }
   }
 }

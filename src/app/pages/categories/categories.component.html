@@ -1,0 +1,48 @@
+<div class="container-fluid animate-fade-in">
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h1 class="display-5 fw-bold text-dark">Nos Domaines d'Activités</h1>
+      <p class="text-muted fs-5">Sélectionnez une catégorie pour explorer nos services et biens municipaux.</p>
+      <hr class="w-25 mx-auto border-primary border-2 opacity-75">
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    @for (cat of categoriesParentes; track cat.id) {
+      <div class="col">
+        <div class="card h-100 category-card border-0 shadow-sm" [routerLink]="['/categories-biens', cat.id]">
+          
+          <div class="card-img-container">
+            <img [src]="cat.image || 'assets/images/mairie-centrale.jpg'" 
+                 class="card-img-top" 
+                 [alt]="cat.nom">
+            <div class="card-img-overlay d-flex align-items-center justify-content-center">
+               <i [class]="cat.icon || 'cil-layers'" class="category-icon-overlay"></i>
+            </div>
+          </div>
+
+          <div class="card-body p-4 text-center">
+            <h3 class="card-title h4 fw-bold text-primary mb-3">{{ cat.nom }}</h3>
+            <p class="card-text text-secondary mb-4">
+              {{ cat.description || 'Découvrez tous les services liés au domaine ' + cat.nom }}
+            </p>
+            
+            <div class="d-grid">
+              <button class="btn btn-outline-primary rounded-pill fw-semibold">
+                Explorer
+                <i class="cil-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2 text-muted">Chargement des domaines...</p>
+      </div>
+    }
+  </div>
+</div>

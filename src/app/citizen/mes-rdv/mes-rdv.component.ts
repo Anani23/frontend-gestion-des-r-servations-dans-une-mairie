@@ -1,38 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // Nécessaire pour [(ngModel)]
+import { RouterModule } from '@angular/router';
+import { RdvService } from '../../services/rdv.service';
 
 @Component({
   selector: 'app-mes-rdv',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './mes-rdv.component.html',
   styleUrls: ['./mes-rdv.component.scss']
 })
-export class MesRdvComponent {
+export class MesRdvComponent implements OnInit {
+  private rdvService = inject(RdvService);
 
-  rdvs = [
-    { service: 'Etat civil', date: '2026-04-01', heure: '10:00' },
-    { service: 'Urbanisme', date: '2026-04-02', heure: '14:30' },
-    { service: 'Fiscalité', date: '2026-04-03', heure: '09:00' },
-    { service: 'Etat civil', date: '2026-04-05', heure: '11:00' },
-    { service: 'Urbanisme', date: '2026-04-06', heure: '15:00' }
-  ];
+  allRdvs: any[] = [];
+  filteredRdvs: any[] = [];
+  searchTerm: string = '';
 
-  page = 1;
-  pageSize = 3;
-
-  Math = Math;
-
-  get paginatedRdvs() {
-    const start = (this.page - 1) * this.pageSize;
-    return this.rdvs.slice(start, start + this.pageSize);
+  ngOnInit() {
+    this.rdvService.getRdvs().subscribe(data => {
+      // Tri par date décroissante
+      this.allRdvs = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      this.filteredRdvs = [...this.allRdvs];
+    });
   }
 
-  nextPage() {
-    if ((this.page * this.pageSize) < this.rdvs.length) this.page++;
+  filterRdvs() {
+    this.filteredRdvs = this.allRdvs.filter(r => 
+      r.service.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
-  prevPage() {
-    if (this.page > 1) this.page--;
+  getStatus(dateStr: string): string {
+    const today = new Date();
+    const rdvDate = new Date(dateStr);
+    today.setHours(0,0,0,0);
+    rdvDate.setHours(0,0,0,0);
+
+    if (rdvDate.getTime() === today.getTime()) return 'Aujourd’hui';
+    return rdvDate > today ? 'À venir' : 'Passé';
+  }
+
+  getBadgeClass(status: string): string {
+    if (status === 'Aujourd’hui') return 'badge-today';
+    return status === 'À venir' ? 'badge-upcoming' : 'badge-past';
+  }
+
+  voirDetail(rdv: any) {
+    console.log("Détails du RDV:", rdv);
   }
 }

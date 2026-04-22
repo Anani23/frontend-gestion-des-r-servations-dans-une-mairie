@@ -1,195 +1,175 @@
-:host {
-  display: block;
-}
+@use 'sass:color';
 
-/* ========================
-   🎨 VARIABLES GLOBAL
-======================== */
-:root {
-  --primary: #0d6efd;
-  --primary-dark: #0b3d91;
-  --bg: #f4f7fb;
-  --white: #ffffff;
-}
+// ========================
+// PALETTE VIOLETTE STYLÉE
+// ========================
+$violet-primary: #8b5cf6;  // Violet vibrant
+$violet-light: #c4b5fd;    // Lavande clair
+$indigo-accent: #6366f1;   // Bleu indigo
+$deep-space: #1e1b4b;      // Bleu-violet très sombre (profondeur)
 
-/* ========================
-   📌 SIDEBAR
-======================== */
-.sidebar-custom {
-  background: linear-gradient(180deg, #0d6efd 0%, #0b3d91 100%);
-  color: #fff;
-  border-right: none;
+$text-main: #ffffff;
+$text-lavender: #e9d5ff;
+
+$header-height: 72px;
+$subnav-height: 60px;
+
+// ========================
+// BACKGROUND IMMERSIF
+// ========================
+.background-slider {
   position: fixed;
-  height: 100vh;
-  width: 250px;
-  z-index: 1030;
+  inset: 0;
+  z-index: -2;
+  background-color: $deep-space; // Fond de base pour la profondeur
+
+  background-image: url('/assets/images/espace-public.jpg');
+  background-size: cover;
+  background-position: center;
+  
+  // On sature l'image pour qu'elle absorbe le violet
+  filter: saturate(1.5) brightness(0.8);
 }
 
-/* LOGO */
-.sidebar-brand-custom {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+// LE VOILE VIOLET DYNAMIQUE
+.background-slider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  // Dégradé radial violet/indigo pour un effet "glow" au centre
+  background: radial-gradient(
+    circle at center, 
+    rgba(139, 92, 246, 0.3) 0%, 
+    rgba(30, 27, 75, 0.8) 100%
+  );
+  
+  // Overlay de couleur violette uniforme très légère pour teinter l'image
+  background-color: rgba(124, 58, 237, 0.1); 
 }
 
-.brand-block {
+// ========================
+// HEADER & NAV (GLASS VIOLET)
+// ========================
+.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  height: $header-height;
+  
+  // Verre teinté violet très sombre
+  background: rgba(30, 27, 75, 0.4); 
+  backdrop-filter: blur(15px) saturate(2);
+  -webkit-backdrop-filter: blur(15px) saturate(2);
+
+  border-bottom: 1px solid rgba(167, 139, 250, 0.2);
   display: flex;
   align-items: center;
-  gap: 12px;
+  padding: 0 2rem;
 }
 
-.brand-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: #fff;
-  color: #0d6efd;
+.sub-navbar {
+  position: sticky;
+  top: $header-height;
+  z-index: 1000;
+  height: $subnav-height;
+  
+  // Dégradé de verre violet
+  background: linear-gradient(
+    to right, 
+    rgba(139, 92, 246, 0.1), 
+    rgba(99, 102, 241, 0.1)
+  );
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 1.2rem;
-}
 
-.brand-text h5 {
-  margin: 0;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-}
+  .nav-container {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.brand-text span {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
-}
+  .nav-list {
+    display: flex;
+    list-style: none;
+    gap: 1rem;
 
-/* ========================
-   🧭 MENU SIDEBAR
-======================== */
-.sidebar-custom .sidebar-nav .nav-link {
-  color: #ffffff !important;
-  font-weight: 500;
-  border-radius: 10px;
-  margin: 3px 8px;
-  transition: all 0.2s ease;
-}
+    .nav-link {
+      color: $text-lavender;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
 
-.sidebar-custom .sidebar-nav .nav-icon {
-  color: #ffffff !important;
-}
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+      }
 
-/* HOVER */
-.sidebar-custom .sidebar-nav .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.12);
-}
+      &.active-link {
+        color: white;
+        background: rgba($violet-primary, 0.3);
+        box-shadow: 0 0 15px rgba($violet-primary, 0.4);
+        border: 1px solid rgba($violet-light, 0.3);
+      }
+    }
+  }
 
-/* ACTIVE */
-.sidebar-custom .sidebar-nav .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.25);
-  font-weight: 600;
-}
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
 
-/* TITRES */
-.sidebar-custom .sidebar-nav .nav-title {
-  color: rgba(255, 255, 255, 0.65) !important;
-  font-size: 12px;
-  text-transform: uppercase;
-  margin: 12px 12px 5px;
-}
-
-/* ========================
-   📦 WRAPPER
-======================== */
-.wrapper {
-  background: var(--bg);
-  margin-left: 250px;
-}
-
-.body {
-  background: var(--bg);
-}
-
-.content-card {
-  background: var(--white);
-  border-radius: 18px;
-  padding: 1.5rem;
-  min-height: calc(100vh - 160px);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-}
-
-/* ========================
-   📱 RESPONSIVE
-======================== */
-@media (max-width: 768px) {
-  .wrapper {
-    margin-left: 0;
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, $violet-primary, $indigo-accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba($violet-primary, 0.5);
+    }
+    
+    .name { color: white; font-size: 0.85rem; font-weight: 700; }
+    .role { color: $text-lavender; font-size: 0.75rem; opacity: 0.7; }
   }
 }
 
-/* ========================
-   🎯 BADGES STATUT
-======================== */
-.badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+// ========================
+// CONTENU
+// ========================
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-/* ✅ VALIDÉ (BLEU) */
-.badge-valide {
-  background: var(--primary);
-  color: white;
+.main-content {
+  flex: 1;
+  .content-glass {
+    min-height: calc(100vh - #{$header-height} - #{$subnav-height});
+    padding: 2.5rem;
+    // On laisse le fond vide pour voir l'image teintée en violet
+  }
 }
 
-/* ❌ REFUSÉ (GRIS) */
-.badge-refuse {
-  background: #6c757d;
-  color: white;
-}
-
-/* ⏳ EN ATTENTE */
-.badge-attente {
-  background: #ffc107;
-  color: #000;
-}
-
-/* ========================
-   🎴 CARDS
-======================== */
-.card-custom {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-  transition: 0.2s;
-}
-
-.card-custom:hover {
-  transform: translateY(-3px);
-}
-
-/* ========================
-   🧾 FORMULAIRES (IMPORTANT)
-======================== */
-.form-control {
-  border-radius: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-.form-control:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(13,110,253,0.2);
-}
-
-/* BOUTONS */
-.btn-primary {
-  background: var(--primary);
-  border: none;
-  border-radius: 10px;
-  padding: 10px 18px;
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
+.footer-custom {
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.6);
+  color: $text-lavender;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }

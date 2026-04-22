@@ -11,38 +11,54 @@ import { FormsModule } from '@angular/forms';
 })
 export class ListeActualitesComponent {
 
-  // 🌟 Liste des actualités
   actualites = [
-    { titre: 'Nouveau portail numérique', description: 'La mairie lance une nouvelle plateforme digitale.', date: '2026-03-28' },
-    { titre: 'Salubrité publique', description: 'Campagne de nettoyage dans la commune.', date: '2026-03-25' }
+    { 
+      titre: 'Nouveau portail numérique', 
+      description: 'La mairie lance une nouvelle plateforme digitale pour simplifier vos démarches administratives.', 
+      date: '2026-03-28',
+      image: 'assets/images/mairie-centrale.jpg' // Utilisation de tes images existantes
+    },
+    { 
+      titre: 'Campagne de reboisement', 
+      description: 'Participez à la grande journée "Ville Verte" ce samedi au parc municipal.', 
+      date: '2026-03-25',
+      image: 'assets/images/mairie-togo.jpg'
+    }
   ];
 
-  // 🌟 Formulaire
+  // Champs du formulaire
   titre: string = '';
   description: string = '';
   date: string = '';
+  imageUrl: string = ''; // Nouveau champ
 
-  // Ajouter une actualité
   ajouterActualite() {
     if (!this.titre || !this.description) {
-      alert('Veuillez remplir tous les champs obligatoires !');
+      alert('Veuillez remplir les champs obligatoires !');
       return;
     }
 
-    this.actualites.push({
+    this.actualites.unshift({
       titre: this.titre,
       description: this.description,
-      date: this.date || new Date().toLocaleDateString()
+      date: this.date || new Date().toISOString().split('T')[0],
+      // Si pas d'image, on met une image générique par défaut
+      image: this.imageUrl || 'assets/images/blank-adverting-billboard-center-road.jpg'
     });
 
-    // Réinitialiser le formulaire
+    this.reinitialiserFormulaire();
+  }
+
+  supprimerActualite(i: number) {
+    if (confirm('Supprimer définitivement cette actualité ?')) {
+      this.actualites.splice(i, 1);
+    }
+  }
+
+  private reinitialiserFormulaire() {
     this.titre = '';
     this.description = '';
     this.date = '';
-  }
-
-  // Supprimer une actualité
-  supprimerActualite(i: number) {
-    this.actualites.splice(i, 1);
+    this.imageUrl = '';
   }
 }

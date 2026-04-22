@@ -1,34 +1,50 @@
-<div class="dashboard">
-
-  <h2>Bienvenue {{ adminNom }}</h2>
-
-  <!-- 🔢 STATISTIQUES -->
-  <div class="stats">
-
-    <div class="card card-users">
-      <h3>Utilisateurs</h3>
-      <p>{{ stats.users }}</p>
-      <button routerLink="/admin/utilisateurs">Gérer</button>
+<div class="dashboard-page">
+  <div class="top-marquee">
+    <div class="marquee-track">
+      <span>📢 Session du conseil municipal demain à 09h00</span>
+      <span>•</span>
+      <span>🚀 Nouveau module de gestion du patrimoine activé</span>
+      <span>•</span>
+      <span>🌟 Bienvenue sur l'interface d'administration de Lomé</span>
     </div>
-
-    <div class="card card-agents">
-      <h3>Agents</h3>
-      <p>{{ stats.agents }}</p>
-      <button routerLink="/admin/utilisateurs">Gérer</button>
-    </div>
-
-    <div class="card card-rdvs">
-      <h3>Rendez-vous</h3>
-      <p>{{ stats.rdvs }}</p>
-      <button routerLink="/admin/statistiques">Voir</button>
-    </div>
-
-    <div class="card card-dossiers">
-      <h3>Dossiers</h3>
-      <p>{{ stats.dossiers }}</p>
-      <button routerLink="/admin/services">Voir</button>
-    </div>
-
   </div>
 
+  <div class="container">
+    <header class="db-header">
+      <div class="titles">
+        <span class="date-tag">{{ today | date:'dd MMMM yyyy' }}</span>
+        <h1>Mairie de <span class="highlight">Lomé</span></h1>
+        <p>Gérez les services et le patrimoine en temps réel.</p>
+      </div>
+
+      <div class="search-box">
+        <i class="search-icon">🔍</i>
+        <input type="text" [(ngModel)]="searchTerm" (input)="filterCards()" placeholder="Rechercher un module...">
+      </div>
+    </header>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="loader"></div>
+      <p>Chargement des statistiques...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="card-grid">
+      <div *ngFor="let card of filteredCards" class="nav-card" [style.--c]="card.color" (click)="goTo(card.link)">
+        <div class="icon-wrap">{{ card.icon }}</div>
+        <div class="card-content">
+          <div class="stats-num">{{ card.count }}</div>
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.desc }}</p>
+        </div>
+        <div class="card-action">
+          <span>Ouvrir</span>
+          <i class="arrow">→</i>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && filteredCards.length === 0" class="empty-state">
+      <p>Aucun résultat pour "{{ searchTerm }}"</p>
+    </div>
+  </div>
 </div>

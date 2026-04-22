@@ -1,33 +1,76 @@
-<div class="dashboard-citoyen">
+<div class="dashboard-wrapper animate-in">
+  
+  <header class="dashboard-header">
+    <div class="user-welcome">
+      <div class="avatar-wrapper">
+        <div class="avatar-circle">
+          <span>{{ nomCitoyen.charAt(0) }}</span>
+        </div>
+        <div class="online-indicator"></div>
+      </div>
+      <div class="welcome-text">
+        <p class="date-label">{{ dateDuJour | date:'EEEE dd MMMM yyyy' }}</p>
+        <h1>Ravi de vous revoir, <span>{{ nomCitoyen }}</span></h1>
+        <p class="sub-text">Voici l'état actuel de vos démarches municipales.</p>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <div class="status-pill">
+        <span class="pulse-dot"></span>
+        <span class="status-label">Compte Vérifié</span>
+      </div>
+    </div>
+  </header>
 
-  <h2>Bienvenue {{ nomCitoyen }}</h2>
+  <section class="stats-grid">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div class="stat-icon-wrapper">{{ s.icon }}</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ s.value }}</span>
+        <span class="stat-label">{{ s.label }}</span>
+      </div>
+      <div class="stat-trend">+12%</div> </div>
+  </section>
 
-  <p class="welcome-text">
-    Bienvenue sur votre espace citoyen.  
-    Vous pouvez prendre rendez-vous avec les services de la mairie  
-    et consulter vos rendez-vous, ainsi que gérer vos dossiers.
-  </p>
+  <div class="main-content-layout">
+    <section class="glass-card notifications-panel">
+      <div class="card-header">
+        <h3><span class="icon">🔔</span> Dernières mises à jour</h3>
+        <button class="btn-text">Tout voir</button>
+      </div>
+      <div class="notif-scroll-area">
+        <div class="notif-row" *ngFor="let n of notifications">
+          <div class="notif-avatar">{{ n.icon }}</div>
+          <div class="notif-body">
+            <p>{{ n.text }}</p>
+            <span class="notif-time">{{ n.time }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="actions">
-
-    <!-- 🔹 Rendez-vous -->
-    <button routerLink="/citizen/prendre-rdv" class="btn-primary">
-      Prendre un rendez-vous
-    </button>
-
-    <button routerLink="/citizen/mes-rdv" class="btn-secondary">
-      Mes rendez-vous
-    </button>
-
-    <!-- 🔹 Dossiers -->
-    <button routerLink="/citizen/dossier/create" class="btn-success">
-      Créer un dossier
-    </button>
-
-    <button routerLink="/citizen/dossiers" class="btn-info">
-      Liste des dossiers
-    </button>
-
+    <section class="actions-container">
+      <div 
+        class="action-tile" 
+        *ngFor="let action of actions"
+        [routerLink]="action.route"
+        [ngClass]="action.class"
+      >
+        <div class="tile-bg-glow"></div>
+        <div class="tile-content">
+          <div class="tile-header">
+            <span class="tile-icon">{{ action.icon }}</span>
+            <div class="tile-arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <h4>{{ action.label }}</h4>
+            <p>{{ action.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-
 </div>

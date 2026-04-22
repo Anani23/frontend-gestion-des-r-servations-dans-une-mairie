@@ -1,46 +1,41 @@
-<div class="table-container">
-  <h2 class="table-title">Gestion des Rendez-vous</h2>
+<div class="management-container">
+  <div class="table-header">
+    <h2>📅 Planning des Rendez-vous</h2>
+    <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Rechercher...">
+  </div>
 
-  <!-- Barre de recherche -->
-  <input
-    type="text"
-    placeholder="Rechercher par nom ou service..."
-    [(ngModel)]="searchText"
-    (input)="applyFilter()"
-    class="search-input"
-  />
-
-  <table class="styled-table">
+  <table class="modern-table">
     <thead>
       <tr>
-        <th (click)="sortColumn('nom')">Nom <span [class.asc]="sortField==='nom' && !sortDesc" [class.desc]="sortField==='nom' && sortDesc"></span></th>
-        <th (click)="sortColumn('service')">Service <span [class.asc]="sortField==='service' && !sortDesc" [class.desc]="sortField==='service' && sortDesc"></span></th>
-        <th (click)="sortColumn('date')">Date <span [class.asc]="sortField==='date' && !sortDesc" [class.desc]="sortField==='date' && sortDesc"></span></th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th>Citoyen</th>
+        <th>Service</th>
+        <th>Date & Heure</th>
+        <th>Statut</th>
+        <th class="text-right">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let r of pagedRdvs; let i = index">
-        <td>{{ r.nom }}</td>
-        <td>{{ r.service }}</td>
-        <td>{{ r.date | date:'dd/MM/yyyy' }} à {{ r.date | date:'HH:mm' }}</td>
+      <tr *ngFor="let r of pagedRdvs">
+        <td><strong>{{ r.nom }}</strong></td>
+        <td><span class="badge-service">{{ r.service }}</span></td>
+        <td>{{ r.date | date:'dd MMM yyyy à HH:mm' }}</td>
         <td>
-          <span class="status" [ngClass]="r.status.toLowerCase()">{{ r.status }}</span>
+          <span class="status-pill" [ngClass]="r.status.toLowerCase().replace(' ', '-')">
+            {{ r.status }}
+          </span>
         </td>
-        <td>
-          <button class="btn btn-view">Voir</button>
-          <button class="btn btn-edit">Modifier</button>
-          <button class="btn btn-delete">Supprimer</button>
+        <td class="text-right">
+          <button class="btn-valider" (click)="changerStatut(r.id, 'Confirmé')" *ngIf="r.status === 'En attente'">✓</button>
+          <button class="btn-annuler" (click)="changerStatut(r.id, 'Annulé')" *ngIf="r.status !== 'Annulé'">✕</button>
+          <button class="btn-delete" (click)="supprimer(r.id)">🗑️</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Pagination -->
   <div class="pagination">
-    <button class="btn-page" (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
     <span>Page {{ currentPage }} / {{ totalPages }}</span>
-    <button class="btn-page" (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
   </div>
 </div>

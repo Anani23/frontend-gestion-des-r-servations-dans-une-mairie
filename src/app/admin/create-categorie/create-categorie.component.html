@@ -1,0 +1,75 @@
+<div class="admin-layout">
+  
+  <aside class="sidebar">
+    <div class="logo">Mairie <span>Lomé</span></div>
+    
+    <div class="nav-group">
+      <p>PATRIMOINE</p>
+      <button [class.active]="currentPage === 1" (click)="currentPage = 1">➕ Nouveau Bien</button>
+      <button [class.active]="currentPage === 2" (click)="currentPage = 2">📂 Index Biens</button>
+    </div>
+
+    <div class="nav-group">
+      <p>SERVICES</p>
+      <button [class.active]="currentPage === 3" (click)="currentPage = 3">➕ Nouveau Service</button>
+      <button [class.active]="currentPage === 4" (click)="currentPage = 4">📋 Répertoire</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div *ngIf="currentPage === 1 || currentPage === 3" class="page-form animate-fade">
+      <div class="glass-card">
+        <div class="card-banner" [class.is-service]="currentPage === 3">
+          <div class="upload-circle" (click)="f.click()">
+            <input type="file" #f hidden (change)="onFileSelected($event)">
+            <img *ngIf="imagePreview" [src]="imagePreview">
+            <span *ngIf="!imagePreview">📸</span>
+          </div>
+          <h2>{{ currentPage === 1 ? 'Nouveau Patrimoine' : 'Nouveau Service' }}</h2>
+        </div>
+
+        <div class="form-body">
+          <div class="input-box">
+            <label>Désignation</label>
+            <input type="text" [(ngModel)]="newCat.nom" placeholder="Entrez le nom...">
+          </div>
+          <div class="input-box">
+            <label>Missions / Description</label>
+            <textarea [(ngModel)]="newCat.description" rows="4"></textarea>
+          </div>
+          <button class="btn-save" [class.btn-warning]="currentPage === 3" (click)="ajouter()">
+            {{ editingItem ? 'Mettre à jour' : 'Enregistrer au registre' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="currentPage === 2 || currentPage === 4" class="page-index animate-fade">
+      <div class="index-header">
+        <h1>{{ currentPage === 2 ? 'Index des Biens' : 'Répertoire des Services' }}</h1>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher...">
+      </div>
+
+      <div class="card-grid">
+        <div *ngFor="let item of getFilteredList()" class="item-card">
+          <div class="item-img">
+            <img [src]="item.image || 'assets/images/placeholder.jpg'">
+            <span class="type-badge">ID-{{item.id}}</span>
+          </div>
+          <div class="item-info">
+            <h3>{{ item.nom }}</h3>
+            <p>{{ item.description }}</p>
+            <div class="actions">
+              <button class="edit" (click)="editingItem = item; currentPage = (currentPage === 2 ? 1 : 3)">Modifier</button>
+              <button class="del" (click)="supprimer(item.id)">Supprimer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div *ngIf="successMessage" class="toast">{{ successMessage }}</div>

@@ -1,70 +1,102 @@
-h2 {
-  text-align: center;
-  color: #0056b3;
-  margin-bottom: 20px;
+$primary: #4f46e5;
+$accent: #10b981;
+$danger: #ef4444;
+$text-muted: #64748b;
+
+.list-container {
+  padding: 2.5rem;
+  background: #f8fafc;
+  min-height: 100vh;
 }
 
-.add-service {
+.page-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  
+  .badge-top { font-size: 0.7rem; font-weight: 800; color: $primary; text-transform: uppercase; }
+  h1 { font-size: 2.5rem; font-weight: 800; margin: 5px 0; .highlight { color: $primary; } }
+}
+
+.btn-create {
+  background: $primary;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  transition: transform 0.2s;
+  &:hover { transform: scale(1.02); background: darken($primary, 5%); }
+}
 
-  input {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    width: 250px;
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.service-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0,0,0,0.05);
+
+  &.visible { opacity: 1; transform: translateY(0); }
+  &:hover { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important; }
+
+  .card-status {
+    position: absolute; top: 15px; right: 15px; z-index: 2;
+    background: rgba(white, 0.9); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; color: $accent;
+    &.inactive { color: $text-muted; }
   }
+}
 
+.service-illustration {
+  height: 180px;
+  position: relative;
+  img { width: 100%; height: 100%; object-fit: cover; }
+  .cat-tag {
+    position: absolute; bottom: 10px; left: 10px;
+    background: $primary; color: white; padding: 4px 10px;
+    border-radius: 6px; font-size: 0.7rem; font-weight: 600;
+  }
+}
+
+.description { color: $text-muted; font-size: 0.9rem; margin-top: 10px; height: 3rem; overflow: hidden; }
+
+.tags-preview {
+  display: flex; gap: 8px; margin-top: 8px;
+  .tag { 
+    background: #f1f5f9; color: #475569; padding: 4px 10px; 
+    border-radius: 6px; font-size: 0.75rem; font-weight: 500;
+    &.more { background: $primary; color: white; }
+  }
+}
+
+.card-actions {
+  display: flex; border-top: 1px solid #f1f5f9;
   button {
-    padding: 8px 15px;
-    border-radius: 6px;
-    border: none;
-    background-color: #0056b3;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-      background-color: #004494;
-    }
+    flex: 1; padding: 15px; border: none; background: transparent;
+    font-weight: 700; transition: background 0.2s;
+    &.edit { color: $primary; border-right: 1px solid #f1f5f9; &:hover { background: #eef2ff; } }
+    &.delete { color: $danger; max-width: 60px; &:hover { background: #fef2f2; } }
   }
 }
 
-.services-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-
-  .service-card {
-    background-color: #f4f7fb;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 200px;
-    transition: transform 0.2s;
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    button.danger {
-      background-color: #d9534f;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #c9302c;
-      }
-    }
-  }
+.empty-state {
+  grid-column: 1 / -1; text-align: center; padding: 5rem;
+  .icon { font-size: 4rem; opacity: 0.2; }
+  p { color: $text-muted; font-weight: 600; }
 }
+
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

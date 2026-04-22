@@ -1,13 +1,49 @@
-<div class="register">
+<div class="auth-wrapper">
+  <div class="auth-image-side">
+    <div class="overlay-content">
+      <h1>Rejoignez-nous</h1>
+      <p>Créez votre compte citoyen pour faciliter vos démarches administratives à Lomé.</p>
+    </div>
+  </div>
 
-<h2>Inscription</h2>
+  <div class="auth-form-side">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Inscription</h2>
+        <p>Remplissez les informations ci-dessous pour commencer.</p>
+      </div>
 
-<input placeholder="Nom" [(ngModel)]="nom">
+      <form (ngSubmit)="register()" #registerForm="ngForm">
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Nom complet</label>
+            <input type="text" [(ngModel)]="name" name="name" required placeholder="Ex: Jean Koffi">
+          </div>
 
-<input placeholder="Email" [(ngModel)]="email">
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="email" name="email" required placeholder="nom@exemple.com">
+          </div>
+        </div>
 
-<input type="password" placeholder="Mot de passe" [(ngModel)]="password">
+        <div class="input-group">
+          <label>Mot de passe</label>
+          <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••">
+        </div>
 
-<button (click)="register()">S'inscrire</button>
+        <div class="input-group">
+          <label>Confirmer le mot de passe</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required placeholder="••••••••">
+        </div>
 
+        <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <button type="submit" class="btn-auth">Créer mon compte</button>
+      </form>
+
+      <div class="footer-link">
+        Déjà inscrit ? <a routerLink="/login">Connectez-vous ici</a>
+      </div>
+    </div>
+  </div>
 </div>

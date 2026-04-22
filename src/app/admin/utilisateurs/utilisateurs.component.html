@@ -1,34 +1,87 @@
-<h2>Gestion des utilisateurs</h2>
+<div class="users-page">
+  <div class="header-flex">
+    <div class="titles">
+      <h1>👥 Gestion des Utilisateurs</h1>
+      <p>Administrez les accès et rôles de l'équipe municipale</p>
+    </div>
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Rechercher un membre...">
+    </div>
+  </div>
 
-<!-- FORMULAIRE AJOUT -->
-<div class="form-ajout">
-  <input type="text" [(ngModel)]="nouveauNom" placeholder="Nom de l'utilisateur">
-  
-  <select [(ngModel)]="nouveauRole">
-    <option value="CITOYEN">CITOYEN</option>
-    <option value="AGENT">AGENT</option>
-    <option value="ADMIN">ADMIN</option>
-  </select>
+  <div class="glass-card add-user-section">
+    <div class="input-group">
+      <label>Nom complet</label>
+      <input type="text" [(ngModel)]="nouveauNom" placeholder="Ex: Jean Dupont">
+    </div>
+    <div class="input-group">
+      <label>Rôle assigné</label>
+      <select [(ngModel)]="nouveauRole">
+        <option value="CITOYEN">Citoyen</option>
+        <option value="AGENT">Agent Municipal</option>
+        <option value="ADMIN">Administrateur</option>
+      </select>
+    </div>
+    <button class="btn-primary" (click)="ajouter()">
+      <span>+</span> Ajouter l'utilisateur
+    </button>
+  </div>
 
-  <button (click)="ajouter()">Ajouter</button>
+  <div class="table-container">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Rôle</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of filteredUsers; let i = index">
+          <td>
+            <div class="user-info">
+              <div class="avatar" [style.background-color]="u.role === 'ADMIN' ? '#4f46e5' : '#94a3b8'">
+                {{ u.nom.charAt(0).toUpperCase() }}
+              </div>
+              <span class="user-name">{{ u.nom }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="role-badge" [ngClass]="u.role.toLowerCase()">
+              {{ u.role }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-icon edit" (click)="ouvrirModal(u, i)" title="Modifier">✏️</button>
+            <button class="btn-icon delete" (click)="supprimer(u.nom)" title="Supprimer">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-overlay" *ngIf="modalOuvert">
+    <div class="modal-card animate-pop">
+      <h3>Modifier le profil</h3>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>Nom de l'utilisateur</label>
+          <input type="text" [(ngModel)]="userModifie.nom">
+        </div>
+        <div class="input-group">
+          <label>Changer le rôle</label>
+          <select [(ngModel)]="userModifie.role">
+            <option value="CITOYEN">Citoyen</option>
+            <option value="AGENT">Agent</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="fermerModal()">Annuler</button>
+        <button class="btn-primary" (click)="enregistrer()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<!-- TABLEAU DES UTILISATEURS -->
-<table>
-  <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Rôle</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let u of users; let i = index">
-      <td>{{ u.nom }}</td>
-      <td>{{ u.role }}</td>
-      <td>
-        <button class="supprimer" (click)="supprimer(i)">Supprimer</button>
-      </td>
-    </tr>
-  </tbody>
-</table>

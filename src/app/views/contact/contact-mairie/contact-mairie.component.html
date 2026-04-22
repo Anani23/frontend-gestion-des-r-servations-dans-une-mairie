@@ -1,33 +1,58 @@
-<div class="contact-container">
-  <h2>Contactez la Mairie</h2>
-  <p>Pour toute question ou demande, veuillez remplir le formulaire ci-dessous.</p>
+<div class="contact-page-wrapper">
+  <header class="contact-header">
+    <h1>Contactez-nous</h1>
+    <p>Une question pour la mairie ? Notre équipe vous accompagne dans vos démarches.</p>
+  </header>
 
-  <form (ngSubmit)="envoyerMessage()" #contactForm="ngForm" class="contact-form">
+  <div class="contact-grid">
+    <aside class="contact-info">
+      <div class="info-card">
+        <h3>📍 Adresse</h3>
+        <p>Hôtel de Ville de Lomé<br>Rue de la Mairie, Lomé, Togo</p>
+      </div>
+      <div class="info-card">
+        <h3>📞 Contact Direct</h3>
+        <p>+228 22 21 00 00<br>contact@mairie-lome.tg</p>
+      </div>
+      <div class="info-card">
+        <h3>⏰ Accueil Public</h3>
+        <p>Lun - Ven : 07h30 — 17h30</p>
+      </div>
+    </aside>
 
-    <div class="form-group">
-      <label for="nom">Nom complet *</label>
-      <input type="text" id="nom" name="nom" [(ngModel)]="nom" required placeholder="Votre nom">
-    </div>
+    <main class="form-container">
+      <form (ngSubmit)="envoyerMessage()" #contactForm="ngForm">
+        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="form-group">
+            <label>Votre Nom</label>
+            <input type="text" name="nom" [(ngModel)]="contact.nom" required #nom="ngModel" placeholder="Jean Koffi">
+          </div>
+          <div class="form-group">
+            <label>Votre Email</label>
+            <input type="email" name="email" [(ngModel)]="contact.email" required email #email="ngModel" placeholder="jean@mail.tg">
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label for="email">Email *</label>
-      <input type="email" id="email" name="email" [(ngModel)]="email" required placeholder="exemple@mail.com">
-    </div>
+        <div class="form-group">
+          <label>Objet de la demande</label>
+          <input type="text" name="objet" [(ngModel)]="contact.objet" required placeholder="Ex: État Civil, Travaux...">
+        </div>
 
-    <div class="form-group">
-      <label for="objet">Objet *</label>
-      <input type="text" id="objet" name="objet" [(ngModel)]="objet" required placeholder="Objet de votre message">
-    </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" [(ngModel)]="contact.message" required minlength="10" placeholder="Décrivez votre situation..."></textarea>
+        </div>
 
-    <div class="form-group">
-      <label for="message">Message *</label>
-      <textarea id="message" name="message" [(ngModel)]="message" required placeholder="Votre message"></textarea>
-    </div>
+        <button type="submit" [disabled]="!contactForm.form.valid || isSubmitting" class="btn-submit">
+          <div *ngIf="isSubmitting" class="loader"></div>
+          <span>{{ isSubmitting ? 'Envoi en cours...' : 'Envoyer la demande' }}</span>
+        </button>
+      </form>
+    </main>
+  </div>
 
-    <button type="submit" [disabled]="!contactForm.form.valid">Envoyer</button>
-  </form>
-
-  <div *ngIf="confirmation" class="confirmation">
-    Votre message a été envoyé avec succès !
+  <div *ngIf="confirmation" class="confirmation-toast">
+    <span>✅</span>
+    <span>Votre message a été transmis avec succès.</span>
   </div>
 </div>

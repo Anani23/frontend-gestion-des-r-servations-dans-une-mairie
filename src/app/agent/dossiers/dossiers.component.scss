@@ -1,82 +1,52 @@
-.dossier-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
-  margin-top: 15px;
+$primary: #6366f1;
+$success: #10b981;
+$danger: #ef4444;
+$warning: #f59e0b;
 
-  .card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.2s;
+.agent-container { padding: 2rem; background: #f8fafc; min-height: 100vh; }
 
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
+.table-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+  h1 { font-size: 1.8rem; .highlight { color: $primary; } }
+  .search-bar input { padding: 10px 20px; border-radius: 10px; border: 1px solid #e2e8f0; width: 300px; }
+}
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+.table-wrapper { background: white; border-radius: 15px; overflow: hidden; border: 1px solid #e2e8f0; }
 
-      h3 {
-        margin: 0;
-        color: #0056b3;
-      }
+.dossier-table {
+  width: 100%; border-collapse: collapse;
+  th { background: #f1f5f9; padding: 15px; text-align: left; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
+  td { padding: 15px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+}
 
-      .status {
-        padding: 4px 8px;
-        border-radius: 5px;
-        color: white;
-        font-weight: 500;
-        text-transform: uppercase;
-        font-size: 0.85rem;
+.citoyen-cell {
+  .name { display: block; font-weight: 700; color: #1e293b; }
+  .service-tag { font-size: 0.7rem; background: rgba($primary, 0.1); color: $primary; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+}
 
-        &.validé { background: #28a745; }
-        &.refusé { background: #dc3545; }
-        &.en attente { background: #ffc107; color: #333; }
-      }
-    }
+.dynamic-details {
+  margin: 5px 0 0; padding: 0; list-style: none;
+  li { font-size: 0.75rem; color: #64748b; border-left: 2px solid #e2e8f0; padding-left: 8px; margin-top: 2px; }
+}
 
-    .card-body p {
-      margin: 5px 0;
-      font-size: 0.95rem;
-    }
+.status-badge {
+  padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
+  &.en-attente { background: rgba($warning, 0.1); color: $warning; }
+  &.validé { background: rgba($success, 0.1); color: $success; }
+  &.refusé { background: rgba($danger, 0.1); color: $danger; }
+}
 
-    .card-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 10px;
-
-      button {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: 0.2s;
-
-        &.btn-validate {
-          background: #28a745;
-          color: white;
-        }
-
-        &.btn-refuse {
-          background: #dc3545;
-          color: white;
-        }
-
-        &:hover {
-          opacity: 0.85;
-        }
-      }
-    }
+.action-btns {
+  display: flex; gap: 8px;
+  button {
+    width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s;
+    &.btn-check { background: $success; color: white; &:hover { background: darken($success, 10%); } }
+    &.btn-cross { background: $danger; color: white; &:hover { background: darken($danger, 10%); } }
+    &:disabled { opacity: 0.2; cursor: not-allowed; }
   }
+}
+
+.pagination {
+  margin-top: 2rem; display: flex; justify-content: center; align-items: center; gap: 1rem;
+  button { padding: 8px 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; }
 }

@@ -10,23 +10,33 @@ import { Component } from '@angular/core';
 })
 export class MaireComponent {
 
-  // Informations dynamiques du maire
+  // Propriété qui manquait et causait l'erreur TS2339
+  descriptionMairie: string = 'L’administration municipale de Lomé vous accompagne dans toutes vos démarches administratives et veille à l’amélioration constante de votre cadre de vie.';
+
   maire = {
-    nom: 'Jean Dupont',
+    nom: 'S.E.M. Le Maire de Lomé',
     mandat: '2020 - 2026',
-    photo: 'assets/maire.jpg',
-    description: 'Le maire et le conseil municipal sont chargés de la gestion des affaires locales et de la représentation de la commune.'
+    photo: 'assets/images/mairie-centrale.jpg', 
+    biographie: 'Engagé pour le développement durable et la modernisation des services numériques de la capitale, Monsieur le Maire œuvre pour une ville plus connectée et au service de ses citoyens.'
   };
 
-  // Liste dynamique des services municipaux
-  services = [
-    'État civil (naissance, mariage, décès)',
-    'Urbanisme et construction',
-    'Affaires sociales et aide aux citoyens',
-    'Culture et événements locaux',
-    'Gestion des rendez-vous et dossiers citoyens'
+  contact = {
+    adresse: 'Hôtel de Ville, Boulevard du Mono, Lomé, Togo',
+    telephone: '+228 22 21 00 00',
+    email: 'secretariat@mairie-lome.tg'
+  };
+
+  horaires = [
+    { jour: 'Lundi au Vendredi', heures: '07h30 — 12h00 / 14h30 — 17h30' },
+    { jour: 'Samedi', heures: '08h00 — 12h00 (Permanence État Civil)' },
+    { jour: 'Dimanche', heures: 'Fermé' }
   ];
 
-  // Description générale de la mairie
-  descriptionMairie = 'La mairie est l’administration locale responsable de la gestion de la commune et des services municipaux.';
+  services = [
+    { titre: 'État civil', desc: 'Extraits de naissance, mariages, décès', icone: '📜' },
+    { titre: 'Urbanisme', desc: 'Permis de construire et plan de ville', icone: '🏗️' },
+    { titre: 'Social', desc: 'Aide aux familles et logement', icone: '🤝' },
+    { titre: 'Culture', desc: 'Événements et patrimoine local', icone: '🎨' },
+    { titre: 'RDV Médicaux', desc: 'Gestion des services de santé municipaux', icone: '🏥' }
+  ];
 }

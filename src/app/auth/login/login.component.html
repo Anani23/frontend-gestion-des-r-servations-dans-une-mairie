@@ -1,11 +1,72 @@
-<div class="login-container">
+<div class="auth-wrapper">
 
-<h2>Connexion</h2>
+  <div class="auth-image-side">
+    <div class="overlay-content">
+      <h1>Bienvenue à Lomé</h1>
+      <p>Votre portail citoyen pour une ville plus connectée.</p>
+    </div>
+  </div>
 
-<input type="email" placeholder="Email" [(ngModel)]="email">
+  <div class="auth-form-side">
 
-<input type="password" placeholder="Mot de passe" [(ngModel)]="password">
+    <form class="form-container" (ngSubmit)="login()">
 
-<button (click)="login()">Se connecter</button>
+      <div class="form-header">
+        <h2>Connexion</h2>
+        <p>Gérez vos activités municipales en toute simplicité.</p>
+      </div>
 
+      <div class="form-body">
+
+        <!-- USERNAME -->
+        <div class="input-group">
+          <label>
+            <i class="cil-user"></i> Nom d'utilisateur
+          </label>
+          <input
+            [(ngModel)]="nom"
+            name="nom"
+            type="text"
+            placeholder="Entrez votre nom"
+            required
+          />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="input-group">
+          <label>
+            <i class="cil-lock-locked"></i> Mot de passe
+          </label>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <!-- ERROR -->
+        <p class="error-msg" *ngIf="error">{{ error }}</p>
+
+        <!-- BUTTON -->
+        <button
+          class="btn-auth"
+          type="submit"
+          [disabled]="isLoading"
+        >
+          <span *ngIf="!isLoading">Se connecter</span>
+          <span *ngIf="isLoading">Connexion...</span>
+        </button>
+
+        <!-- FOOTER -->
+        <div class="footer-link">
+          Pas encore de compte ?
+          <a routerLink="/register">Créer un compte</a>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
 </div>

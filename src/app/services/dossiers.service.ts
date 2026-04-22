@@ -1,28 +1,27 @@
+// ✅ CORRECT
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs'; // Import 'of' to simulate an API stream
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DossiersService {
-
   private dossiers = [
-    { citoyen: 'Jean Dupont', type: 'Demande CNI', date: new Date('2026-03-20'), description: 'Nouvelle carte nationale', statut: 'En attente' },
-    { citoyen: 'Marie Curie', type: 'Permis de construire', date: new Date('2026-03-21'), description: 'Maison R+1', statut: 'En attente' },
-    { citoyen: 'Paul Martin', type: 'Certificat de résidence', date: new Date('2026-03-22'), description: 'Attestation pour banque', statut: 'En attente' },
-    { citoyen: 'Sophie Leroy', type: 'Demande CNI', date: new Date('2026-03-23'), description: 'Renouvellement', statut: 'En attente' },
-    { citoyen: 'Ali Toure', type: 'Permis de construire', date: new Date('2026-03-24'), description: 'Petit commerce', statut: 'En attente' }
+    { id: 1, citoyen: 'Jean Dupont', type: 'Demande CNI', date: new Date(), description: '...', statut: 'EN ATTENTE' },
+    // ... tes données initiales
   ];
 
-  constructor() { }
-
-  getDossiers(): any[] {
-    return this.dossiers;
+  getDossiersObservable(): Observable<any[]> {
+    return of(this.dossiers);
   }
 
-  updateStatut(dossier: any, statut: string) {
-    const index = this.dossiers.indexOf(dossier);
-    if (index > -1) {
-      this.dossiers[index].statut = statut;
-    }
+  // MÉTHODE DE LIEN : Ajoute le dossier soumis par le citoyen
+  ajouterDossier(dossier: any): Observable<boolean> {
+    this.dossiers.unshift(dossier); // Ajoute au début de la liste
+    return of(true);
+  }
+
+  updateStatut(id: number, statut: string, motif?: string): Observable<boolean> {
+    const dossier = this.dossiers.find(d => d.id === id);
+    if (dossier) { dossier.statut = statut; }
+    return of(true);
   }
 }

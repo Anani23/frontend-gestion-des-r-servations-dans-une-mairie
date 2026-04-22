@@ -1,25 +1,48 @@
-<c-header class="header header-sticky header-custom mb-4 p-0">
-  <c-container fluid class="px-4">
-    <div class="header-content">
-      <div>
-        <h4 class="mb-0">Plateforme de gestion municipale</h4>
-        <small>Tableau de bord administratif</small>
-      </div>
-
-      <c-header-brand class="mx-auto d-md-none">
-        Mairie
-      </c-header-brand>
-
-      <div class="header-actions">
-        <span class="badge-notif">3</span>
-        <div class="user-box">
-          <div class="user-avatar">A</div>
-          <div class="user-info">
-            <strong>Admin</strong>
-            <small>Connecté</small>
-          </div>
-        </div>
+<header class="header-glass d-flex align-items-center">
+  <div class="header-container w-100 d-flex align-items-center justify-content-between">
+    
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn-toggle-sidebar" (click)="onToggleSidebar()" title="Menu">
+        <i class="cil-menu"></i>
+      </button>
+      <div class="breadcrumb-custom d-none d-md-flex flex-column">
+        <span class="text-main">Mairie de Lomé</span>
+        <small class="text-sub">Tableau de bord • {{ role || 'Portail' }}</small>
       </div>
     </div>
-  </c-container>
-</c-header>
+
+    <div class="search-wrapper d-none d-sm-flex">
+      <i class="cil-search"></i>
+      <input type="text" placeholder="Rechercher un service, un bien..." />
+      <span class="search-shortcut">⌘K</span>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      
+      <div class="action-icon position-relative">
+        <i class="cil-bell"></i>
+        <span class="notification-dot"></span>
+      </div>
+
+      <div *ngIf="isLoggedIn; else guestButtons" class="profile-pill">
+        <div class="avatar-circle">
+          {{ (userName || 'U').charAt(0).toUpperCase() }}
+        </div>
+        <div class="profile-info d-none d-lg-block">
+          <span class="p-name">{{ userName }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout()" title="Déconnexion">
+          <i class="cil-account-logout"></i>
+        </button>
+      </div>
+
+      <ng-template #guestButtons>
+        <div class="d-flex gap-2">
+          <button class="btn btn-login" routerLink="/login">Connexion</button>
+          <button class="btn btn-register shadow-sm" routerLink="/register">S'inscrire</button>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+</header>

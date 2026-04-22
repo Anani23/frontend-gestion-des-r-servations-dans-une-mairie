@@ -1,40 +1,74 @@
-<div class="dashboard">
-
-  <h2>Bienvenue {{ agentNom }}</h2>
-
-  <!-- 🔢 STATISTIQUES -->
-  <div class="stats">
-
-    <div class="card card-dossiers-attente">
-      <h3>Dossiers en attente</h3>
-      <p>{{ stats.dossiersEnAttente }}</p>
+<div class="agent-container animate-fade-in">
+  
+  <header class="welcome-banner">
+    <div class="welcome-text">
+      <h2>Tableau de bord <span class="highlight">Opérationnel</span></h2>
+      <p>Bonjour {{ agentNom }}, vous avez <strong>{{ stats.dossiersEnAttente }}</strong> dossiers à traiter en priorité.</p>
     </div>
+    <div class="current-date">{{ today | date:'HH:mm' }} • {{ today | date:'dd MMMM yyyy' }}</div>
+  </header>
 
-    <div class="card card-rdv-aujourdhui">
-      <h3>RDV aujourd'hui</h3>
-      <p>{{ stats.rdvAujourdHui }}</p>
+  <div class="stats-grid">
+    <div class="stat-card pending">
+      <div class="icon-box">📂</div>
+      <div class="stat-content">
+        <p class="stat-value">{{ stats.dossiersEnAttente }}</p>
+        <p class="stat-label">À traiter</p>
+      </div>
     </div>
-
-    <div class="card card-dossiers-traites">
-      <h3>Dossiers traités</h3>
-      <p>{{ stats.dossiersTraites }}</p>
-    </div>
-
-  </div>
-
-  <!-- 📅 RDV DU JOUR -->
-  <div class="rdv">
-    <h3>Rendez-vous du jour</h3>
-
-    <div *ngFor="let r of rdvs" class="rdv-item">
-      <span class="rdv-nom">{{ r.nom }}</span> - <span class="rdv-heure">{{ r.heure }}</span>
+    <div class="stat-card urgent">
+      <div class="icon-box">⏰</div>
+      <div class="stat-content">
+        <p class="stat-value">{{ stats.rdvAujourdHui }}</p>
+        <p class="stat-label">RDV ce jour</p>
+      </div>
     </div>
   </div>
 
-  <!-- ⚡ ACTIONS RAPIDES -->
-  <div class="actions">
-    <button routerLink="/agent/rdv" class="btn-primary">Gérer les rendez-vous</button>
-    <button routerLink="/agent/dossiers" class="btn-secondary">Traiter les dossiers</button>
-  </div>
+  <div class="main-layout">
+    <div class="priority-zone">
+      <section class="action-section card shadow-sm">
+        <div class="section-header">
+          <h3>⚡ Actions urgentes</h3>
+        </div>
+        
+        <div class="urgent-alert" *ngIf="prochainsRdvs.length > 0">
+          <div class="alert-icon">🔔</div>
+          <div class="alert-text">
+            <strong>Prochain RDV : {{ prochainsRdvs[0].nom }}</strong>
+            <span>Commence à {{ prochainsRdvs[0].date | date:'HH:mm' }} pour {{ prochainsRdvs[0].service }}</span>
+          </div>
+          <button [routerLink]="['/agent/rdv']" class="btn-go">Ouvrir</button>
+        </div>
 
+        <div class="mini-list">
+          <p class="list-title">Derniers dossiers reçus</p>
+          <div class="mini-item" *ngFor="let d of alertesDossiers">
+            <span class="dot"></span>
+            <span class="subject">{{ d.citoyen }} - {{ d.type }}</span>
+            <button routerLink="/agent/dossiers" class="btn-text">Traiter</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="quick-nav">
+      <h3>Accès rapide</h3>
+      <div class="nav-grid">
+        <button routerLink="/agent/rdv" class="nav-card">
+          <span class="nav-icon">📅</span>
+          <span>Agenda</span>
+        </button>
+        <button routerLink="/agent/dossiers" class="nav-card">
+          <span class="nav-icon">📁</span>
+          <span>Dossiers</span>
+        </button>
+      </div>
+      
+      <div class="tips-card">
+        <h4>💡 Astuce</h4>
+        <p>Validez les dossiers complets avant 11h pour le traitement du courrier de l'après-midi.</p>
+      </div>
+    </aside>
+  </div>
 </div>

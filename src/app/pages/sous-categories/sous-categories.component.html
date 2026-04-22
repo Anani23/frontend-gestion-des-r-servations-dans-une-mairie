@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/categories-biens">Domaines</a></li>
+      <li class="breadcrumb-item active text-primary fw-bold">{{ parentCategorie?.nom }}</li>
+    </ol>
+  </nav>
+
+  <div class="header-section mb-5">
+    <h2 class="display-6 fw-bold">{{ parentCategorie?.nom }}</h2>
+    <p class="text-muted">{{ parentCategorie?.description }}</p>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+  } @else {
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      @for (sub of sousCategories; track sub.id) {
+        <div class="col">
+          <div class="card h-100 border-start border-primary border-4 shadow-sm hover-list-item" 
+               [routerLink]="['/biens/categorie', sub.id]">
+            <div class="card-body d-flex align-items-center p-4">
+              <div class="icon-box me-4 bg-light p-3 rounded">
+                <i [class]="sub.icon || 'cil-list'" class="text-primary fs-2"></i>
+              </div>
+              <div>
+                <h4 class="card-title mb-1 fw-bold">{{ sub.nom }}</h4>
+                <p class="card-text text-muted mb-0 small">{{ sub.description || 'Consulter les éléments disponibles' }}</p>
+              </div>
+              <i class="cil-chevron-right ms-auto fs-4 text-light-emphasis"></i>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-5 bg-light rounded">
+          <i class="cil-search fs-1 text-muted mb-3"></i>
+          <p class="fs-5 text-muted">Aucune sous-catégorie trouvée pour ce domaine.</p>
+          <button class="btn btn-primary" routerLink="/categories-biens">Retour aux domaines</button>
+        </div>
+      }
+    </div>
+  }
+</div>

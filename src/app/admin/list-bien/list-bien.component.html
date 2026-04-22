@@ -1,0 +1,68 @@
+<div class="lb-container animate-fade-in">
+  <header class="lb-header">
+    <div class="lb-info">
+      <span class="badge-top">Inventaire Mairie de Lomé</span>
+      <h1>Patrimoine <span class="highlight">Municipal</span></h1>
+      <p>Gestion technique et suivi des infrastructures communales.</p>
+    </div>
+    
+    <div class="lb-actions">
+      <div class="search-box">
+        <i class="cil-search"></i>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par nom ou lieu...">
+      </div>
+      <button class="btn-primary" routerLink="/admin/create-bien">
+        <i class="cil-plus"></i> Nouveau Bien
+      </button>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <button [class.active]="selectedCat === null" (click)="filterCat(null)">Tous les biens</button>
+    @for (c of categories; track c.id) {
+      <button [class.active]="selectedCat === c.id" (click)="filterCat(c.id)">
+        {{ c.nom }}
+      </button>
+    }
+  </div>
+
+  <div class="biens-list">
+    @for (b of getFiltered(); track b.id) {
+      <div class="bien-item shadow-sm">
+        <div class="item-main">
+          <span class="item-cat">{{ getCatNom(b.categorieId) }}</span>
+          <h3>{{ b.nom }}</h3>
+          <p class="location"><i class="cil-location-pin"></i> {{ b.lieu || 'Lomé, Togo' }}</p>
+        </div>
+        <div class="item-btns">
+          <button class="edit-btn" [routerLink]="['/admin/edit-bien', b.id]"><i class="cil-pencil"></i></button>
+          <button class="del-btn" (click)="supprimer(b.id)"><i class="cil-trash"></i></button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>Aucun bien ne correspond à votre recherche.</p>
+      </div>
+    }
+  </div>
+
+  <div class="image-scroller-section">
+    <div class="section-title">
+      <h3>Aperçu visuel du patrimoine</h3>
+      <small>Défilement horizontal</small>
+    </div>
+    <div class="h-scroll">
+      @for (b of biens; track b.id) {
+        <div class="scroll-card">
+          <div class="card-img-wrapper">
+            <img [src]="getImg(b)" (error)="onImgErr($event)">
+          </div>
+          <div class="scroll-info">
+            <span class="tag">{{ getCatNom(b.categorieId) }}</span>
+            <p>{{ b.nom }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

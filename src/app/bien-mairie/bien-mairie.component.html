@@ -1,0 +1,85 @@
+<div class="page-container animate-fade-in">
+  <header class="page-header-main">
+    <div class="header-content">
+      <div class="brand-text">
+        <span class="brand-city">Ville de Lomé • Togo</span>
+        <h1 class="brand-title">Patrimoine <span class="gold">&</span> Infrastructures</h1>
+        <p class="brand-subtitle">Explorez et réservez les espaces publics de la capitale</p>
+      </div>
+
+      <div class="search-box shadow-sm">
+        <span class="icon">🔍</span>
+        <input type="text" [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)" placeholder="Rechercher un espace...">
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="categories-scroll-wrapper">
+      <div class="categories-track">
+        <button class="cat-pill" [class.active]="selectedCategorie === null" (click)="filterByCategorie(null)">
+          Tous les biens
+        </button>
+        
+        @for (c of categories; track c.id) {
+          <button class="cat-pill" [class.active]="selectedCategorie === c.id" (click)="filterByCategorie(c.id)">
+            {{ c.nom }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (biens$ | async; as allBiens) {
+      @if (allBiens.length > 0) {
+        <div class="assets-grid">
+          @for (b of getPaginatedItems(allBiens); track b.id) {
+            <div class="asset-card" (click)="voirDetails(b)">
+              <div class="card-image">
+                <img [src]="'assets/images/' + (b.images?.[0] || 'mairie-centrale.jpg')" [alt]="b.nom" (error)="onImgError($event)">
+                <span class="status-tag" [class.available]="b.dispo">{{ b.dispo ? 'Disponible' : 'Occupé' }}</span>
+              </div>
+              <div class="card-body">
+                <p class="cat-label">{{ getCategorieNom(b.categorieId) }}</p>
+                <h4>{{ b.nom }}</h4>
+                <p class="location">📍 {{ b.lieu }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (getTotalPages(allBiens) > 1) {
+          <div class="pagination-bar">
+            @for (p of [].constructor(getTotalPages(allBiens)); track $index) {
+              <button class="page-btn" [class.active]="($index + 1) === currentPage" (click)="goToPage($index + 1)">
+                {{ $index + 1 }}
+              </button>
+            }
+          </div>
+        }
+      } @else {
+        <div class="empty-state">Aucun patrimoine trouvé pour cette recherche.</div>
+      }
+    } @else {
+      <div class="loading-state"><div class="spinner"></div></div>
+    }
+  </div>
+</div>
+
+@if (selectedBien) {
+  <div class="detail-overlay" (click)="fermerDetails()">
+    <div class="detail-panel" (click)="$event.stopPropagation()">
+      <button class="btn-close" (click)="fermerDetails()">×</button>
+      <div class="panel-hero">
+        <img [src]="'assets/images/' + (selectedBien.images?.[0] || 'mairie-centrale.jpg')" (error)="onImgError($event)">
+      </div>
+      <div class="panel-content">
+        <span class="type-badge">{{ selectedBien.type }}</span>
+        <h2>{{ selectedBien.nom }}</h2>
+        <p class="panel-lieu">📍 {{ selectedBien.lieu }}</p>
+        <button class="btn-reserve-large" [disabled]="!selectedBien.dispo" (click)="reserver(selectedBien)">
+          {{ selectedBien.dispo ? 'Réserver maintenant' : 'Indisponible' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

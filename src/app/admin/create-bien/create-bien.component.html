@@ -1,0 +1,125 @@
+<div class="admin-page animate-fade">
+  <header class="dashboard-header">
+    <div class="brand">
+      <div class="logo-circle">ML</div>
+      <div class="texts">
+        <h1>Patrimoine <span class="highlight">Urbain</span></h1>
+        <p>Administration Territoriale • Lomé</p>
+      </div>
+    </div>
+
+    <nav class="pill-nav">
+      <button [class.active]="activeTab === 'form'" (click)="activeTab = 'form'">
+        <i class="cil-plus"></i> Nouveau Bien
+      </button>
+      <button [class.active]="activeTab === 'list'" (click)="activeTab = 'list'">
+        <i class="cil-list"></i> Registre
+      </button>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    
+    <section *ngIf="activeTab === 'form'" class="form-section animate-slide-up">
+      <div class="glass-card">
+        
+        <div class="card-intro">
+          <span class="step-badge">Saisie technique</span>
+          <h2>Enregistrement</h2>
+          <div class="divider"></div>
+        </div>
+
+        <div class="form-layout">
+          <div class="upload-zone" (click)="fileInput.click()">
+            <input type="file" #fileInput hidden (change)="onFileSelected($event)">
+            <div *ngIf="!newBien.tempImage" class="upload-placeholder">
+              <i class="cil-image-plus"></i>
+              <span>Cliquer pour ajouter une photo</span>
+            </div>
+            <img *ngIf="newBien.tempImage" [src]="newBien.tempImage" class="img-preview">
+          </div>
+
+          <div class="fields-stack">
+            
+            <div class="input-box">
+              <label>Catégorie du patrimoine</label>
+              <div class="select-wrapper">
+                <select [(ngModel)]="newBien.categorieId">
+                  <option [ngValue]="null">-- Choisir la catégorie --</option>
+                  <ng-container *ngFor="let parent of categories">
+                    <option [ngValue]="parent.id" disabled class="opt-parent">{{ parent.nom }}</option>
+                    <option *ngFor="let sub of parent.sousCategories" [ngValue]="sub.id">
+                      &nbsp;&nbsp;&nbsp;↳ {{ sub.nom }}
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="input-box">
+                <label>Type d'usage</label>
+                <input type="text" [(ngModel)]="newBien.type" placeholder="Ex: Bureau, Local...">
+              </div>
+              <div class="input-box">
+                <label>Quartier</label>
+                <input type="text" [(ngModel)]="newBien.lieu" placeholder="Ex: Nyékonakpoé">
+              </div>
+            </div>
+
+            <div class="input-box designation">
+              <label>Désignation complète (Nom)</label>
+              <input type="text" [(ngModel)]="newBien.nom" placeholder="Ex: Direction des Services Techniques">
+            </div>
+
+            <button class="btn-submit" (click)="onSubmit()">
+              <span>Enregistrer au registre</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'list'" class="list-section animate-slide-up">
+      <div class="glass-card">
+        <div class="table-header">
+          <h2>Registre des Actifs</h2>
+          <div class="search-box">
+            <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Rechercher...">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="premium-table">
+            <thead>
+              <tr>
+                <th>Visuel</th>
+                <th>Désignation</th>
+                <th>Localisation</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of filteredBiens">
+                <td class="td-img">
+                  <img [src]="b.images && b.images[0] ? b.images[0] : 'assets/images/placeholder.png'">
+                </td>
+                <td>
+                  <div class="name-cell">
+                    <span class="main-name">{{ b.nom }}</span>
+                    <span class="sub-type">{{ b.type }}</span>
+                  </div>
+                </td>
+                <td>{{ b.lieu }}</td>
+                <td class="actions">
+                  <button class="edit-circle" (click)="onEdit(b)"><i class="cil-pencil"></i></button>
+                  <button class="delete-circle" (click)="onDelete(b.id)"><i class="cil-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

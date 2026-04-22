@@ -1,13 +1,61 @@
-<h2>Gestion des services</h2>
+<div class="list-container animate-fade-in">
+  <header class="page-header">
+    <div class="title-group">
+      <span class="badge-top">Administration de Lomé</span>
+      <h1>Répertoire des <span class="highlight">prestations</span></h1>
+      <p>Gestion des dossiers et services aux citoyens.</p>
+    </div>
+    <button class="btn-create shadow-sm" routerLink="/admin/create-service">
+      <span class="icon">＋</span> 
+      <span>Nouveau Service</span>
+    </button>
+  </header>
 
-<div class="add-service">
-  <input type="text" [(ngModel)]="nouveau" placeholder="Nom du nouveau service">
-  <button (click)="ajouter()">Ajouter</button>
-</div>
+  <div class="services-grid">
+    @for (s of services; track s.id) {
+      <div class="service-card shadow-sm">
+        <div class="card-status" [class.inactive]="!s.actif">
+          {{ s.actif ? '● Actif' : '○ Suspendu' }}
+        </div>
+        
+        <div class="card-content">
+          <div class="service-illustration">
+            <img [src]="getIllustration(s)" [alt]="s.nom">
+            <div class="cat-tag">{{ getCatNom(s.categorieId) }}</div>
+          </div>
 
-<div class="services-list">
-  <div class="service-card" *ngFor="let s of services; let i = index">
-    <span>{{ s }}</span>
-    <button class="danger" (click)="supprimer(i)">Supprimer</button>
+          <div class="p-4">
+            <h3 class="fw-bold">{{ s.nom }}</h3>
+            <p class="description">{{ s.description | slice:0:100 }}{{ s.description.length > 100 ? '...' : '' }}</p>
+
+            <div class="docs-section mt-3" *ngIf="s.piecesAFournir?.length">
+              <label class="text-uppercase small fw-bold text-muted">Dossier à fournir :</label>
+              <div class="tags-preview">
+                @for (piece of s.piecesAFournir.slice(0, 2); track piece) {
+                  <span class="tag">{{ piece }}</span>
+                }
+                @if (s.piecesAFournir.length > 2) {
+                  <span class="tag more">+{{ s.piecesAFournir.length - 2 }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn-action edit" (click)="goToEdit(s.id)" title="Modifier">
+            <i class="cil-pencil"></i> <span>Détails</span>
+          </button>
+          <button class="btn-action delete" (click)="delete(s.id)" title="Supprimer">
+            <i class="cil-trash"></i>
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="icon">📂</div>
+        <p>Aucun service n'est encore configuré.</p>
+      </div>
+    }
   </div>
 </div>

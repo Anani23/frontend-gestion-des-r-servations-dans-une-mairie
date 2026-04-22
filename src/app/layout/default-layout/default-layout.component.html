@@ -1,34 +1,36 @@
-<c-sidebar class="sidebar-custom" unfoldable="true" visible="true">
-  <c-sidebar-brand class="sidebar-brand-custom">
-    <div class="brand-block">
-      <div class="brand-logo">M</div>
-      <div class="brand-text">
-        <h5>Mairie</h5>
-        <span>Administration</span>
+<div class="background-slider"></div>
+
+<header class="main-header">
+  <app-default-header class="w-100"></app-default-header>
+</header>
+
+<nav class="sub-navbar" *ngIf="!isHomePage && !isAuthPage && navItems.length > 0">
+  <div class="nav-container">
+    <ul class="nav-list">
+      <li *ngFor="let item of navItems" class="nav-item">
+        <a [routerLink]="[item.url]" routerLinkActive="active-link" class="nav-link">
+          <i [class]="item.icon" *ngIf="item.icon" class="me-2"></i>
+          <span>{{ item.name }}</span>
+        </a>
+      </li>
+    </ul>
+    
+    <div class="user-badge">
+      <div class="avatar">{{ (authService.getUserName() || 'U').charAt(0).toUpperCase() }}</div>
+      <div class="user-info">
+        <span class="name">Mairie de Lomé</span>
+        <span class="role">{{ role }}</span>
       </div>
     </div>
-  </c-sidebar-brand>
-
-  <c-sidebar-nav [navItems]="navItems"></c-sidebar-nav>
-</c-sidebar>
-
-<div class="wrapper d-flex flex-column min-vh-100">
-
-  <!-- 🔥 HEADER FIX -->
-  <div class="header-fixed">
-    <app-default-header></app-default-header>
   </div>
+</nav>
 
-  <!-- 🔥 CONTENU -->
-  <div class="body flex-grow-1 px-3 py-3">
-    <c-container fluid>
-      <div class="content-card">
-        <router-outlet></router-outlet>
-      </div>
-    </c-container>
-  </div>
+<div class="wrapper" [class.full-width]="isHomePage || isAuthPage">
+  <main class="main-content">
+    <div [class.content-glass]="!isHomePage && !isAuthPage">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 
-  <!-- 🔥 FOOTER -->
-  <app-default-footer></app-default-footer>
-
+  <app-default-footer class="footer-custom"></app-default-footer>
 </div>

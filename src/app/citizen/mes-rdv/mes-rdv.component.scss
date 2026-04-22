@@ -1,45 +1,117 @@
-.table-rdv {
+$primary: #003366;
+$accent: #4f46e5;
+$success: #10b981;
+$warning: #f59e0b;
+
+.mes-rdv-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+// Header avec Titre en Blanc
+.page-header-dark {
+  background: $primary;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  margin-bottom: -40px; // Effet de chevauchement avec le tableau
+  padding-bottom: 60px;
+
+  .text-white { color: white !important; margin: 0; font-weight: 800; }
+  .text-light-blue { color: rgba(255,255,255,0.7); margin-top: 5px; }
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+// Barre de recherche
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border-radius: 12px;
+    border: none;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    &:focus { outline: 2px solid $accent; }
+  }
+  .search-icon { position: absolute; left: 15px; top: 12px; }
+}
+
+.btn-new {
+  background: $success;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  &:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+}
+
+// Style du Tableau
+.table-container {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.rdv-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-
+  
   th {
-    background-color: #0056b3;
-    color: white;
+    background: #f8fafc;
+    padding: 15px 20px;
+    text-align: left;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
   }
 
-  tbody tr:hover {
-    background-color: #f1f1f1;
+  td {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
   }
+
+  .date-cell {
+    strong { display: block; color: $primary; }
+    span { font-size: 0.85rem; color: #94a3b8; }
+  }
+
+  .service-name { font-weight: 600; color: #1e293b; }
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  button {
-    padding: 5px 12px;
-    border: none;
-    background-color: #0056b3;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-
-    &:disabled {
-      background-color: #ccc;
-      cursor: default;
-    }
-  }
-
-  span {
-    font-weight: bold;
-  }
+// Badges de statut
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  &.badge-today { background: rgba($warning, 0.1); color: $warning; }
+  &.badge-upcoming { background: rgba($success, 0.1); color: $success; }
+  &.badge-past { background: #f1f5f9; color: #94a3b8; }
 }
+
+.btn-details {
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 6px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover { border-color: $accent; color: $accent; }
+}
+
+.row-past { opacity: 0.7; background: #fafafa; }

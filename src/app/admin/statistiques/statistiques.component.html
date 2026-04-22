@@ -1,25 +1,84 @@
-<h2>Statistiques de la plateforme</h2>
+<div class="stats-container animate-fade-in">
+  <div class="stats-grid">
+    
+    <div class="stat-card users">
+      <div class="card-glass-effect"></div>
+      <div class="card-header-flex">
+        <div class="card-icon">
+          <i class="cil-people"></i> </div>
+        <div class="card-info">
+          <h3>Citoyens</h3>
+          <p class="stat-number">{{ stats.users }}</p>
+          <span class="trend">Inscriptions actives</span>
+        </div>
+      </div>
+      <div class="analytics-footer">
+        <div class="progress-label">Taux d'engagement <span>70%</span></div>
+        <div class="mini-chart">
+          <div class="bar" style="width: 70%"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="stats-cards">
+    <div class="stat-card biens">
+      <div class="card-glass-effect"></div>
+      <div class="card-header-flex">
+        <div class="card-icon">
+          <i class="cil-building"></i>
+        </div>
+        <div class="card-info">
+          <h3>Patrimoine</h3>
+          <p class="stat-number">{{ stats.biens }}</p>
+          <span class="trend">Biens inventoriés</span>
+        </div>
+      </div>
+      <div class="analytics-footer">
+        <div class="progress-label">Optimisation <span>45%</span></div>
+        <div class="mini-chart">
+          <div class="bar" style="width: 45%; background: #10b981;"></div>
+        </div>
+      </div>
+    </div>
 
-  <div class="card">
-    <h3>Utilisateurs</h3>
-    <p>{{ stats.users }}</p>
+    <div class="stat-card services">
+      <div class="card-glass-effect"></div>
+      <div class="card-header-flex">
+        <div class="card-icon">
+          <i class="cil-briefcase"></i>
+        </div>
+        <div class="card-info">
+          <h3>Services</h3>
+          <p class="stat-number">{{ stats.services }}</p>
+          <span class="trend">Prestations offertes</span>
+        </div>
+      </div>
+      <div class="analytics-footer">
+        <div class="progress-label">Disponibilité <span>85%</span></div>
+        <div class="mini-chart">
+          <div class="bar" style="width: 85%; background: #f59e0b;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card agents">
+      <div class="card-glass-effect"></div>
+      <div class="card-header-flex">
+        <div class="card-icon">
+          <i class="cil-user-check"></i>
+        </div>
+        <div class="card-info">
+          <h3>Agents</h3>
+          <p class="stat-number">{{ stats.agents }}</p>
+          <span class="trend">Effectif Mairie</span>
+        </div>
+      </div>
+      <div class="analytics-footer">
+        <div class="progress-label">Présence <span>30%</span></div>
+        <div class="mini-chart">
+          <div class="bar" style="width: 30%; background: #6366f1;"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <div class="card">
-    <h3>Agents</h3>
-    <p>{{ stats.agents }}</p>
-  </div>
-
-  <div class="card">
-    <h3>Rendez-vous</h3>
-    <p>{{ stats.rdvs }}</p>
-  </div>
-
-  <div class="card">
-    <h3>Dossiers</h3>
-    <p>{{ stats.dossiers }}</p>
-  </div>
-
 </div>

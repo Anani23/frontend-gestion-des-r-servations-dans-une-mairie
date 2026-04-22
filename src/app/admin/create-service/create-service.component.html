@@ -1,0 +1,77 @@
+<div class="admin-wrapper animate-fade-in">
+  <div class="form-card-premium">
+    <header class="card-visual-header">
+      <div class="identity-badge">
+        <div class="icon-orb" (click)="fileInput.click()">
+          <input type="file" #fileInput hidden (change)="onFileSelected($event)">
+          <img *ngIf="imagePreview" [src]="imagePreview" class="img-fill">
+          <span *ngIf="!imagePreview">🏢</span>
+        </div>
+        <div class="text-meta">
+          <span class="location">MAIRIE DE LOMÉ</span>
+          <h2>{{ isEditing ? 'Édition Prestation' : 'Nouveau Service' }}</h2>
+        </div>
+      </div>
+    </header>
+
+    <div class="card-content">
+      <div class="input-field">
+        <label>Département municipal</label>
+        <div class="select-wrapper">
+          <select [(ngModel)]="serviceData.categorieId">
+            <option [value]="0" disabled>Choisir un pôle de compétence...</option>
+            @for (cat of categories; track cat.id) {
+              <option [value]="cat.id">{{ cat.nom }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="row-fields">
+        <div class="input-field">
+          <label>Intitulé du service</label>
+          <input type="text" [(ngModel)]="serviceData.nom" placeholder="Ex: Légalisation de documents">
+        </div>
+
+        <div class="input-field">
+          <label>Missions & Modalités</label>
+          <textarea [(ngModel)]="serviceData.description" rows="3" placeholder="Description courte du service aux citoyens..."></textarea>
+        </div>
+      </div>
+
+      <div class="docs-management">
+        <label class="section-label">Dossier à fournir</label>
+        <div class="add-bar">
+          <input type="text" #docInput placeholder="Ajouter une pièce requise..." (keyup.enter)="addDoc(docInput)">
+          <button (click)="addDoc(docInput)"><i class="cil-plus">+</i></button>
+        </div>
+        
+        <div class="tags-list">
+          @for (doc of serviceData.piecesAFournir; track $index) {
+            <div class="modern-tag animate-pop">
+              <span>{{ doc }}</span>
+              <button class="remove-trigger" (click)="removeDoc($index)">×</button>
+            </div>
+          } @empty {
+            <p class="empty-hint">Aucun document requis pour le moment.</p>
+          }
+        </div>
+      </div>
+
+      <div class="status-box">
+        <div class="switch-control">
+          <input type="checkbox" id="serviceActif" [(ngModel)]="serviceData.actif">
+          <label for="serviceActif"></label>
+        </div>
+        <span class="status-label">Rendre ce service public sur le portail</span>
+      </div>
+
+      <footer class="form-footer">
+        <button class="btn-cancel" routerLink="/services">Annuler</button>
+        <button class="btn-confirm" (click)="submit()">
+          {{ isEditing ? 'Appliquer les modifications' : 'Enregistrer le service' }}
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>

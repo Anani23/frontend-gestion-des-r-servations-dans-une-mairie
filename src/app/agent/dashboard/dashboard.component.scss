@@ -1,116 +1,180 @@
-.dashboard {
-  padding: 20px;
+// Variables de couleurs - Palette Mairie Moderne
+$primary: #4f46e5;    // Indigo pour l'action
+$secondary: #003366;  // Bleu profond pour le sérieux/institutionnel
+$urgent: #ef4444;     // Rouge pour les alertes
+$warning: #f59e0b;    // Orange pour les dossiers en attente
+$success: #10b981;    // Vert pour le complété
+$bg-body: #f8fafc;
+$text-main: #1e293b;
+
+.agent-container {
+  padding: 2rem;
+  background: $bg-body;
+  min-height: 100vh;
   font-family: 'Inter', sans-serif;
+}
 
-  h2 {
-    margin-bottom: 20px;
-    color: #0056b3;
+// 1. Bannière d'accueil
+.welcome-banner {
+  background: white;
+  padding: 2rem;
+  border-radius: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border: 1px solid rgba($primary, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  .welcome-text {
+    h2 { margin: 0; font-weight: 800; font-size: 1.8rem; }
+    .highlight { color: $primary; }
+    p { margin: 8px 0 0; color: #64748b; font-size: 1.1rem; }
   }
 
-  .stats {
+  .current-date {
+    font-weight: 700;
+    color: $secondary;
+    background: #f1f5f9;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+  }
+}
+
+// 2. Grille de Statistiques
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+
+  .stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-
-    .card {
-      flex: 1;
-      min-width: 200px;
-      background: #f4f7fb;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.2s;
-
-      &:hover {
-        transform: translateY(-5px);
-      }
-
-      h3 {
-        margin-bottom: 10px;
-        font-size: 16px;
-        color: #333;
-      }
-
-      p {
-        font-size: 24px;
-        font-weight: bold;
-        color: #0056b3;
-      }
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    
+    .icon-box {
+      width: 54px; height: 54px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
     }
 
-    .card-dossiers-attente {
-      border-top: 4px solid #ffc107;
-    }
+    .stat-value { font-size: 2rem; font-weight: 800; display: block; line-height: 1; }
+    .stat-label { color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
 
-    .card-rdv-aujourdhui {
-      border-top: 4px solid #28a745;
-    }
+    &.pending { .icon-box { background: #fff7ed; } .stat-value { color: $warning; } }
+    &.urgent { .icon-box { background: #fef2f2; } .stat-value { color: $urgent; } }
+    &.completed { .icon-box { background: #f0fdf4; } .stat-value { color: $success; } }
+  }
+}
 
-    .card-dossiers-traites {
-      border-top: 4px solid #17a2b8;
-    }
+// 3. Mise en page principale (2 Colonnes)
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+
+  @media (max-width: 992px) { grid-template-columns: 1fr; }
+}
+
+// 4. Zone de Priorité (Gauche)
+.priority-zone {
+  .card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    min-height: 400px;
+  }
+  
+  h3 { font-weight: 800; margin-bottom: 1.5rem; color: $text-main; }
+}
+
+.urgent-alert {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%);
+  border: 1px solid #fecdd3;
+  padding: 1.5rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+
+  .alert-icon { font-size: 1.8rem; animation: bell-shake 2s infinite; }
+  .alert-text {
+    flex: 1;
+    strong { display: block; font-size: 1.1rem; color: #9f1239; }
+    span { font-size: 0.9rem; color: #e11d48; font-weight: 500; }
+  }
+  .btn-go {
+    background: $urgent; color: white; border: none; padding: 10px 20px;
+    border-radius: 12px; font-weight: 700; cursor: pointer;
+    &:hover { background: darken($urgent, 10%); }
+  }
+}
+
+// Liste des dossiers
+.mini-list {
+  .list-title { font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 1rem; }
+  .mini-item {
+    display: flex; align-items: center; padding: 16px;
+    border-radius: 16px; border: 1px solid #f1f5f9; margin-bottom: 10px;
+    transition: 0.2s;
+    &:hover { border-color: $primary; background: #fcfdff; }
+    
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: $warning; margin-right: 15px; }
+    .subject { flex: 1; font-weight: 600; color: $text-main; }
+    .btn-text { color: $primary; font-weight: 800; background: none; border: none; cursor: pointer; }
+  }
+}
+
+// 5. Navigation Rapide (Droite)
+.quick-nav {
+  h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1.25rem; }
+  
+  .nav-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem;
   }
 
-  .rdv {
-    margin-bottom: 30px;
-
-    h3 {
-      margin-bottom: 10px;
-      color: #0056b3;
-    }
-
-    .rdv-item {
-      background: #fff;
-      padding: 10px 15px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-
-      .rdv-nom {
-        font-weight: 500;
-      }
-
-      .rdv-heure {
-        color: #555;
-      }
+  .nav-card {
+    background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    cursor: pointer; transition: 0.3s;
+    
+    .nav-icon { font-size: 1.5rem; }
+    span { font-weight: 700; font-size: 0.85rem; color: $text-main; }
+    
+    &:hover {
+      border-color: $primary;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba($primary, 0.1);
+      span { color: $primary; }
     }
   }
+}
 
-  .actions {
-    display: flex;
-    gap: 15px;
+.tips-card {
+  background: #f0fdf4; border: 1px solid #dcfce7; padding: 1.5rem; border-radius: 20px;
+  h4 { color: #166534; margin: 0 0 10px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  p { color: #15803d; font-size: 0.85rem; line-height: 1.6; margin: 0; }
+}
 
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 0.2s;
-      text-decoration: none;
+// Animations
+@keyframes bell-shake {
+  0%, 100% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(15deg); }
+  20%, 40%, 60% { transform: rotate(-15deg); }
+  70%, 80%, 90% { transform: rotate(0); }
+}
 
-      &.btn-primary {
-        background: #0056b3;
-        color: #fff;
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
 
-        &:hover {
-          background: #003f7f;
-        }
-      }
-
-      &.btn-secondary {
-        background: #6c757d;
-        color: #fff;
-
-        &:hover {
-          background: #495057;
-        }
-      }
-    }
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

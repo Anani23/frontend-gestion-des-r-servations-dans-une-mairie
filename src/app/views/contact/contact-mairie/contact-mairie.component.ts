@@ -7,30 +7,42 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './contact-mairie.component.html',
-  styleUrls: ['./contact-mairie.component.scss'],
+  styleUrls: ['./contact-mairie.component.scss']
 })
 export class ContactMairieComponent {
-  nom: string = '';
-  email: string = '';
-  objet: string = '';
-  message: string = '';
+  // Objet de formulaire unique pour plus de clarté
+  contact = {
+    nom: '',
+    email: '',
+    objet: '',
+    message: ''
+  };
+
+  isSubmitting: boolean = false;
   confirmation: boolean = false;
 
-  envoyerMessage() {
-    console.log({
-      nom: this.nom,
-      email: this.email,
-      objet: this.objet,
-      message: this.message
-    });
+  async envoyerMessage() {
+    this.isSubmitting = true;
+    
+    // Simulation d'un appel API avec un délai
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Afficher confirmation
+    const payload = {
+      ...this.contact,
+      dateEnvoi: new Date().toISOString()
+    };
+
+    console.log('Message transmis au service municipal :', payload);
+
+    this.isSubmitting = false;
     this.confirmation = true;
+    this.resetForm();
 
-    // Reset du formulaire
-    this.nom = '';
-    this.email = '';
-    this.objet = '';
-    this.message = '';
+    // Fermeture automatique du toast
+    setTimeout(() => this.confirmation = false, 6000);
+  }
+
+  private resetForm() {
+    this.contact = { nom: '', email: '', objet: '', message: '' };
   }
 }

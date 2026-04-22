@@ -1,29 +1,58 @@
-<div class="prendre-rdv">
+<div class="booking-wrapper">
+  <div class="bg-blur-circle"></div>
 
-  <h2>Prendre un rendez-vous</h2>
+  <div class="booking-card animate-in">
+    <header class="card-header">
+      <div class="status-pill">Système de Réservation v2.0</div>
+      <h1>Prendre rendez-vous</h1>
+      <p>Sélectionnez vos options pour votre visite à la mairie.</p>
+    </header>
 
-  <form (ngSubmit)="prendreRdv()">
+    <form (ngSubmit)="prendreRdv()" #rdvForm="ngForm" class="booking-form">
+      
+      <div class="section-container">
+        <label class="section-label">1. Choisissez un service</label>
+        <div class="services-grid">
+          <div *ngFor="let s of servicesList" 
+               class="service-option" 
+               [class.active]="service === s.name"
+               (click)="service = s.name">
+            <span class="service-icon">{{ s.icon }}</span>
+            <span class="service-name">{{ s.name }}</span>
+          </div>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label for="service">Service</label>
-      <select id="service" [(ngModel)]="service" name="service" required>
-        <option value="" disabled selected>Choisir un service</option>
-        <option *ngFor="let s of services" [value]="s">{{ s }}</option>
-      </select>
-    </div>
+      <div class="row-flex">
+        <div class="form-group flex-1">
+          <label class="section-label">2. Date de visite</label>
+          <div class="input-with-icon">
+            <input type="date" [(ngModel)]="date" name="date" required min="2026-04-15">
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label for="date">Date</label>
-      <input id="date" type="date" [(ngModel)]="date" name="date" required>
-    </div>
+        <div class="form-group flex-1" *ngIf="date">
+          <label class="section-label">3. Créneau horaire</label>
+          <div class="time-chips-container">
+            <button type="button" *ngFor="let h of creneaux" 
+                    class="glass-chip"
+                    [class.selected]="heureSelected === h"
+                    (click)="selectHeure(h)">
+              {{ h }}
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label for="heure">Heure</label>
-      <input id="heure" type="time" [(ngModel)]="heure" name="heure" required>
-    </div>
+      <div class="summary-box" *ngIf="service && date && heureSelected">
+        <p>Récapitulatif : <strong>{{ service }}</strong> le <strong>{{ date | date:'dd/MM' }}</strong> à <strong>{{ heureSelected }}</strong></p>
+      </div>
 
-    <button type="submit" [disabled]="!service || !date || !heure">Prendre RDV</button>
+      <button type="submit" [disabled]="!rdvForm.form.valid || !heureSelected" class="btn-modern-submit">
+        <span>Confirmer le rendez-vous</span>
+        <i class="arrow-icon">→</i>
+      </button>
 
-  </form>
-
+    </form>
+  </div>
 </div>

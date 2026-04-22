@@ -1,21 +1,63 @@
-<h2>Dossiers à traiter</h2>
-
-<div class="dossier-container">
-  <div class="card" *ngFor="let d of dossiers">
-    <div class="card-header">
-      <h3>{{ d.type }}</h3>
-      <span class="status" [ngClass]="d.statut.toLowerCase()">{{ d.statut }}</span>
+<div class="agent-container">
+  <header class="table-header">
+    <div class="info">
+      <h1>Instruction des <span class="highlight">Dossiers Citoyens</span></h1>
+      <p>Interface de vérification et validation des demandes municipales.</p>
     </div>
-
-    <div class="card-body">
-      <p><strong>Citoyen :</strong> {{ d.citoyen }}</p>
-      <p><strong>Date de dépôt :</strong> {{ d.date | date:'dd/MM/yyyy' }}</p>
-      <p><strong>Description :</strong> {{ d.description }}</p>
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Rechercher un dossier...">
     </div>
+  </header>
 
-    <div class="card-footer actions">
-      <button class="btn-validate" (click)="valider(d)">Valider</button>
-      <button class="btn-refuse" (click)="refuser(d)">Refuser</button>
-    </div>
+  <div class="table-wrapper shadow">
+    <table class="dossier-table">
+      <thead>
+        <tr>
+          <th>Citoyen & Service</th>
+          <th>Objet & Détails</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Décision</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of pagedDossiers; track d.id) {
+          <tr [class]="d.statutKey">
+            <td>
+              <div class="citoyen-cell">
+                <span class="name">{{ d.citoyen }}</span>
+                <span class="service-tag">{{ d.serviceNom || 'Service Général' }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="detail-cell">
+                <strong>{{ d.type }}</strong>
+                <ul class="dynamic-details" *ngIf="d.details">
+                  <li *ngFor="let detail of getDetailsList(d.details)">
+                    <small>{{ detail[0] }}: {{ detail[1] }}</small>
+                  </li>
+                </ul>
+              </div>
+            </td>
+            <td>{{ d.date | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="status-badge" [class]="d.statutKey">{{ d.statut }}</span>
+            </td>
+            <td>
+              <div class="action-btns">
+                <button class="btn-check" (click)="valider(d)" [disabled]="d.statut !== 'EN ATTENTE'">✓</button>
+                <button class="btn-cross" (click)="refuser(d)" [disabled]="d.statut !== 'EN ATTENTE'">✕</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
+
+  <nav class="pagination" *ngIf="totalPages > 1">
+    <button (click)="changePage(-1)" [disabled]="currentPage === 1">Précédent</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="changePage(1)" [disabled]="currentPage === totalPages">Suivant</button>
+  </nav>
 </div>

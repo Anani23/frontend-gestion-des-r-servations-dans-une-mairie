@@ -1,0 +1,139 @@
+.reservations-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    background: #6d28d9; // Fond violet pour faire ressortir le blanc
+    padding: 30px;
+    border-radius: 20px;
+
+    .title-white {
+      color: #ffffff; // Titre en blanc
+      font-weight: 800;
+      margin: 0 0 5px 0;
+    }
+
+    .subtitle-white {
+      color: rgba(255, 255, 255, 0.9); // Sous-titre en blanc cassé
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .btn-reserve-purple {
+      background: white;
+      color: #6d28d9;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s;
+
+      &:hover {
+        background: #f3f4f6;
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+/* Style du Tableau */
+.table-responsive {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  thead {
+    background: #f8fafc;
+    th {
+      padding: 16px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+      border-bottom: 1px solid #e2e8f0;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: 0.2s;
+    &:hover { background: #fcfaff; }
+
+    td {
+      padding: 16px;
+      vertical-align: middle;
+      color: #1e293b;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+/* Éléments internes du tableau */
+.bien-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  .table-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  
+  .bien-name {
+    font-weight: 600;
+  }
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  
+  &.status-pending { background: #fef3c7; color: #d97706; }
+  &.status-confirmed { background: #dcfce7; color: #059669; }
+  &.status-canceled { background: #fee2e2; color: #dc2626; }
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #ef4444;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+  }
+}
+
+.text-right { text-align: right; }

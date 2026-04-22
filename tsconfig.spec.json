@@ -1,20 +1,20 @@
-/* To learn more about TypeScript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "rootDir": "src",
+    /* 1. On ignore la dépréciation si baseUrl est défini dans le parent */
+    "ignoreDeprecations": "5.0",
     "types": [
       "jasmine",
+      "node",
       "@angular/localize"
     ],
     "paths": {
-      "@docs-components/*": ["./src/components/*"]
+      /* 2. On s'assure que les chemins pointent vers le bon répertoire source */
+      "@docs-components/*": ["src/app/components/*"]
     }
   },
-  "files": [
-//    "src/test.ts",
-  ],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"

@@ -1,23 +1,69 @@
 <div class="mairie-container">
-  <h1>La Mairie</h1>
-  <p>{{ descriptionMairie }}</p>
-
-  <section class="maire-section">
-    <h2>Le Maire</h2>
-    <div class="maire-info">
-      <img [src]="maire.photo" alt="Photo du Maire" class="maire-photo">
-      <div>
-        <p><strong>Nom :</strong> {{ maire.nom }}</p>
-        <p><strong>Mandat :</strong> {{ maire.mandat }}</p>
-        <p>{{ maire.description }}</p>
-      </div>
+  
+  <header class="main-header">
+    <div class="overlay">
+      <span class="top-tag">République Togolaise</span>
+      <h1>Hôtel de Ville de Lomé</h1>
+      <p class="lead">{{ descriptionMairie }}</p>
     </div>
-  </section>
+  </header>
 
-  <section class="services-section">
-    <h2>Services Municipaux</h2>
-    <ul>
-      <li *ngFor="let service of services">{{ service }}</li>
-    </ul>
-  </section>
+  <div class="content-wrapper">
+    
+    <section class="section-card maire-section">
+      <div class="section-title">
+        <span class="line"></span>
+        <h2>L'Exécutif Municipal</h2>
+      </div>
+
+      <div class="maire-profile">
+        <div class="photo-wrapper">
+          <img [src]="maire.photo" alt="Photo officielle du Maire">
+          <div class="mandat-badge">Mandat {{ maire.mandat }}</div>
+        </div>
+        <div class="biographie">
+          <h3>{{ maire.nom }}</h3>
+          <p>{{ maire.biographie }}</p>
+          <button class="btn-contact-maire">Contacter le cabinet</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="info-grid">
+      
+      <section class="grid-card">
+        <h3>📍 Coordonnées</h3>
+        <ul class="contact-list">
+          <li><strong>Adresse:</strong> {{ contact.adresse }}</li>
+          <li><strong>Tél:</strong> {{ contact.telephone }}</li>
+          <li><strong>Email:</strong> {{ contact.email }}</li>
+        </ul>
+      </section>
+
+      <section class="grid-card">
+        <h3>🕐 Horaires d'ouverture</h3>
+        <div class="horaires-list">
+          <div class="horaire-item" *ngFor="let h of horaires">
+            <span class="jour">{{ h.jour }}</span>
+            <span class="heures">{{ h.heures }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="section-card">
+      <div class="section-title">
+        <span class="line"></span>
+        <h2>Nos Départements</h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-box" *ngFor="let s of services">
+          <div class="s-icon">{{ s.icone }}</div>
+          <h4>{{ s.titre }}</h4>
+          <p>{{ s.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
 </div>

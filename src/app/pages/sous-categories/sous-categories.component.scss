@@ -1,0 +1,31 @@
+.hover-list-item {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.05);
+
+  &:hover {
+    background-color: #f8fbff;
+    transform: translateX(5px);
+    border-color: var(--cui-primary);
+    
+    .icon-box {
+      background-color: var(--cui-primary) !important;
+      i { color: white !important; }
+    }
+  }
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #6c757d;
+  &:hover { color: var(--cui-primary); }
+}
+
+.icon-box {
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+}

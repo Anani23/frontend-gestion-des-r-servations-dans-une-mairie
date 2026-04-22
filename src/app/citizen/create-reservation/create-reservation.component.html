@@ -1,0 +1,47 @@
+<div class="page-container animate-in">
+  <header class="glass-header">
+    <div class="header-content">
+      <span class="top-label">Service Patrimoine • Lomé</span>
+      <h1>Réserver un Espace</h1>
+      <div class="header-actions">
+        <button routerLink="/citizen/mes-reservations" class="btn-outline-white">
+          📂 Mes Réservations
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="form-centered">
+    <section class="booking-form-card shadow-lg">
+      <div class="card-header">
+        <div class="icon-circle">🏢</div>
+        <h2>Détails de la demande</h2>
+      </div>
+
+      <form (ngSubmit)="reserver()" #resForm="ngForm" class="modern-form">
+        <div class="input-group">
+          <label for="bien">Lieu municipal</label>
+          <select id="bien" [(ngModel)]="bienId" name="bien" required>
+            <option [ngValue]="null" disabled selected>Choisir un espace...</option>
+            <option *ngFor="let b of biens" [value]="b.id">{{ b.nom }}</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" [(ngModel)]="date" name="date" [min]="minDate" required>
+          </div>
+          <div class="input-group">
+            <label for="heure">Heure de début</label>
+            <input type="time" id="heure" [(ngModel)]="heure" name="heure" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gradient" [disabled]="!resForm.form.valid">
+          Confirmer l'envoi du dossier
+        </button>
+      </form>
+    </section>
+  </div>
+</div>

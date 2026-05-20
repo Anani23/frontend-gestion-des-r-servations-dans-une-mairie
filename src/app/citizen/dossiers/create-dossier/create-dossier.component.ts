@@ -1,7 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DossiersService } from '../../../services/dossiers.service';
+import { CategorieBienService } from '../../../services/categorie-bien.service';
+import { CategorieBien } from '../../../models/categorie-bien.model';
+
+interface DynamicField {
+  label: string;
+  key: string;
+  type: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
 @Component({
   selector: 'app-create-dossier',
   standalone: true,
@@ -9,52 +20,82 @@ import { DossiersService } from '../../../services/dossiers.service';
   templateUrl: './create-dossier.component.html',
   styleUrls: ['./create-dossier.component.scss']
 })
-export class CreateDossierComponent {
-  // Liste des services (Normalement récupérée d'un ServicesService créé par l'Admin)
-  services = [
-    { id: 1, name: 'État civil' },
-    { id: 2, name: 'Urbanisme' },
-    { id: 3, name: 'Fiscalité' },
-  ];
+export class CreateDossierComponent implements OnInit {
 
-  serviceId: number | null = null;
+  services: CategorieBien[] = [];
+  selectedService: CategorieBien | null = null;
   type = '';
   description = '';
-  details: any = {};
+  details: Record<string, string> = {};
   successMessage = '';
+  dynamicFields: DynamicField[] = [];
 
-  serviceFields: any = {
-    1: [
-      { label: 'Nom complet', key: 'nom', type: 'text', placeholder: 'Nom et prénom', required: true },
-      { label: 'Date de naissance', key: 'dateNaissance', type: 'date', required: true },
-    ],
-    2: [
+  private fieldsByServiceName: Record<string, DynamicField[]> = {
+    'URBANISATION': [
+      { label: 'Zone du terrain', key: 'zone', type: 'text', placeholder: 'Ex: Zone résidentielle', required: true },
+      { label: 'Surface (m²)', key: 'surface', type: 'text', placeholder: 'Ex: 500', required: true },
+      { label: 'Quartier', key: 'quartier', type: 'text', placeholder: 'Ex: Bè, Agoè...', required: true },
       { label: 'Adresse du terrain', key: 'adresse', type: 'text', placeholder: 'Quartier, N° de lot...', required: true },
     ],
-    3: [
-      { label: 'Numéro fiscal', key: 'numeroFiscal', type: 'text', placeholder: 'NIF', required: true },
-    ]
+    'ÉTAT CIVIL': [
+      { label: 'Nom complet', key: 'nom', type: 'text', placeholder: 'Nom et prénom', required: true },
+      { label: 'Date de naissance', key: 'dateNaissance', type: 'date', required: true },
+      { label: 'Nationalité', key: 'nationalite', type: 'text', placeholder: 'Ex: Togolaise', required: true },
+      { label: 'Nom du père', key: 'nomPere', type: 'text', placeholder: 'Nom complet du père' },
+      { label: 'Nom de la mère', key: 'nomMere', type: 'text', placeholder: 'Nom complet de la mère' },
+    ],
+    'ACTE DE NAISSANCE': [
+      { label: 'Nom complet', key: 'nom', type: 'text', placeholder: 'Nom et prénom', required: true },
+      { label: 'Date de naissance', key: 'dateNaissance', type: 'date', required: true },
+      { label: 'Nationalité', key: 'nationalite', type: 'text', placeholder: 'Ex: Togolaise', required: true },
+      { label: 'Nom du père', key: 'nomPere', type: 'text', placeholder: 'Nom complet du père' },
+      { label: 'Nom de la mère', key: 'nomMere', type: 'text', placeholder: 'Nom complet de la mère' },
+    ],
+    'FISCALITÉ': [
+      { label: 'Numéro fiscal (NIF)', key: 'numeroFiscal', type: 'text', placeholder: 'NIF', required: true },
+      { label: 'Année fiscale', key: 'anneeFiscale', type: 'text', placeholder: 'Ex: 2026' },
+    ],
   };
 
-  // Injection du service Dossiers
-  constructor(private dossiersService: DossiersService) {}
+  private defaultFields: DynamicField[] = [
+    { label: 'Nom complet', key: 'nom', type: 'text', placeholder: 'Nom et prénom', required: true },
+    { label: 'Motif de la demande', key: 'motif', type: 'text', placeholder: 'Précisez votre demande' },
+  ];
+
+  constructor(
+    private dossiersService: DossiersService,
+    private categorieService: CategorieBienService
+  ) {}
+
+  ngOnInit(): void {
+    this.categorieService.getCategoriesServices().subscribe({
+      next: (data) => this.services = data || [],
+      error: (err) => console.error('Erreur chargement services', err)
+    });
+  }
 
   get selectedServiceName(): string {
-    return this.services.find(s => s.id === this.serviceId)?.name || '';
+    return this.selectedService?.nom || '';
   }
 
-  onServiceChange() {
+  onServiceChange(): void {
     this.details = {};
+    if (this.selectedService) {
+      const nomUpper = this.selectedService.nom.toUpperCase();
+      this.dynamicFields = this.fieldsByServiceName[nomUpper] || this.defaultFields;
+    } else {
+      this.dynamicFields = [];
+    }
   }
 
-  creerDossier() {
-    if (!this.serviceId || !this.type) return;
+  creerDossier(): void {
+    if (!this.selectedService || !this.type) return;
 
-    // Création de l'objet lié
     const nouveauDossier = {
-      id: Math.floor(Math.random() * 1000), // Simulation ID
-      citoyen: 'Utilisateur Connecté', // Ici, on lierait l'utilisateur auth
-      serviceNom: this.selectedServiceName, // Lien vers le service Admin
+      id: Math.floor(Math.random() * 1000),
+      citoyen: 'Utilisateur Connecté',
+      serviceNom: this.selectedService.nom,
+      serviceId: this.selectedService.id,
       type: this.type,
       date: new Date(),
       description: this.description,
@@ -62,18 +103,18 @@ export class CreateDossierComponent {
       details: { ...this.details }
     };
 
-    // APPEL AU SERVICE (Lien réel)
     this.dossiersService.ajouterDossier(nouveauDossier).subscribe(() => {
-      this.successMessage = "✅ Votre dossier a été transmis à l'agent instructeur.";
+      this.successMessage = "Votre dossier a été transmis à l'agent instructeur.";
       this.resetForm();
     });
   }
 
-  resetForm() {
-    this.serviceId = null;
+  resetForm(): void {
+    this.selectedService = null;
     this.type = '';
     this.description = '';
     this.details = {};
+    this.dynamicFields = [];
     setTimeout(() => this.successMessage = '', 4000);
   }
 }

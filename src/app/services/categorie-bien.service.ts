@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CategorieBien } from '../models/categorie-bien.model';
 import { environment } from '../../environments/environment';
 
@@ -47,5 +48,11 @@ export class CategorieBienService {
 
   getCategorieById(id: number): Observable<CategorieBien> {
     return this.http.get<CategorieBien>(`${this.apiUrl}/${id}`);
+  }
+
+  getSousCategories(parentId: number): Observable<CategorieBien[]> {
+    return this.http.get<CategorieBien>(`${this.apiUrl}/${parentId}`).pipe(
+      map((cat: CategorieBien) => cat.sousCategories || [])
+    );
   }
 }

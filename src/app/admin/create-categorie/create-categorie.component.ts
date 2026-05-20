@@ -2,14 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategorieBienService } from '../../services/categorie-bien.service';
-
-interface Categorie {
-  id: number;
-  nom: string;
-  description: string;
-  type: 'biens' | 'services';
-  image?: string;
-}
+import { CategorieBien } from '../../models/categorie-bien.model';
 
 @Component({
   selector: 'app-create-categorie',
@@ -20,18 +13,17 @@ interface Categorie {
 })
 export class CreateCategorieComponent implements OnInit {
   
-  // Pagination : 1: Saisie Bien, 2: Index Bien, 3: Saisie Service, 4: Index Service
   currentPage: number = 1; 
   
-  categoriesBiens: Categorie[] = [];
-  categoriesServices: Categorie[] = [];
+  categoriesBiens: CategorieBien[] = [];
+  categoriesServices: CategorieBien[] = [];
   
   searchTerm: string = '';
   successMessage: string | null = null;
-  editingItem: Categorie | null = null;
+  editingItem: CategorieBien | null = null;
   imagePreview: string | null = null;
 
-  newCat: Partial<Categorie> = {
+  newCat: Partial<CategorieBien> = {
     nom: '',
     description: '',
     image: ''
@@ -44,12 +36,13 @@ export class CreateCategorieComponent implements OnInit {
   }
 
   chargerDonnees(): void {
-    this.categorieService.getTreeCategories().subscribe({
-      next: (data) => {
-        this.categoriesBiens = data?.filter(c => c.type === 'biens') || [];
-        this.categoriesServices = data?.filter(c => c.type === 'services') || [];
-      },
-      error: (err) => console.error('Erreur chargement', err)
+    this.categorieService.getCategoriesByType('biens').subscribe({
+      next: (data) => this.categoriesBiens = data || [],
+      error: (err) => console.error('Erreur chargement biens', err)
+    });
+    this.categorieService.getCategoriesByType('services').subscribe({
+      next: (data) => this.categoriesServices = data || [],
+      error: (err) => console.error('Erreur chargement services', err)
     });
   }
 
@@ -65,7 +58,7 @@ export class CreateCategorieComponent implements OnInit {
     }
   }
 
-  getFilteredList(): Categorie[] {
+  getFilteredList(): CategorieBien[] {
     const currentList = (this.currentPage <= 2) ? this.categoriesBiens : this.categoriesServices;
     if (!this.searchTerm.trim()) return currentList;
     return currentList.filter(item => 
@@ -77,34 +70,45 @@ export class CreateCategorieComponent implements OnInit {
     if (!this.newCat.nom) return;
     const currentType = (this.currentPage <= 2) ? 'biens' : 'services';
 
-    const categoryData: Categorie = {
-      id: this.editingItem ? this.editingItem.id : Date.now(),
+    const categoryData: Partial<CategorieBien> = {
       nom: this.newCat.nom!,
       description: this.newCat.description || '',
       type: currentType,
       image: this.newCat.image
     };
 
-    const request = this.editingItem 
-      ? this.categorieService.modifierCategorie(categoryData)
-      : this.categorieService.ajouterCategorie(categoryData);
-
-    request.subscribe({
-      next: () => {
-        this.showToast(this.editingItem ? "Modifié !" : "Enregistré !");
-        this.chargerDonnees();
-        this.resetForm();
-        // Redirection vers l'index correspondant après ajout
-        this.currentPage = (currentType === 'biens') ? 2 : 4;
-      }
-    });
+    if (this.editingItem) {
+      const updateData: CategorieBien = { ...this.editingItem, ...categoryData } as CategorieBien;
+      this.categorieService.modifierCategorie(updateData).subscribe({
+        next: () => {
+          this.showToast("Modifié !");
+          this.chargerDonnees();
+          this.resetForm();
+          this.currentPage = (currentType === 'biens') ? 2 : 4;
+        },
+        error: (err) => console.error('Erreur modification', err)
+      });
+    } else {
+      this.categorieService.ajouterCategorie(categoryData).subscribe({
+        next: () => {
+          this.showToast("Enregistré !");
+          this.chargerDonnees();
+          this.resetForm();
+          this.currentPage = (currentType === 'biens') ? 2 : 4;
+        },
+        error: (err) => console.error('Erreur création', err)
+      });
+    }
   }
 
   supprimer(id: number): void {
     if (confirm('Supprimer cet élément ?')) {
-      this.categorieService.supprimerCategorie(id).subscribe(() => {
-        this.showToast("Supprimé");
-        this.chargerDonnees();
+      this.categorieService.supprimerCategorie(id).subscribe({
+        next: () => {
+          this.showToast("Supprimé");
+          this.chargerDonnees();
+        },
+        error: (err) => console.error('Erreur suppression', err)
       });
     }
   }

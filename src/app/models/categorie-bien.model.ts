@@ -4,6 +4,7 @@ export interface CategorieBien {
   description?: string;
   image?: string;
   icon?: string;
-  parentId?: number; // Permet de savoir si c'est une sous-catégorie
-  sousCategories?: CategorieBien[]; // Pour stocker les enfants après traitement
+  type?: 'BIEN' | 'SERVICE';
+  parentId?: number;
+  sousCategories?: CategorieBien[];
 }

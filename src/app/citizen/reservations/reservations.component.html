@@ -1,0 +1,107 @@
+<div class="reservations-container">
+  <header class="section-header">
+    <div class="text">
+      <h2 class="title-white">Mes réservations</h2>
+      <p class="subtitle-white">
+        Gérez vos demandes de location de biens municipaux et suivez leur validation par la mairie de Lomé.
+      </p>
+    </div>
+    <button class="btn-reserve-purple" routerLink="/citizen/reservations/create">
+      <span>+</span> Nouvelle réservation
+    </button>
+  </header>
+
+  <!-- BARRE DE RECHERCHE -->
+  <div class="search-bar-container">
+    <div class="search-box">
+      <i class="fa-solid fa-search search-icon"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterReservations()"
+        placeholder="Rechercher par bien, date ou statut..."
+        class="search-input"
+      >
+      <button *ngIf="searchTerm" class="clear-search" (click)="clearSearch()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    <div class="search-stats" *ngIf="searchTerm">
+      <span>{{ filteredReservations.length }} résultat(s) trouvé(s)</span>
+      <button class="reset-filter" (click)="resetFilters()">Afficher tout</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Chargement de vos demandes...</p>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-responsive" *ngIf="!isLoading && filteredReservations.length > 0; else noReservation">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Bien / Service</th>
+          <th>Date de début</th>
+          <th>Localisation</th>
+          <th>Statut</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredReservations">
+          <td>
+            <div class="bien-info">
+              <!-- On utilise le nom du bien pour l'image (cohérent avec le mapper) -->
+              <img [src]="getImageByBien(r.nomBien)" class="table-img" alt="Illustration">
+              <span class="bien-name">
+                {{ r.nomBien || 'Service Municipal' }}
+              </span>
+            </div>
+            <small class="text-muted" *ngIf="r.motif">{{ r.motif }}</small>
+          </td>
+          <td>
+            <!-- Le pipe date d'Angular gère très bien le format ISO renvoyé par Spring -->
+            {{ r.dateDebut | date:'dd/MM/yyyy HH:mm' }}
+           </td>
+          <td>
+            📍 Lomé, Togo
+           </td>
+          <td>
+            <!-- La classe dynamique gère EN_ATTENTE, ACCEPTEE, REFUSEE, ANNULEE -->
+            <span class="status-badge" [ngClass]="getStatusClass(r.statut)">
+              {{ getStatusLabel(r.statut) }}
+            </span>
+           </td>
+          <td class="text-right">
+            <!-- On désactive si c'est déjà annulé ou refusé -->
+            <button
+              (click)="annuler(r)"
+              [disabled]="r.statut === 'ANNULEE' || r.statut === 'REFUSEE'"
+              class="btn-cancel">
+              ✕ Annuler
+            </button>
+           </td>
+         </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EMPTY -->
+  <ng-template #noReservation>
+    <div class="empty-view" *ngIf="!isLoading">
+      <div class="icon" *ngIf="!searchTerm">🏛️</div>
+      <div class="icon" *ngIf="searchTerm">🔍</div>
+      <p *ngIf="!searchTerm">Aucune réservation enregistrée pour le moment.</p>
+      <p *ngIf="searchTerm">Aucune réservation ne correspond à "{{ searchTerm }}"</p>
+      <button class="btn-primary" routerLink="/citizen/reservations/create" *ngIf="!searchTerm">
+        Faire une demande
+      </button>
+      <button class="btn-secondary" (click)="clearSearch()" *ngIf="searchTerm">
+        Effacer la recherche
+      </button>
+    </div>
+  </ng-template>
+</div>

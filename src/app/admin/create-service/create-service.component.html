@@ -1,0 +1,174 @@
+<div class="luxury-wrapper">
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="container-service">
+
+    <div class="glass-header">
+      <h2>{{ isEdit ? 'Édition Prestige' : 'Nouvelle Prestation' }}</h2>
+      <p>Portail d'administration de la Mairie de Lomé</p>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <form #f="ngForm" (ngSubmit)="submit()" novalidate>
+
+      <div class="form-grid">
+
+        <!-- CATEGORIE -->
+        <div class="field">
+          <label>
+            <i class="bi bi-tag"></i> Catégorie
+          </label>
+
+          <select
+            name="categorieId"
+            required
+            [(ngModel)]="serviceData.categorieId">
+
+            <option [ngValue]="null">
+              Sélectionner un secteur
+            </option>
+
+            <option
+              *ngFor="let c of categories"
+              [ngValue]="c.id">
+
+              {{ c.nom }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+        <!-- NOM -->
+        <div class="field">
+          <label>
+            <i class="bi bi-info-circle"></i>
+            Intitulé du Service
+          </label>
+
+          <input
+            type="text"
+            name="nom"
+            required
+            [(ngModel)]="serviceData.nom"
+            placeholder="Ex: État Civil - Naissance">
+
+        </div>
+
+        <!-- TARIF -->
+        <div class="field">
+          <label>
+            <i class="bi bi-cash-coin"></i>
+            Tarif du service (FCFA)
+          </label>
+
+          <input
+            type="number"
+            name="prix"
+            min="0"
+            [(ngModel)]="serviceData.prix"
+            placeholder="Ex: 1000">
+
+        </div>
+
+        <!-- ACTIF -->
+        <div class="field">
+          <label>
+            <i class="bi bi-check2-circle"></i>
+            Statut
+          </label>
+          <div class="toggle-row" (click)="serviceData.actif = !serviceData.actif">
+            <div class="toggle-switch" [class.active]="serviceData.actif">
+              <div class="toggle-knob"></div>
+            </div>
+            <span>{{ serviceData.actif ? 'Service actif' : 'Service désactivé' }}</span>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="field full-width">
+          <label>
+            <i class="bi bi-text-left"></i>
+            Description
+          </label>
+
+          <textarea
+            name="description"
+            rows="4"
+            [(ngModel)]="serviceData.description"
+            placeholder="Décrivez la procédure...">
+          </textarea>
+
+        </div>
+
+        <!-- MOYENS DE PAIEMENT -->
+        <div class="field full-width">
+          <label>
+            <i class="bi bi-wallet2"></i>
+            Moyens de paiement acceptés
+          </label>
+          <div class="payment-methods">
+            <button
+              type="button"
+              class="payment-chip"
+              *ngFor="let moyen of moyensPaiementDisponibles"
+              [class.selected]="isMoyenSelected(moyen.code)"
+              (click)="toggleMoyen(moyen.code)">
+              <span class="chip-icon">{{ moyen.icon }}</span>
+              {{ moyen.label }}
+            </button>
+          </div>
+          <small class="hint">Sélectionnez au moins un moyen de paiement accepté pour cette démarche.</small>
+        </div>
+
+        <!-- UPLOAD -->
+        <div class="field full-width">
+
+          <div class="upload-card">
+
+            <label
+              for="file-upload"
+              class="custom-file-upload">
+
+              <i class="bi bi-cloud-arrow-up"></i>
+
+              <span>
+                {{ selectedFile ? selectedFile.name : 'Déposer le guide PDF ici' }}
+              </span>
+
+            </label>
+
+            <input
+              id="file-upload"
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="application/pdf">
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- BUTTON -->
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="loading || f.invalid">
+
+        <span *ngIf="!loading">
+          Valider la configuration
+        </span>
+
+        <div class="loader" *ngIf="loading"></div>
+
+      </button>
+
+    </form>
+
+  </div>
+
+</div>

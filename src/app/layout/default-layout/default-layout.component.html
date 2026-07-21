@@ -1,0 +1,63 @@
+<div class="app-container">
+
+  <!-- Header -->
+  <header class="glass-header" *ngIf="!isAuthPage">
+    <app-default-header class="header-component"></app-default-header>
+  </header>
+
+  <!-- Navigation Bar Horizontale -->
+  <nav class="modern-nav" *ngIf="!isAuthPage">
+    <div class="nav-content">
+      
+      <!-- Liens générés dynamiquement -->
+      <ul class="nav-links">
+        <li *ngFor="let item of navItems">
+          <a [routerLink]="item.url" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{exact: item.url === '/accueil'}"
+             class="link-item">
+            <i [class]="item.icon"></i>
+            <span>{{ item.name }}</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section Utilisateur Connecté -->
+      <div class="auth-section" *ngIf="authService.currentUser$ | async as user">
+        <div class="user-pill shadow-sm">
+          <span class="role-text" [ngClass]="user.role.toLowerCase()">
+            {{ user.role.replace('ROLE_', '') }}
+          </span>
+          
+          <div class="avatar-circle">
+            {{ getInitials(user) }}
+          </div>
+
+          <button (click)="authService.logout()" class="logout-btn" title="Déconnexion">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bouton Connexion si non connecté -->
+      <div class="auth-section" *ngIf="!(authService.currentUser$ | async)">
+        <a routerLink="/login" class="login-btn">
+          <i class="fa-solid fa-user-lock"></i>
+          <span>Espace Privé</span>
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Zone de contenu principal -->
+  <main class="main-stage" [class.full-screen]="isAuthPage">
+    <div class="route-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <app-default-footer *ngIf="!isAuthPage" class="footer-component"></app-default-footer>
+
+</div>

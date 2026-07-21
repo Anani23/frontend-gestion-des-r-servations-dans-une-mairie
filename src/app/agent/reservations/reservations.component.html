@@ -1,0 +1,149 @@
+<div class="agent-container animate-fade-in">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <header class="table-header">
+    <div class="header-info">
+      <div class="header-icon">
+        <i class="fa-solid fa-building-circle-check"></i>
+      </div>
+      <div class="header-text">
+        <h1>Gestion des <span class="highlight">Réservations</span></h1>
+        <p>Validation des demandes de location de biens municipaux</p>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (input)="applyFilter()"
+          placeholder="Rechercher un citoyen, un bien..."
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-summary" *ngIf="!isLoading">
+    <div class="stat-card" [class.active]="selectedStatus === 'TOUS'" (click)="filterByStatus('TOUS')">
+      <i class="fa-solid fa-chart-line"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCount('TOUS') }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+    </div>
+    <div class="stat-card pending" [class.active]="selectedStatus === 'EN_ATTENTE'" (click)="filterByStatus('EN_ATTENTE')">
+      <i class="fa-regular fa-clock"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCount('EN_ATTENTE') }}</span>
+        <span class="stat-label">En attente</span>
+      </div>
+    </div>
+    <div class="stat-card validated" [class.active]="selectedStatus === 'ACCEPTEE'" (click)="filterByStatus('ACCEPTEE')">
+      <i class="fa-regular fa-circle-check"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCount('ACCEPTEE') }}</span>
+        <span class="stat-label">Acceptées</span>
+      </div>
+    </div>
+    <div class="stat-card rejected" [class.active]="selectedStatus === 'REFUSEE'" (click)="filterByStatus('REFUSEE')">
+      <i class="fa-solid fa-circle-xmark"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCount('REFUSEE') }}</span>
+        <span class="stat-label">Refusées</span>
+      </div>
+    </div>
+    <div class="stat-card rejected" [class.active]="selectedStatus === 'ANNULEE'" (click)="filterByStatus('ANNULEE')">
+      <i class="fa-solid fa-ban"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCount('ANNULEE') }}</span>
+        <span class="stat-label">Annulées</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement des réservations...</p>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper" *ngIf="!isLoading">
+    <table class="dossier-table">
+      <thead>
+        <tr>
+          <th>Citoyen</th>
+          <th>Bien réservé</th>
+          <th>Période</th>
+          <th>Motif</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of pagedReservations">
+          <td data-label="Citoyen">
+            <div class="citoyen-cell">
+              <div class="avatar-small">{{ getNomCitoyen(r).charAt(0).toUpperCase() }}</div>
+              <div class="citoyen-info">
+                <span class="name">{{ getNomCitoyen(r) }}</span>
+              </div>
+            </div>
+          </td>
+          <td data-label="Bien"><strong>{{ getNomBien(r) }}</strong></td>
+          <td data-label="Période">
+            {{ r.dateDebut | date:'dd/MM/yyyy' }} → {{ r.dateFin | date:'dd/MM/yyyy' }}
+          </td>
+          <td data-label="Motif">{{ r.motif || '—' }}</td>
+          <td data-label="Statut">
+            <span class="status-badge" [ngClass]="getStatusBadgeClass(r.statut)">
+              {{ getStatusText(r.statut) }}
+            </span>
+          </td>
+          <td data-label="Actions">
+            <div class="action-btns">
+              <button
+                *ngIf="peutIntervenir(r.statut)"
+                class="btn-check"
+                (click)="accepter(r)"
+                title="Accepter la réservation">
+                <i class="fa-solid fa-check"></i>
+                Accepter
+              </button>
+              <button
+                *ngIf="peutIntervenir(r.statut)"
+                class="btn-cross"
+                (click)="refuser(r)"
+                title="Refuser la réservation">
+                <i class="fa-solid fa-times"></i>
+                Refuser
+              </button>
+              <span *ngIf="!peutIntervenir(r.statut)" class="already-processed">
+                <i class="fa-solid fa-check-circle"></i>
+                Traitée
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="pagedReservations.length === 0">
+          <td colspan="6" class="empty-row">
+            <i class="fa-regular fa-calendar-xmark"></i>
+            <p>Aucune réservation trouvée</p>
+            <span>Les nouvelles réservations apparaîtront ici</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pagination" *ngIf="totalPages > 1">
+    <button class="page-btn" (click)="changePage(-1)" [disabled]="currentPage === 1">← Précédent</button>
+    <span class="page-info">Page {{ currentPage }} / {{ totalPages }}</span>
+    <button class="page-btn" (click)="changePage(1)" [disabled]="currentPage === totalPages">Suivant →</button>
+  </nav>
+</div>

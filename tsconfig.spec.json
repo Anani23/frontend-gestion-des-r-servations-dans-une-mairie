@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "rootDir": "src",
+    /* 1. On ignore la dépréciation si baseUrl est défini dans le parent */
+    "ignoreDeprecations": "5.0",
+    "types": [
+      "jasmine",
+      "node",
+      "@angular/localize"
+    ],
+    "paths": {
+      /* 2. On s'assure que les chemins pointent vers le bon répertoire source */
+      "@docs-components/*": ["src/app/components/*"]
+    }
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

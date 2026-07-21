@@ -1,0 +1,161 @@
+<div class="dossiers-container">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <div class="content-wrapper">
+    <!-- HEADER -->
+    <header class="page-header">
+      <div class="header-content">
+        <h1>
+          <i class="fa-solid fa-folder-open"></i>
+          Mes dossiers
+        </h1>
+        <p>Suivez l'état d'avancement de vos demandes administratives</p>
+      </div>
+      <button class="btn-create" routerLink="/citizen/dossiers/create">
+        <i class="fa-solid fa-plus"></i>
+        Nouveau dossier
+      </button>
+    </header>
+
+    <!-- BARRE DE RECHERCHE -->
+    <div class="search-section">
+      <div class="search-box">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="filterDossiers()"
+          placeholder="Rechercher par type, référence, description ou statut..."
+          class="search-input"
+        >
+        <button *ngIf="searchTerm" class="clear-search" (click)="clearSearch()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="search-stats" *ngIf="searchTerm">
+        <span>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          {{ totalResults }} résultat(s) trouvé(s)
+        </span>
+        <button class="reset-btn" (click)="clearSearch()">
+          <i class="fa-solid fa-rotate-left"></i>
+          Afficher tout
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de vos dossiers...</p>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!isLoading && filteredDossiers.length === 0" class="empty-state">
+      <div class="empty-icon" *ngIf="!searchTerm">
+        <i class="fa-regular fa-folder-open"></i>
+      </div>
+      <div class="empty-icon" *ngIf="searchTerm">
+        <i class="fa-solid fa-search"></i>
+      </div>
+      <h3 *ngIf="!searchTerm">Aucun dossier</h3>
+      <h3 *ngIf="searchTerm">Aucun résultat</h3>
+      <p *ngIf="!searchTerm">Vous n'avez encore soumis aucune demande administrative.</p>
+      <p *ngIf="searchTerm">Aucun dossier ne correspond à "{{ searchTerm }}"</p>
+      <button class="btn-create" routerLink="/citizen/dossiers/create" *ngIf="!searchTerm">
+        <i class="fa-solid fa-plus"></i>
+        Créer mon premier dossier
+      </button>
+      <button class="btn-secondary" (click)="clearSearch()" *ngIf="searchTerm">
+        <i class="fa-solid fa-arrow-left"></i>
+        Retour à la liste
+      </button>
+    </div>
+
+    <!-- DOSSIERS GRID -->
+    <div *ngIf="!isLoading && filteredDossiers.length > 0" class="dossiers-grid">
+      <div class="dossier-card" *ngFor="let dossier of paginatedDossiers">
+        <div class="card-header">
+          <div class="card-icon" [style.background]="getStatusColor(dossier.statut)">
+            <i [class]="getStatusIcon(dossier.statut)"></i>
+          </div>
+          <div class="card-title">
+            <h3>{{ dossier.typePrestation || 'Demande administrative' }}</h3>
+            <span class="reference">Réf: {{ dossier.reference || dossier.numeroDossier || '#' + dossier.id }}</span>
+          </div>
+          <span class="status-badge" [class]="getBadgeClass(dossier.statut)">
+            {{ formatStatut(dossier.statut) }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <p class="description" *ngIf="dossier.description">
+            <i class="fa-regular fa-note-sticky"></i>
+            {{ dossier.description | slice:0:100 }}{{ dossier.description.length > 100 ? '...' : '' }}
+          </p>
+          <div class="dates">
+            <div class="date-item">
+              <i class="fa-regular fa-calendar"></i>
+              <span>Créé le {{ formatDate(dossier.dateCreation || dossier.createdAt || dossier.dateSoumission) }}</span>
+            </div>
+            <div class="date-item" *ngIf="dossier.updatedAt && dossier.updatedAt !== dossier.dateCreation">
+              <i class="fa-regular fa-pen-to-square"></i>
+              <span>Mis à jour le {{ formatDate(dossier.updatedAt) }}</span>
+            </div>
+          </div>
+          <div class="agent-info" *ngIf="dossier.agentEnCharge">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Agent: {{ dossier.agentEnCharge }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn-detail" (click)="viewDetails(dossier.id)">
+            <i class="fa-regular fa-eye"></i>
+            Voir détails
+          </button>
+          <button
+            class="btn-rdv"
+            (click)="planifierRdvPourDossier(dossier)"
+            [disabled]="dossier.statut !== 'VALIDE'"
+            [class.disabled]="dossier.statut !== 'VALIDE'">
+            <i class="fa-regular fa-calendar-check"></i>
+            Prendre RDV
+          </button>
+          <button
+            class="btn-pay"
+            *ngIf="dossier.statut !== 'REJETE'"
+            (click)="payerDossier(dossier)">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Payer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div *ngIf="!isLoading && filteredDossiers.length > 0 && totalPages > 1" class="pagination">
+      <button class="page-btn" (click)="prevPage()" [disabled]="page === 1">
+        <i class="fa-solid fa-chevron-left"></i>
+        Précédent
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngFor="let p of getPageNumbers()" 
+          class="page-num" 
+          [class.active]="p === page"
+          (click)="goToPage(p)">
+          {{ p }}
+        </button>
+      </div>
+      
+      <button class="page-btn" (click)="nextPage()" [disabled]="page === totalPages">
+        Suivant
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

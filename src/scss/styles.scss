@@ -1,0 +1,128 @@
+/* ========================
+   🔥 COREUI (OBLIGATOIRE)
+======================== */
+@use "@coreui/coreui/scss/coreui" as *;
+@use "@coreui/chartjs/scss/coreui-chartjs" as *;
+
+
+/* ========================
+   🎨 VARIABLES GLOBALES
+======================== */
+:root {
+  --primary: #0d6efd;        /* bleu principal */
+  --primary-dark: #0b3d91;   /* bleu foncé (accent) */
+  --bg: #f4f7fb;
+  --white: #ffffff;
+
+  /* CoreUI override */
+  --cui-primary: #0d6efd;
+  --cui-sidebar-bg: #0b3d91;
+  --cui-sidebar-color: #ffffff;
+  --cui-sidebar-nav-link-hover-bg: rgba(255,255,255,0.1);
+}
+
+
+/* ========================
+   🌍 GLOBAL
+======================== */
+body {
+  background: var(--bg);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+
+/* ========================
+   🎴 CARTES
+======================== */
+.card-custom {
+  background: var(--white);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  transition: 0.2s;
+}
+
+.card-custom:hover {
+  transform: translateY(-3px);
+}
+
+
+/* ========================
+   🎯 BADGES (STATUT DOSSIER)
+======================== */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ✅ VALIDÉ (BLEU) */
+.badge-valide {
+  background: var(--primary);
+  color: white;
+}
+
+/* ❌ REFUSÉ (GRIS) */
+.badge-refuse {
+  background: #6c757d;
+  color: white;
+}
+
+/* ⏳ EN ATTENTE */
+.badge-attente {
+  background: #ffc107;
+  color: #000;
+}
+
+
+/* ========================
+   🧾 FORMULAIRES
+======================== */
+.form-control {
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(13,110,253,0.2);
+}
+
+
+/* ========================
+   🔘 BOUTONS
+======================== */
+.btn-primary {
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+
+/* ========================
+   📊 TABLEAUX
+======================== */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th {
+  background: var(--primary);
+  color: white;
+}
+
+.table td {
+  vertical-align: middle;
+}

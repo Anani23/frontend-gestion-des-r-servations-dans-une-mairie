@@ -1,0 +1,350 @@
+<div class="dashboard-wrapper">
+
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <!-- ÉCRAN DE CHARGEMENT -->
+  <div *ngIf="isLoading && !loadingError" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement de votre espace citoyen...</p>
+  </div>
+
+  <!-- ÉCRAN D'ERREUR -->
+  <div *ngIf="loadingError" class="error-screen">
+    <div class="error-icon">
+      <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+    <h2>Erreur de chargement</h2>
+    <p>{{ errorMessage || 'Impossible de charger les données. Vérifiez votre connexion internet.' }}</p>
+    <button class="retry-btn" (click)="retryLoading()">
+      <i class="fa-solid fa-rotate-right"></i>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- LOGIQUE PRINCIPALE DU DASHBOARD -->
+  <div *ngIf="!isLoading && !loadingError">
+
+    <!-- HEADER -->
+    <header>
+      <div class="avatar-wrapper">
+        <div class="avatar">
+          {{ getInitials(nomCitoyen) }}
+        </div>
+        <div class="avatar-glow"></div>
+      </div>
+      <div class="header-text">
+        <p class="date">
+          <i class="fa-regular fa-calendar"></i>
+          {{ dateDuJour | date:'EEEE dd MMMM yyyy' }}
+        </p>
+        <h1>
+          Bonjour, <span>{{ getFullName() }}</span>
+        </h1>
+        <p class="subtitle">
+          <i class="fa-solid fa-landmark"></i>
+          Plateforme numérique citoyenne - Mairie de Lomé
+        </p>
+      </div>
+    </header>
+
+    <!-- BARRE DE RECHERCHE -->
+    <div class="search-container">
+      <div class="search-box">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearchInput()"
+          (focus)="showSearchResults = searchTerm.length >= 2"
+          placeholder="Rechercher un service, un dossier, un paiement..."
+          class="search-input"
+        >
+        <button *ngIf="searchTerm" class="clear-search" (click)="clearSearch()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- RÉSULTATS DE RECHERCHE -->
+      <div class="search-results" *ngIf="showSearchResults && searchResults.length > 0">
+        <div class="search-results-header">
+          <span>Résultats trouvés ({{ searchResults.length }})</span>
+        </div>
+        <div class="search-result-item" *ngFor="let result of searchResults" (click)="selectSearchResult(result)">
+          <div class="result-icon" [class]="result.type">
+            <i [class]="getResultIcon(result.type)"></i>
+          </div>
+          <div class="result-content">
+            <h4>{{ result.title }}</h4>
+            <p>{{ result.description }}</p>
+          </div>
+          <div class="result-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="search-results empty" *ngIf="showSearchResults && searchTerm.length >= 2 && searchResults.length === 0">
+        <div class="empty-search">
+          <i class="fa-solid fa-search"></i>
+          <p>Aucun résultat trouvé pour "{{ searchTerm }}"</p>
+          <small>Essayez d'autres mots-clés</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION STATISTIQUES -->
+    <section class="stats">
+      <div class="stat-card" *ngFor="let s of stats" (click)="navigateTo('/citizen/dossiers')">
+        <div class="stat-icon" [class]="s.iconClass">
+          <i [class]="s.icon"></i>
+        </div>
+        <div class="stat-info">
+          <h2>{{ s.value }}</h2>
+          <p>{{ s.label }}</p>
+        </div>
+        <div class="stat-hover"></div>
+      </div>
+
+      <div class="stat-card" (click)="navigateTo('/citizen/payment')">
+        <div class="stat-icon payment">
+          <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="stat-info">
+          <h2>{{ paymentsCount }}</h2>
+          <p>Transactions</p>
+          <small *ngIf="unpaidCount > 0" class="unpaid-badge">{{ unpaidCount }} en attente</small>
+        </div>
+        <div class="stat-hover"></div>
+      </div>
+    </section>
+
+    <!-- CARTES DE NAVIGATION PRINCIPALES -->
+    <section class="nav-cards">
+      <div class="nav-card" (click)="navigateTo('/citizen/dossiers')">
+        <div class="card-icon dossier">
+          <i class="fa-regular fa-folder-open"></i>
+        </div>
+        <div class="card-content">
+          <h3>Mes Dossiers</h3>
+          <p>Consultez et gérez tous vos dossiers administratifs</p>
+          <div class="card-footer">
+            <span class="badge">{{ stats[0]?.value || 0 }} dossiers</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </div>
+        <div class="card-bg dossier-bg"></div>
+      </div>
+
+      <div class="nav-card" (click)="navigateTo('/citizen/reservations')">
+        <div class="card-icon reservation">
+          <i class="fa-regular fa-calendar-check"></i>
+        </div>
+        <div class="card-content">
+          <h3>Mes Réservations</h3>
+          <p>Réservez et gérez les biens municipaux</p>
+          <div class="card-footer">
+            <span class="badge">{{ reservationsCount }} réservations</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </div>
+        <div class="card-bg reservation-bg"></div>
+      </div>
+
+      <div class="nav-card" (click)="navigateTo('/citizen/rdv/mes-rdv')">
+        <div class="card-icon rdv">
+          <i class="fa-regular fa-calendar-plus"></i>
+        </div>
+        <div class="card-content">
+          <h3>Mes Rendez-vous</h3>
+          <p>Planifiez et suivez vos rendez-vous en mairie</p>
+          <div class="card-footer">
+            <span class="badge">{{ rdvCount }} rendez-vous</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </div>
+        <div class="card-bg rdv-bg"></div>
+      </div>
+
+      <div class="nav-card" (click)="navigateTo('/citizen/payment')">
+        <div class="card-icon payment">
+          <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="card-content">
+          <h3>Mes Paiements</h3>
+          <p>Effectuez vos paiements en ligne et suivez vos transactions</p>
+          <div class="card-footer">
+            <span class="badge" [class.warning]="unpaidCount > 0">
+              {{ unpaidCount }} factures impayées
+            </span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </div>
+        <div class="card-bg payment-bg"></div>
+      </div>
+    </section>
+
+    <div class="content">
+
+      <!-- ACTIONS RAPIDES -->
+      <div class="actions-section">
+        <div class="section-header">
+          <h3>
+            <i class="fa-solid fa-bolt"></i>
+            Actions rapides
+          </h3>
+          <p>Accédez rapidement aux fonctionnalités principales</p>
+        </div>
+        <div class="actions-grid">
+          <div
+            class="action-card"
+            *ngFor="let a of actions"
+            (click)="navigateTo(a.route)">
+            <div class="action-icon">
+              <i [class]="a.icon"></i>
+            </div>
+            <h4>{{ a.label }}</h4>
+            <p>{{ a.desc }}</p>
+            <button class="action-btn">
+              Commencer
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-column">
+
+        <!-- DERNIERS DOSSIERS -->
+        <div class="recent-section">
+          <div class="section-header">
+            <h3>
+              <i class="fa-regular fa-clock"></i>
+              Derniers dossiers
+            </h3>
+            <a (click)="navigateTo('/citizen/dossiers')" class="view-all">
+              Voir tout
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+          </div>
+          
+          <div class="recent-list">
+            <div class="recent-item" *ngFor="let dossier of recentDossiers" (click)="navigateTo('/citizen/dossiers')">
+              <div class="recent-icon" [ngClass]="getDossierStatusClass(dossier.statut)">
+                <i [class]="getDossierIcon(dossier.statut)"></i>
+              </div>
+              <div class="recent-info">
+                <h4>{{ dossier.typePrestation || dossier.titre || 'Demande administrative' }}</h4>
+                <p>Référence: {{ dossier.reference || 'N°' + dossier.id }}</p>
+              </div>
+              <div class="recent-status">
+                <span class="status-badge" [ngClass]="getStatusClass(dossier.statut)">
+                  {{ getStatusText(dossier.statut) }}
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="recentDossiers.length === 0" class="empty-state">
+              <i class="fa-regular fa-folder-open"></i>
+              <p>Aucun dossier récent</p>
+              <button class="btn-create" (click)="$event.stopPropagation(); navigateTo('/citizen/dossiers/create')">
+                Créer un dossier
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DERNIERS PAIEMENTS -->
+        <div class="recent-section payments-section">
+          <div class="section-header">
+            <h3>
+              <i class="fa-solid fa-money-bill-wave"></i>
+              Derniers paiements
+            </h3>
+            <a (click)="navigateTo('/citizen/payment')" class="view-all">
+              Voir tout
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+          </div>
+          
+          <div class="recent-list">
+            <div class="recent-item" *ngFor="let payment of recentPayments" (click)="navigateTo('/citizen/payment')">
+              <div class="recent-icon" [ngClass]="getPaymentStatusClass(payment.status)">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <div class="recent-info">
+                <h4>{{ payment.description || 'Transaction' }}</h4>
+                <p>Réf: {{ payment.reference }}</p>
+              </div>
+              <div class="recent-status">
+                <span class="status-badge" [ngClass]="getPaymentStatusClass(payment.status)">
+                  {{ getPaymentStatusText(payment.status) }}
+                </span>
+                <span class="amount">{{ formatMontant(payment.amount) }}</span>
+              </div>
+            </div>
+
+            <div *ngIf="recentPayments.length === 0" class="empty-state">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <p>Aucun paiement récent</p>
+              <button class="btn-create" (click)="$event.stopPropagation(); navigateTo('/citizen/payment')">
+                Effectuer un paiement
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="notifications-section">
+          <div class="section-header">
+            <h3>
+              <i class="fa-solid fa-bell"></i>
+              Notifications
+            </h3>
+            <span class="notif-badge" *ngIf="hasUnreadNotifications">
+              {{ unreadNotificationsCount }}
+            </span>
+          </div>
+          
+          <div class="notifications-list">
+            <div class="notif-item" *ngFor="let n of notifications | slice:0:5" 
+                 [class.unread]="!n.read"
+                 (click)="markNotificationAsRead(n.id, n.link)">
+              <div class="notif-icon-wrapper" [ngClass]="n.iconClass">
+                <i [class]="n.icon"></i>
+              </div>
+              <div class="notif-content">
+                <p>{{ n.text }}</p>
+                <small>
+                  <i class="fa-regular fa-clock"></i>
+                  {{ n.time }}
+                </small>
+              </div>
+              <div *ngIf="!n.read" class="notif-unread-dot"></div>
+            </div>
+
+            <div *ngIf="notifications.length === 0" class="empty-notif">
+              <i class="fa-regular fa-bell-slash"></i>
+              <p>Aucune nouvelle notification</p>
+              <small>Vous serez informé des mises à jour</small>
+            </div>
+          </div>
+
+          <div class="notif-footer" *ngIf="notifications.length > 5">
+            <a (click)="navigateTo('/citizen/notifications')" class="view-all">
+              Voir toutes les notifications
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,77 @@
+<div class="auth-wrapper">
+
+  <!-- LEFT SIDE -->
+  <div class="auth-image-side">
+    <div class="overlay-content">
+      <h1>Bienvenue à Lomé</h1>
+      <p>Votre portail citoyen pour une ville plus connectée.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="auth-form-side">
+
+    <form class="form-container" (ngSubmit)="login()" #loginForm="ngForm">
+
+      <!-- HEADER -->
+      <div class="form-header">
+        <h2>Connexion</h2>
+        <p>Accédez à votre espace sécurisé</p>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="input-group">
+        <label>Email</label>
+        <input
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          placeholder="ex: user@email.com"
+          required
+          email
+          #emailCtrl="ngModel"
+        />
+
+        <small class="error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+          Email invalide
+        </small>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="input-group">
+        <label>Mot de passe</label>
+        <input
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          placeholder="••••••••"
+          required
+          minlength="4"
+        />
+      </div>
+
+      <!-- ERROR GLOBAL -->
+      <div class="error-box" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <!-- BUTTON -->
+      <button
+        type="submit"
+        class="btn-auth"
+        [disabled]="isLoading || loginForm.invalid"
+      >
+        <span *ngIf="!isLoading">Se connecter</span>
+        <span *ngIf="isLoading">Connexion...</span>
+      </button>
+
+      <!-- FOOTER -->
+      <div class="footer-link">
+        Pas de compte ?
+        <a routerLink="/register">Créer un compte</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>

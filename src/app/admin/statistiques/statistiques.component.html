@@ -1,0 +1,464 @@
+<div class="stats-wrapper">
+  <div class="header-section">
+    <div>
+      <h2>📊 Tableau de bord analytique</h2>
+      <p>Statistiques en temps réel de la plateforme municipale</p>
+    </div>
+    <div class="last-update">
+      <span class="dot"></span>
+      Données synchronisées
+    </div>
+  </div>
+
+  <!-- Barre de recherche et actions rapides -->
+  <div class="actions-bar">
+    <div class="search-container">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="filterStats()" 
+          placeholder="Rechercher une statistique, un module ou une section..."
+          class="search-input"
+        >
+        <button *ngIf="searchTerm" class="clear-search" (click)="clearSearch()">✕</button>
+      </div>
+    </div>
+    
+    <div class="quick-actions">
+      <button class="action-btn primary" (click)="navigateTo('/admin/dashboard')">
+        <span class="btn-icon">📊</span>
+        Tableau de bord
+      </button>
+      <button class="action-btn secondary" (click)="navigateTo('/admin/utilisateurs')">
+        <span class="btn-icon">👥</span>
+        Utilisateurs
+      </button>
+      <button class="action-btn tertiary" (click)="navigateTo('/admin/services')">
+        <span class="btn-icon">⚙️</span>
+        Services
+      </button>
+      <button class="action-btn quaternary" (click)="navigateTo('/admin/biens')">
+        <span class="btn-icon">🏢</span>
+        Biens
+      </button>
+      <button class="action-btn export" (click)="exportStats()">
+        <span class="btn-icon">📎</span>
+        Exporter
+      </button>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="stats-loader">
+    <div class="skeleton-grid">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+    </div>
+  </div>
+
+  <!-- Résultat de recherche - Aucun résultat -->
+  <div *ngIf="!isLoading && searchTerm && filteredSections.length === 0" class="no-results">
+    <span class="no-results-icon">🔍</span>
+    <p>Aucun résultat trouvé pour "{{ searchTerm }}"</p>
+    <button class="reset-btn" (click)="clearSearch()">Effacer la recherche</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!isLoading && (!searchTerm || filteredSections.length > 0)" class="stats-container">
+    
+    <!-- Section Utilisateurs -->
+    <div *ngIf="isSectionVisible('utilisateurs')" class="stats-section" data-section="utilisateurs">
+      <div class="section-title">
+        <span class="title-icon">👥</span>
+        <h3>Utilisateurs</h3>
+        <span class="section-badge">{{ (displayStats.citoyens || 0) + (displayStats.agents || 0) + (stats.admins || 0) }} total</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card violet" (click)="navigateTo('/admin/utilisateurs?role=citoyen')">
+          <div class="card-header">
+            <span class="icon">👤</span>
+            <span class="trend">+12%</span>
+          </div>
+          <div class="stat-number">{{ displayStats.citoyens | number }}</div>
+          <div class="stat-label">Citoyens inscrits</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
+        </div>
+
+        <div class="stat-card blue" (click)="navigateTo('/admin/utilisateurs?role=agent')">
+          <div class="card-header">
+            <span class="icon">👮</span>
+            <span class="trend">+5%</span>
+          </div>
+          <div class="stat-number">{{ displayStats.agents | number }}</div>
+          <div class="stat-label">Agents municipaux</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+        </div>
+
+        <div class="stat-card indigo" (click)="navigateTo('/admin/utilisateurs?role=admin')">
+          <div class="card-header">
+            <span class="icon">🛡️</span>
+          </div>
+          <div class="stat-number">{{ stats.admins | number }}</div>
+          <div class="stat-label">Administrateurs</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Dossiers -->
+    <div *ngIf="isSectionVisible('dossiers')" class="stats-section" data-section="dossiers">
+      <div class="section-title">
+        <span class="title-icon">📋</span>
+        <h3>Dossiers administratifs</h3>
+        <button class="view-all-btn" (click)="navigateTo('/agent/dossiers')">
+          Voir tous <span>→</span>
+        </button>
+      </div>
+      <div class="stats-grid-4">
+        <div class="stat-card cyan" (click)="navigateTo('/agent/dossiers?filter=all')">
+          <div class="stat-number">{{ displayStats.dossiersTotal | number }}</div>
+          <div class="stat-label">Total dossiers</div>
+        </div>
+        <div class="stat-card orange" (click)="navigateTo('/agent/dossiers?filter=attente')">
+          <div class="stat-number">{{ displayStats.dossiersEnAttente | number }}</div>
+          <div class="stat-label">En attente</div>
+          <div class="sub-label">À traiter</div>
+        </div>
+        <div class="stat-card yellow" (click)="navigateTo('/agent/dossiers?filter=cours')">
+          <div class="stat-number">{{ stats.dossiersEnCours | number }}</div>
+          <div class="stat-label">En cours</div>
+          <div class="sub-label">Traitement</div>
+        </div>
+        <div class="stat-card green" (click)="navigateTo('/agent/dossiers?filter=valides')">
+          <div class="stat-number">{{ displayStats.dossiersValides | number }}</div>
+          <div class="stat-label">Validés</div>
+          <div class="sub-label">Approuvés</div>
+        </div>
+        <div class="stat-card red" (click)="navigateTo('/agent/dossiers?filter=refuses')">
+          <div class="stat-number">{{ displayStats.dossiersRefuses | number }}</div>
+          <div class="stat-label">Refusés</div>
+          <div class="sub-label">Rejetés</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Réservations -->
+    <div *ngIf="isSectionVisible('réservations')" class="stats-section" data-section="réservations">
+      <div class="section-title">
+        <span class="title-icon">🏷️</span>
+        <h3>Réservations</h3>
+        <button class="view-all-btn" (click)="navigateTo('/agent/reservations')">
+          Gérer <span>→</span>
+        </button>
+      </div>
+      <div class="stats-grid-reservations">
+        <div class="stat-card purple" (click)="navigateTo('/agent/reservations?filter=all')">
+          <div class="stat-number">{{ displayStats.reservationsTotal | number }}</div>
+          <div class="stat-label">Total réservations</div>
+        </div>
+        <div class="stat-card orange" (click)="navigateTo('/agent/reservations?filter=attente')">
+          <div class="stat-number">{{ displayStats.reservationsEnAttente | number }}</div>
+          <div class="stat-label">En attente</div>
+        </div>
+        <div class="stat-card emerald" (click)="navigateTo('/agent/reservations?filter=acceptees')">
+          <div class="stat-number">{{ displayStats.reservationsAcceptees | number }}</div>
+          <div class="stat-label">Acceptées</div>
+        </div>
+        <div class="stat-card rose" (click)="navigateTo('/agent/reservations?filter=refusees')">
+          <div class="stat-number">{{ stats.reservationsRefusees | number }}</div>
+          <div class="stat-label">Refusées</div>
+        </div>
+        <div class="stat-card gray" (click)="navigateTo('/agent/reservations?filter=annulees')">
+          <div class="stat-number">{{ stats.reservationsAnnulees | number }}</div>
+          <div class="stat-label">Annulées</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Rendez-vous -->
+    <div *ngIf="isSectionVisible('rendez-vous')" class="stats-section" data-section="rendez-vous">
+      <div class="section-title">
+        <span class="title-icon">📅</span>
+        <h3>Rendez-vous</h3>
+        <button class="view-all-btn" (click)="navigateTo('/agent/rdv')">
+          Gérer <span>→</span>
+        </button>
+      </div>
+      <div class="stats-grid-rdv">
+        <div class="stat-card indigo" (click)="navigateTo('/agent/rdv')">
+          <div class="stat-number">{{ displayStats.rdvTotal | number }}</div>
+          <div class="stat-label">Total RDV</div>
+        </div>
+        <div class="stat-card amber" (click)="navigateTo('/agent/rdv')">
+          <div class="stat-number">{{ stats.rdvEnAttente | number }}</div>
+          <div class="stat-label">En attente</div>
+        </div>
+        <div class="stat-card teal" (click)="navigateTo('/agent/rdv')">
+          <div class="stat-number">{{ displayStats.rdvValides | number }}</div>
+          <div class="stat-label">Validés/Confirmés</div>
+        </div>
+        <div class="stat-card pink" (click)="navigateTo('/agent/rdv')">
+          <div class="stat-number">{{ stats.rdvRefuses | number }}</div>
+          <div class="stat-label">Refusés</div>
+        </div>
+        <div class="stat-card slate" (click)="navigateTo('/agent/rdv')">
+          <div class="stat-number">{{ stats.rdvAnnules | number }}</div>
+          <div class="stat-label">Annulés</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Paiements -->
+    <div *ngIf="isSectionVisible('paiements')" class="stats-section" data-section="paiements">
+      <div class="section-title">
+        <span class="title-icon">💰</span>
+        <h3>Paiements & Recouvrement</h3>
+        <button class="view-all-btn" (click)="scrollToSection('paiements')">
+          Voir tous <span>→</span>
+        </button>
+      </div>
+
+      <!-- Cartes récapitulatives -->
+      <div class="stats-grid-payments">
+        <div class="stat-card payment-total" (click)="scrollToSection('paiements')">
+          <div class="stat-number">{{ displayStats.paiementsTotal | number }}</div>
+          <div class="stat-label">Total transactions</div>
+          <div class="stat-icon">💳</div>
+        </div>
+        <div class="stat-card payment-paid" (click)="scrollToSection('paiements')">
+          <div class="stat-number">{{ displayStats.paiementsPayes | number }}</div>
+          <div class="stat-label">Payés</div>
+          <div class="sub-label">{{ formatMontant(displayStats.montantTotalPaye) }}</div>
+          <div class="stat-icon">✅</div>
+        </div>
+        <div class="stat-card payment-unpaid" (click)="scrollToSection('paiements')">
+          <div class="stat-number">{{ displayStats.paiementsNonPayes | number }}</div>
+          <div class="stat-label">En attente</div>
+          <div class="stat-icon">⏳</div>
+        </div>
+        <div class="stat-card payment-failed" (click)="scrollToSection('paiements')">
+          <div class="stat-number">{{ stats.paiementsEchoues | number }}</div>
+          <div class="stat-label">Échoués</div>
+          <div class="stat-icon">❌</div>
+        </div>
+        <div class="stat-card payment-rate">
+          <div class="stat-number">{{ displayStats.tauxRecouvrement }}%</div>
+          <div class="stat-label">Taux de recouvrement</div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="displayStats.tauxRecouvrement"></div>
+          </div>
+          <div class="stat-icon">📈</div>
+        </div>
+      </div>
+
+      <!-- Liste détaillée des paiements avec pagination -->
+      <div class="payments-list">
+        <div class="list-header">
+          <h4>Historique des transactions</h4>
+          <div class="list-stats">
+            <span>Total: {{ paymentsList.length }} transactions</span>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table class="payments-table">
+            <thead>
+              <tr>
+                <th>Citoyen</th>
+                <th>Référence</th>
+                <th>Moyen de paiement</th>
+                <th>Téléphone</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let payment of paginatedPayments">
+                <tr>
+                  <td>{{ payment.nomCitoyen || '—' }}</td>
+                  <td><span class="ref">{{ payment.reference }}</span></td>
+                  <td>{{ getPaymentMethodLabel(payment.paymentMethod) }}</td>
+                  <td>{{ payment.phoneNumber }}</td>
+                  <td class="montant">{{ formatMontant(payment.amount) }}</td>
+                  <td>{{ formatDate(payment.createdAt) }}</td>
+                  <td>
+                    <span class="status-badge" [class]="getStatusClass(payment.status)">
+                      {{ getStatusText(payment.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="view-btn" (click)="togglePaymentDetails(payment)">
+                      {{ expandedPaymentId === payment.id ? 'Masquer' : 'Détails' }}
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="expandedPaymentId === payment.id" class="payment-details-row">
+                  <td colspan="8">
+                    <div class="payment-details-panel">
+                      <span><strong>Transaction :</strong> {{ payment.transactionId || 'N/A' }}</span>
+                      <span *ngIf="payment.description"><strong>Description :</strong> {{ payment.description }}</span>
+                      <span *ngIf="payment.referenceDossier"><strong>Dossier lié :</strong> {{ payment.referenceDossier }}</span>
+                      <span *ngIf="payment.nomBien"><strong>Bien réservé :</strong> {{ payment.nomBien }}</span>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              <tr *ngIf="paginatedPayments.length === 0">
+                <td colspan="8" class="no-data">Aucune transaction trouvée</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Paiements -->
+        <div *ngIf="totalPagesPayments > 1" class="pagination">
+          <button class="page-btn" (click)="previousPagePayments()" [disabled]="currentPagePayments === 1">
+            « Précédent
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbersPayments()" 
+              class="page-num" 
+              [class.active]="page === currentPagePayments"
+              (click)="goToPagePayments(page)">
+              {{ page }}
+            </button>
+          </div>
+          
+          <button class="page-btn" (click)="nextPagePayments()" [disabled]="currentPagePayments === totalPagesPayments">
+            Suivant »
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Notifications -->
+    <div *ngIf="isSectionVisible('notifications')" class="stats-section" data-section="notifications">
+      <div class="section-title">
+        <span class="title-icon">🔔</span>
+        <h3>Notifications & Alertes</h3>
+        <div class="action-buttons">
+          <button class="small-btn" (click)="markAllNotificationsAsRead()" *ngIf="stats.notificationsNonLues > 0">
+            Tout marquer comme lu
+          </button>
+          <button class="small-btn" (click)="scrollToSection('notifications')">
+            Voir toutes
+          </button>
+        </div>
+      </div>
+
+      <!-- Cartes récapitulatives des notifications -->
+      <div class="stats-grid-notifications">
+        <div class="stat-card notification-total" (click)="scrollToSection('notifications')">
+          <div class="stat-number">{{ displayStats.notificationsTotal | number }}</div>
+          <div class="stat-label">Total notifications</div>
+          <div class="stat-icon">📬</div>
+        </div>
+        <div class="stat-card notification-unread" (click)="scrollToSection('notifications')">
+          <div class="stat-number">{{ displayStats.notificationsNonLues | number }}</div>
+          <div class="stat-label">Non lues</div>
+          <div class="stat-icon">🔴</div>
+        </div>
+        <div class="stat-card notification-read" (click)="scrollToSection('notifications')">
+          <div class="stat-number">{{ stats.notificationsLues | number }}</div>
+          <div class="stat-label">Lues</div>
+          <div class="stat-icon">✅</div>
+        </div>
+      </div>
+
+      <!-- Liste détaillée des notifications avec pagination -->
+      <div class="notifications-list">
+        <div class="list-header">
+          <h4>Dernières notifications</h4>
+          <div class="list-stats">
+            <span>{{ stats.notificationsNonLues }} non lues</span>
+          </div>
+        </div>
+        
+        <div class="notifications-container">
+          <div *ngFor="let notification of paginatedNotifications" 
+               class="notification-item" 
+               [class.unread]="!notification.read"
+               (click)="markNotificationAsRead(notification.id)">
+            <div class="notification-icon" [class]="getNotificationTypeClass(notification.type)">
+              {{ getNotificationTypeIcon(notification.type) }}
+            </div>
+            <div class="notification-content">
+              <div class="notification-header">
+                <h4>{{ notification.title }}</h4>
+                <span class="notification-time">{{ getRelativeTime(notification.createdAt) }}</span>
+              </div>
+              <p>{{ notification.message }}</p>
+              <div class="notification-footer">
+                <a *ngIf="notification.link" (click)="navigateTo(notification.link); $event.stopPropagation()">
+                  Voir plus →
+                </a>
+                <button class="delete-notif" (click)="deleteNotification(notification.id); $event.stopPropagation()">
+                  Supprimer
+                </button>
+              </div>
+            </div>
+            <div class="notification-status" *ngIf="!notification.read">
+              <span class="unread-dot"></span>
+            </div>
+          </div>
+          
+          <div *ngIf="paginatedNotifications.length === 0" class="no-data">
+            <span class="no-data-icon">🔕</span>
+            <p>Aucune notification</p>
+          </div>
+        </div>
+
+        <!-- Pagination Notifications -->
+        <div *ngIf="totalPagesNotifications > 1" class="pagination">
+          <button class="page-btn" (click)="previousPageNotifications()" [disabled]="currentPageNotifications === 1">
+            « Précédent
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbersNotifications()" 
+              class="page-num" 
+              [class.active]="page === currentPageNotifications"
+              (click)="goToPageNotifications(page)">
+              {{ page }}
+            </button>
+          </div>
+          
+          <button class="page-btn" (click)="nextPageNotifications()" [disabled]="currentPageNotifications === totalPagesNotifications">
+            Suivant »
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Patrimoine -->
+    <div *ngIf="isSectionVisible('patrimoine')" class="stats-section" data-section="patrimoine">
+      <div class="section-title">
+        <span class="title-icon">🏛️</span>
+        <h3>Patrimoine & Services</h3>
+        <div class="action-buttons">
+          <button class="small-btn" (click)="navigateTo('/admin/biens')">Gérer biens</button>
+          <button class="small-btn" (click)="navigateTo('/admin/services')">Gérer services</button>
+        </div>
+      </div>
+      <div class="stats-grid-2">
+        <div class="stat-card gradient-purple" (click)="navigateTo('/admin/biens')">
+          <div class="stat-number">{{ stats.biens | number }}</div>
+          <div class="stat-label">Biens immobiliers</div>
+          <div class="stat-icon">🏢</div>
+        </div>
+        <div class="stat-card gradient-blue" (click)="navigateTo('/admin/services')">
+          <div class="stat-number">{{ stats.services | number }}</div>
+          <div class="stat-label">Services municipaux</div>
+          <div class="stat-icon">⚙️</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

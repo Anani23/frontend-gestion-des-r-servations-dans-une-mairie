@@ -1,0 +1,63 @@
+<div class="profile-page">
+
+  <div class="hero">
+    <h1>Mon Profil</h1>
+    <p>Gestion de vos informations personnelles</p>
+  </div>
+
+  <div class="container">
+
+    <!-- CARD LEFT -->
+    <div class="card profile-card">
+
+      <div class="avatar-box">
+
+        <img
+          [src]="user.photo || 'assets/images/default-avatar.png'"
+          class="avatar"
+        />
+
+        <label class="upload-btn">
+          📷 Modifier photo
+          <input type="file" (change)="onImageSelected($event)" hidden>
+        </label>
+
+      </div>
+
+      <h2>{{ user.nom }} {{ user.prenom }}</h2>
+      <p class="role">Citoyen</p>
+
+    </div>
+
+    <!-- FORM -->
+    <div class="card form-card">
+
+      <h3>Informations personnelles</h3>
+
+      <form (ngSubmit)="saveProfile()">
+
+        <input [(ngModel)]="user.nom" name="nom" placeholder="Nom">
+
+        <input [(ngModel)]="user.prenom" name="prenom" placeholder="Prénom">
+
+        <input [(ngModel)]="user.email" name="email" readonly>
+
+        <input [(ngModel)]="user.telephone" name="telephone" placeholder="Téléphone">
+
+        <textarea [(ngModel)]="user.adresse" name="adresse"></textarea>
+
+        <button class="btn" type="submit" [disabled]="isSaving">
+          {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <div class="success" *ngIf="success">
+    ✅ Profil mis à jour avec succès
+  </div>
+
+</div>

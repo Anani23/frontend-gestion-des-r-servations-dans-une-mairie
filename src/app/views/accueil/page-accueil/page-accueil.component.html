@@ -1,0 +1,205 @@
+<div class="home-page animate-fade-in">
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="bg-orb"></div>
+    <div class="bg-orb-2"></div>
+    <div class="bg-orb-3"></div>
+    
+    <div class="hero-slider"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-icon">
+        <i class="fa-solid fa-landmark"></i>
+      </div>
+      <span class="top-badge">
+        Ville de Lomé • Togo
+      </span>
+
+      <h1>
+        Portail du
+        <span class="accent">Patrimoine</span>
+      </h1>
+
+      <p>
+        Modernisation et transparence au service des citoyens de la capitale.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary" routerLink="/services">
+          <i class="fa-solid fa-file-alt"></i>
+          Nos Services
+        </button>
+        <button class="btn btn-outline" routerLink="/biens">
+          <i class="fa-solid fa-building"></i>
+          Explorer le Catalogue
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section class="stats-grid">
+    <div class="stat-item" *ngFor="let s of stats; trackBy: trackByLabel">
+      <div class="stat-icon">
+        <i [class]="getStatIcon(s.label)"></i>
+      </div>
+      <div class="stat-details">
+        <h3>{{ s.value }}</h3>
+        <p>{{ s.label }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section class="services-section" *ngIf="services.length">
+    <div class="section-header">
+      <div class="header-icon">
+        <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <div class="header-text">
+        <h2>Nos Services Municipaux</h2>
+        <div class="underline"></div>
+        <p>Des démarches administratives disponibles en ligne, sans déplacement</p>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let s of services" routerLink="/services">
+        <div class="service-image">
+          <img [src]="s.image || 'assets/images/mairie-centrale.jpg'"
+               [alt]="s.nom"
+               (error)="onImgError($event)"
+               loading="lazy">
+          <div class="service-overlay">
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </div>
+        <div class="service-body">
+          <h3>{{ s.nom }}</h3>
+          <p>{{ (s.description || 'Service administratif de la Mairie de Lomé') | slice:0:100 }}...</p>
+          <div class="service-footer">
+            <span class="service-badge" *ngIf="s.categorieNom">
+              <i class="fa-solid fa-tag"></i>
+              {{ s.categorieNom }}
+            </span>
+            <button class="btn-text" routerLink="/services">
+              En savoir plus
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-cta">
+      <button class="btn btn-outline" routerLink="/services">
+        Voir tous les services
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- BIENS SECTION -->
+  <section class="biens-section">
+    <div class="section-header">
+      <div class="header-icon">
+        <i class="fa-solid fa-city"></i>
+      </div>
+      <div class="header-text">
+        <h2>Explorer les Biens Municipaux</h2>
+        <div class="underline"></div>
+        <p>Découvrez notre patrimoine disponible et réservez vos espaces</p>
+      </div>
+    </div>
+
+    <div class="biens-grid">
+      <div class="bien-card" *ngFor="let b of biens">
+        <div class="bien-image">
+          <img [src]="b.image || 'assets/images/mairie-centrale.jpg'"
+               [alt]="b.nom"
+               (error)="onImgError($event)"
+               loading="lazy">
+          <div class="bien-status disponible">
+            Disponible
+          </div>
+        </div>
+        <div class="bien-body">
+          <h3>{{ b.nom }}</h3>
+          <p>{{ (b.description || 'Bien municipal disponible à la location') | slice:0:80 }}...</p>
+          <div class="bien-info">
+            <span *ngIf="b.localisation">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ b.localisation }}
+            </span>
+            <span *ngIf="b.prixLocation" class="price">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              {{ b.prixLocation | number }} FCFA
+            </span>
+          </div>
+          <div class="bien-actions">
+            <button class="btn-primary" routerLink="/biens">
+              <i class="fa-solid fa-info-circle"></i>
+              Détails
+            </button>
+            <button class="btn-outline" [routerLink]="['/citizen/reservations/create']" [queryParams]="{bienId: b.id}">
+              <i class="fa-solid fa-calendar-check"></i>
+              Réserver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-cta">
+      <button class="btn btn-outline" routerLink="/biens">
+        Voir tous les biens disponibles
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- CATEGORIES SECTION (MARQUEE) -->
+  <section class="scroll-section">
+    <div class="section-header">
+      <div class="header-icon">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+      <div class="header-text">
+        <h2>Explorer par catégorie</h2>
+        <div class="underline"></div>
+        <p>Parcourez nos biens par catégorie</p>
+      </div>
+    </div>
+
+    <div class="marquee-container">
+      <div class="marquee-track" *ngIf="categories.length">
+        <div class="card card-large" *ngFor="let c of getRepeatedCategories()">
+          <img [src]="c.image || 'assets/images/mairie-centrale.jpg'" 
+               [alt]="c.nom" 
+               (error)="onImgError($event)"
+               loading="lazy">
+          <div class="card-overlay">
+            <div class="card-icon">
+              <i class="fa-solid fa-folder"></i>
+            </div>
+            <h3>{{ c.nom }}</h3>
+            <div class="card-buttons">
+              <button class="btn-s btn-blur" [routerLink]="['/biens']" [queryParams]="{cat: c.id}">
+                <i class="fa-solid fa-eye"></i>
+                Détails
+              </button>
+              <button class="btn-s btn-solid" [routerLink]="['/citizen/reservations/create']">
+                <i class="fa-solid fa-calendar-plus"></i>
+                Réserver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="marquee-gradient"></div>
+    </div>
+  </section>
+
+</div>

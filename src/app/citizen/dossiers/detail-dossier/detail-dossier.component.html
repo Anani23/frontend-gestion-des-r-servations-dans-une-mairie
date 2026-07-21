@@ -1,0 +1,130 @@
+<div class="detail-wrapper">
+
+  <!-- BACKGROUND DECOR -->
+  <div class="bg-glow"></div>
+  <div class="bg-glow-2"></div>
+
+  <!-- LOADING -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement du dossier...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-state" *ngIf="!isLoading && errorMessage">
+    <p>{{ errorMessage }}</p>
+    <a routerLink="/citizen/dossiers">← Retour à mes dossiers</a>
+  </div>
+
+  <ng-container *ngIf="!isLoading && dossier">
+
+    <!-- HEADER -->
+    <div class="header">
+
+      <div class="title-section">
+        <div class="icon">📁</div>
+
+        <div>
+          <h1>{{ dossier.typePrestation }}</h1>
+          <p>Suivi de votre demande administrative</p>
+        </div>
+      </div>
+
+      <div class="badge">
+        {{ getReference() }}
+      </div>
+
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="card">
+
+      <h2>Progression du dossier</h2>
+
+      <p class="subtitle">
+        Statut actuel : <strong>{{ getStatusLabel() }}</strong>
+      </p>
+
+      <!-- TIMELINE -->
+      <div class="timeline">
+
+        <div class="step completed">
+          <div class="dot"></div>
+          <div class="content">
+            <h4>Dossier déposé</h4>
+            <p>Votre demande a été enregistrée avec succès</p>
+          </div>
+        </div>
+
+        <div class="step" [class.active]="isStepReached('examen') && dossier.statut !== 'REJETE'" [class.completed]="isStepReached('decision')">
+          <div class="dot"></div>
+          <div class="content">
+            <h4>En cours d'examen</h4>
+            <p>L'agent municipal analyse votre dossier</p>
+          </div>
+        </div>
+
+        <div class="step" [class.active]="dossier.statut === 'VALIDE'" [class.rejected]="dossier.statut === 'REJETE'" [class.completed]="dossier.statut === 'VALIDE'">
+          <div class="dot"></div>
+          <div class="content">
+            <h4>Décision finale</h4>
+            <p *ngIf="dossier.statut !== 'REJETE'">Validation ou rejet du dossier</p>
+            <p *ngIf="dossier.statut === 'REJETE'">Dossier rejeté</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="info-block" *ngIf="dossier.description">
+        <h3>Description</h3>
+        <p>{{ dossier.description }}</p>
+      </div>
+
+      <!-- COMMENTAIRE AGENT -->
+      <div class="info-block comment" *ngIf="dossier.commentaireAgent">
+        <h3>Commentaire de l'agent</h3>
+        <p>{{ dossier.commentaireAgent }}</p>
+      </div>
+
+      <!-- PIECES JOINTES -->
+      <div class="info-block">
+        <h3>Pièces jointes</h3>
+
+        <div class="pieces-list" *ngIf="dossier.piecesJointes?.length; else noPieces">
+          <div class="piece-item" *ngFor="let piece of dossier.piecesJointes">
+            <span class="piece-icon">📄</span>
+            <span class="piece-name">{{ piece.nom }}</span>
+            <button
+              class="btn-download"
+              [disabled]="downloadingId === piece.id"
+              (click)="telecharger(piece.id, piece.nom)">
+              {{ downloadingId === piece.id ? 'Téléchargement...' : 'Télécharger' }}
+            </button>
+          </div>
+        </div>
+
+        <ng-template #noPieces>
+          <p class="no-pieces">Aucune pièce jointe pour ce dossier.</p>
+        </ng-template>
+      </div>
+
+      <!-- PAIEMENT -->
+      <div class="info-block" *ngIf="dossier.statut !== 'REJETE'">
+        <h3>Frais de dossier</h3>
+        <p>Réglez les frais liés à cette démarche en ligne, en toute sécurité.</p>
+        <a
+          class="btn-pay"
+          [routerLink]="['/citizen/payment']"
+          [queryParams]="{ dossierId: dossier.id, description: 'Frais de dossier - ' + (dossier.typePrestation || getReference()) }">
+          💳 Payer les frais de ce dossier
+        </a>
+      </div>
+
+      <a class="back-link" routerLink="/citizen/dossiers">← Retour à mes dossiers</a>
+
+    </div>
+
+  </ng-container>
+
+</div>

@@ -1,0 +1,143 @@
+<div class="actualites-container">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <header class="page-header">
+    <div class="header-icon">
+      <i class="fa-solid fa-newspaper"></i>
+    </div>
+    <h1>Portail des Actualités</h1>
+    <p>Diffusez les informations importantes pour la commune en temps réel.</p>
+  </header>
+
+  <!-- Section Formulaire -->
+  <section class="form-section">
+    <div class="form-card">
+      <div class="form-header">
+        <div class="form-icon">
+          <i class="fa-solid fa-pen-fancy"></i>
+        </div>
+        <div class="form-title">
+          <h2>Publier un article</h2>
+          <p>Partagez les actualités et événements de la mairie</p>
+        </div>
+      </div>
+      
+      <form (ngSubmit)="ajouterActualite()">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>
+              <i class="fa-solid fa-heading"></i>
+              Titre de l'actualité
+              <span class="required">*</span>
+            </label>
+            <input 
+              type="text" 
+              [(ngModel)]="titre" 
+              name="titre" 
+              placeholder="Ex: Inauguration de la nouvelle bibliothèque municipale"
+              required>
+          </div>
+          
+          <div class="form-group full">
+            <label>
+              <i class="fa-solid fa-image"></i>
+              URL de l'image
+            </label>
+            <input 
+              type="text" 
+              [(ngModel)]="imageUrl" 
+              name="imageUrl" 
+              placeholder="https://exemple.com/image.jpg ou /assets/images/photo.jpg">
+          </div>
+          
+          <div class="form-group full">
+            <label>
+              <i class="fa-solid fa-align-left"></i>
+              Contenu de l'article
+              <span class="required">*</span>
+            </label>
+            <textarea 
+              [(ngModel)]="contenu" 
+              name="contenu" 
+              rows="5" 
+              placeholder="Décrivez l'événement en détail..."
+              required></textarea>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="reinitialiserFormulaire()">
+            <i class="fa-solid fa-eraser"></i>
+            Réinitialiser
+          </button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-paper-plane"></i>
+            Publier l'actualité
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Section Liste -->
+  <div class="section-header">
+    <div class="section-title">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <h2>Dernières publications</h2>
+    </div>
+    <div class="section-stats" *ngIf="actualites.length > 0">
+      <span class="stats-badge">
+        <i class="fa-solid fa-file-alt"></i>
+        {{ actualites.length }} article(s)
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des actualités...</p>
+  </div>
+
+  <div *ngIf="!isLoading && actualites.length > 0; else emptyState" class="news-grid">
+    <article class="news-card" *ngFor="let a of actualites">
+      <div class="card-image">
+        <img [src]="a.image" [alt]="a.titre" (error)="a.image = 'assets/images/default-mairie.jpg'">
+        <div class="image-overlay"></div>
+        <div class="date-badge">
+          <i class="fa-regular fa-calendar"></i>
+          {{ a.datePublication | date:'dd MMM yyyy' }}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h3>{{ a.titre }}</h3>
+        <p>{{ a.contenu | slice:0:120 }}{{ a.contenu.length > 120 ? '...' : '' }}</p>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-delete" (click)="supprimerActualite(a.id)">
+          <i class="fa-solid fa-trash-alt"></i>
+          Supprimer l'article
+        </button>
+        <div class="card-meta">
+          <span class="meta-item">
+            <i class="fa-regular fa-eye"></i>
+            {{ a.vues || 0 }} vues
+          </span>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fa-regular fa-newspaper"></i>
+      </div>
+      <h3>Aucune actualité disponible</h3>
+      <p>Commencez par publier votre première actualité ci-dessus.</p>
+    </div>
+  </ng-template>
+</div>

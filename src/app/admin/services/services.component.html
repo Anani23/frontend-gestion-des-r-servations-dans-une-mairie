@@ -1,0 +1,158 @@
+<div class="services-container">
+
+  <!-- HEADER -->
+  <header class="main-header">
+
+    <div class="title-section">
+
+      <span class="motto">
+        Mairie de Lomé • Administration
+      </span>
+
+      <h1>
+        Catalogue des
+        <span class="accent">
+          Services Municipaux
+        </span>
+      </h1>
+
+    </div>
+
+    <div class="actions-section">
+
+      <!-- SEARCH -->
+      <div class="search-bar">
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Chercher une formalité..."
+        >
+
+      </div>
+
+      <!-- CREATE -->
+      <button
+        class="btn-create-service"
+        routerLink="/admin/services/create"
+      >
+
+        <span class="plus-icon">＋</span>
+
+        Nouveau Service
+
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- FILTERS -->
+  <nav class="filter-nav">
+
+    <button
+      [class.active]="selectedCat === null"
+      (click)="filterCat(null)"
+    >
+      Toutes les prestations
+    </button>
+
+    <button
+      *ngFor="let c of categories"
+      [class.active]="selectedCat === c.id"
+      (click)="filterCat(c.id)"
+    >
+      {{ c.nom }}
+    </button>
+
+  </nav>
+
+  <!-- GRID -->
+  <main
+    class="results-grid"
+    *ngIf="!isLoading; else loadingTpl"
+  >
+
+    <!-- CARD -->
+    <div
+      class="service-card"
+      *ngFor="let s of getFilteredServices()"
+    >
+
+      <!-- HEADER -->
+      <div class="card-header">
+
+        <span
+          class="status-tag"
+          [class.inactive]="!s.actif"
+        >
+          {{ s.actif ? 'Opérationnel' : 'Suspendu' }}
+        </span>
+
+        <span class="cat-name">
+          {{ getCatNom(s.categorieId) }}
+        </span>
+
+      </div>
+
+      <!-- CONTENT -->
+      <div class="card-content">
+
+        <h3>{{ s.nom }}</h3>
+
+        <p>{{ s.description }}</p>
+
+        <!-- PDF -->
+        <div class="requirements" *ngIf="s.piecesPath">
+
+          <label>Pièce à fournir :</label>
+
+          <a [href]="getFileUrl(s.piecesPath)" target="_blank" rel="noopener">
+            📄 Voir le document PDF
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="card-footer">
+
+        <button
+          class="btn-edit"
+          (click)="goToEdit(s.id)"
+        >
+          Modifier
+        </button>
+
+        <button
+          class="btn-delete"
+          (click)="deleteService(s.id)"
+        >
+          Supprimer
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY -->
+    <div
+      class="empty-msg"
+      *ngIf="getFilteredServices().length === 0"
+    >
+      Aucun service trouvé dans cette catégorie.
+    </div>
+
+  </main>
+
+  <!-- LOADER -->
+  <ng-template #loadingTpl>
+
+    <div class="loader">
+      Chargement des données administratives...
+    </div>
+
+  </ng-template>
+
+</div>

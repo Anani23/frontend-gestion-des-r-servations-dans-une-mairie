@@ -1,0 +1,161 @@
+<div class="mairie-container">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <!-- HEADER PREMIUM -->
+  <header class="page-header">
+    <div class="container">
+      <div class="header-icon">
+        <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <span class="top-label">République Togolaise</span>
+      <h1>Services <span>Municipaux</span></h1>
+      <p>Accédez en ligne à toutes les démarches administratives disponibles</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- RECHERCHE -->
+    <div class="search-section">
+      <div class="search-grid single">
+        <div class="search-box">
+          <label>
+            <i class="fa-solid fa-file-alt"></i>
+            Rechercher un service
+          </label>
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" [(ngModel)]="searchService" placeholder="Ex: Acte de naissance, Carte d'identité...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION SERVICES ADMINISTRATIFS -->
+    <section class="content-section">
+      <div class="section-title">
+        <div class="title-icon">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <div class="title-text">
+          <h2>Démarches Administratives</h2>
+          <p>{{ getFilteredServices().length }} service(s) disponible(s) en ligne</p>
+        </div>
+        <div class="title-line"></div>
+      </div>
+
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des services...</p>
+      </div>
+
+      <div *ngIf="!loading" class="modern-grid">
+        <div class="premium-card service-card" *ngFor="let s of getFilteredServices()">
+          <div class="card-header-service">
+            <div class="service-icon">
+              <i class="fa-solid fa-file-alt"></i>
+            </div>
+            <div class="service-category" *ngIf="s.categorieNom">
+              {{ s.categorieNom }}
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h3>{{ s.nom }}</h3>
+            <p class="description">
+              {{ (s.description || 'Aucune description disponible') | slice:0:100 }}...
+            </p>
+
+            <div class="info-row">
+              <span class="info-badge" *ngIf="s.piecesPath">
+                <i class="fa-solid fa-file-pdf"></i>
+                Guide des pièces à fournir
+              </span>
+              <span class="info-price" *ngIf="s.prix">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                {{ s.prix | number }} FCFA
+              </span>
+            </div>
+
+            <div class="card-footer dual-btns">
+              <button class="btn-outline" (click)="openServiceModal(s)">
+                <i class="fa-solid fa-info-circle"></i>
+                En savoir plus
+              </button>
+              <button routerLink="/citizen/dossiers/create" class="btn-primary">
+                <i class="fa-solid fa-play"></i>
+                Démarrer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="getFilteredServices().length === 0" class="empty-state">
+          <i class="fa-solid fa-folder-open"></i>
+          <h3>Aucun service trouvé</h3>
+          <p>Essayez une autre recherche</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL SERVICE (Détails) -->
+  <div class="modal-overlay" *ngIf="selectedService" (click)="closeServiceModal()">
+    <div class="modal-content service-modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeServiceModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+
+      <div class="modal-body">
+        <div class="modal-icon-large">
+          <i class="fa-solid fa-file-alt"></i>
+        </div>
+
+        <div class="modal-info-section full-width">
+          <div class="modal-header">
+            <h2>{{ selectedService.nom }}</h2>
+            <span class="service-category-badge" *ngIf="selectedService.categorieNom">
+              {{ selectedService.categorieNom }}
+            </span>
+          </div>
+
+          <div class="modal-details">
+            <div class="detail-row full-width">
+              <i class="fa-solid fa-align-left"></i>
+              <div>
+                <strong>Description</strong>
+                <p>{{ selectedService.description || 'Aucune description disponible.' }}</p>
+              </div>
+            </div>
+
+            <div class="detail-row full-width" *ngIf="selectedService.piecesPath">
+              <i class="fa-solid fa-file-pdf"></i>
+              <div>
+                <strong>Pièces à fournir</strong>
+                <p>Consultez le guide officiel listant les documents requis pour cette démarche.</p>
+                <a class="btn-download-guide" [href]="getPiecesPathUrl(selectedService.piecesPath)" target="_blank" rel="noopener">
+                  <i class="fa-solid fa-download"></i>
+                  Télécharger le guide (PDF)
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeServiceModal()">
+              <i class="fa-solid fa-times"></i>
+              Fermer
+            </button>
+            <button routerLink="/citizen/dossiers/create" class="btn-primary" (click)="closeServiceModal()">
+              <i class="fa-solid fa-play"></i>
+              Démarrer la demande
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

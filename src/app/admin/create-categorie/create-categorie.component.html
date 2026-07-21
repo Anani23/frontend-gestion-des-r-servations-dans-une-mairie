@@ -1,0 +1,74 @@
+<div class="categorie-wrapper">
+
+  <div class="header">
+    <h2>Gestion des catégories</h2>
+
+    <div class="tabs">
+      <button (click)="setType('biens')" [class.active]="filterType === 'biens'">
+        Biens
+      </button>
+      <button (click)="setType('services')" [class.active]="filterType === 'services'">
+        Services
+      </button>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>{{ isEditing ? 'Modifier la' : 'Créer une' }} catégorie ({{ filterType }})</h3>
+
+    <input [(ngModel)]="newCat.nom" placeholder="Nom catégorie" name="nom">
+
+    <textarea [(ngModel)]="newCat.description" placeholder="Description" name="description"></textarea>
+
+    <div class="select-box" *ngIf="filteredCategories.length > 0">
+      <label for="parentSelect">📁 Catégorie parente (Optionnel) :</label>
+      <select id="parentSelect" [(ngModel)]="newCat.parentId" name="parentId">
+        <option [ngValue]="null">-- Aucune (Catégorie Racine) --</option>
+        <option *ngFor="let cat of filteredCategories"
+                [value]="cat.id"
+                [disabled]="cat.id === newCat.id">
+          {{ cat.nom }}
+        </option>
+      </select>
+    </div>
+
+    <div class="upload-box">
+      <label>
+        📷 Image catégorie
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+      </label>
+
+      <img *ngIf="newCat.image" [src]="newCat.image" class="preview" alt="Preview">
+    </div>
+
+    <button class="btn-primary" type="button" (click)="save()" [disabled]="isSaving">
+      {{ isSaving ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer') }}
+    </button>
+
+    <button class="btn-secondary" type="button" *ngIf="isEditing" (click)="reset()">
+      Annuler
+    </button>
+  </div>
+
+  <div class="grid">
+    <div class="card" *ngFor="let c of filteredCategories">
+      <img [src]="c.image || 'assets/images/mairie-centrale.jpg'" alt="Catégorie image">
+
+      <div class="content">
+        <h4>{{ c.nom }}</h4>
+        <span class="badge" *ngIf="c.parent">Sous-catégorie de : {{ c.parent.nom }}</span>
+        <p>{{ c.description }}</p>
+
+        <div class="actions">
+          <button class="btn-edit" (click)="edit(c)">Modifier</button>
+          <button class="btn-delete" (click)="delete(c.id)">Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-categories" *ngIf="filteredCategories.length === 0">
+      <p>Aucune catégorie trouvée pour {{ filterType }}</p>
+    </div>
+  </div>
+
+</div>

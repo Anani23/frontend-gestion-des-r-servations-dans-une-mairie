@@ -1,0 +1,231 @@
+<div class="create-container">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <div class="form-card">
+    <header class="card-header">
+      <div class="header-icon">
+        <i class="fa-solid fa-calendar-plus"></i>
+      </div>
+      <div class="header-text">
+        <h2>Nouvelle Réservation</h2>
+        <p>Sélectionnez un bien municipal (salle, terrain, matériel) pour votre événement.</p>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="!success">
+      
+      <!-- Sélection du Bien -->
+      <div class="form-group">
+        <label>
+          <i class="fa-solid fa-building"></i>
+          Bien Municipal
+          <span class="required">*</span>
+        </label>
+        <div class="select-wrapper">
+          <select formControlName="bienId" [class.error]="isInvalid('bienId')" (change)="onBienChange($event)">
+            <option [ngValue]="null" disabled>-- Choisir un bien --</option>
+            <option *ngFor="let b of biens" [value]="b.id">
+              {{ b.nom }} - {{ b.type || 'Bien municipal' }}
+            </option>
+          </select>
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+        </div>
+        <small class="err-msg" *ngIf="isInvalid('bienId')">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Veuillez choisir un bien.
+        </small>
+        <div class="price-hint" *ngIf="selectedBien">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          Tarif de location : <strong>{{ selectedBien.prixLocation | number }} FCFA</strong> / jour
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-calendar-day"></i>
+            Date de début
+            <span class="required">*</span>
+          </label>
+          <input type="datetime-local" formControlName="dateDebut" [class.error]="isInvalid('dateDebut')">
+          <small class="err-msg" *ngIf="isInvalid('dateDebut')">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            La date de début est requise.
+          </small>
+        </div>
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-calendar-week"></i>
+            Date de fin
+            <span class="required">*</span>
+          </label>
+          <input type="datetime-local" formControlName="dateFin" [class.error]="isInvalid('dateFin')">
+          <small class="err-msg" *ngIf="isInvalid('dateFin')">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            La date de fin est requise.
+          </small>
+        </div>
+      </div>
+
+      <!-- Motif -->
+      <div class="form-group">
+        <label>
+          <i class="fa-solid fa-pen-alt"></i>
+          Motif de la demande
+          <span class="required">*</span>
+        </label>
+        <textarea 
+          formControlName="motif" 
+          rows="3" 
+          placeholder="Ex: Célébration de mariage, réunion associative, événement culturel..."
+          [class.error]="isInvalid('motif')">
+        </textarea>
+        <small class="err-msg" *ngIf="isInvalid('motif')">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Le motif doit faire au moins 10 caractères.
+        </small>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        {{ errorMessage }}
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-secondary" routerLink="/citizen/reservations">
+          <i class="fa-solid fa-arrow-left"></i>
+          Mes réservations
+        </button>
+        <button type="button" class="btn-ghost" routerLink="/citizen/dashboard">
+          <i class="fa-solid fa-chart-line"></i>
+          Dashboard
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="loading">
+          <i class="fa-solid" [class.fa-spinner]="loading" [class.fa-check-circle]="!loading" [class.fa-pulse]="loading"></i>
+          {{ loading ? 'Envoi en cours...' : 'Confirmer la réservation' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Success Message -->
+    <div class="success-view" *ngIf="success && !showPaymentForm">
+      <div class="check-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3>Demande envoyée !</h3>
+      <p>Votre demande est en cours de traitement par les services de la mairie.</p>
+      <div class="success-actions">
+        <button class="btn-primary" (click)="showPaymentForm = true">
+          <i class="fa-solid fa-credit-card"></i>
+          Procéder au paiement
+        </button>
+        <button class="btn-secondary" routerLink="/citizen/reservations">
+          <i class="fa-solid fa-list"></i>
+          Voir mes réservations
+        </button>
+      </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div *ngIf="showPaymentForm && !paymentSuccess">
+      <header class="card-header" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(139, 92, 246, 0.2);">
+        <div class="header-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <i class="fa-solid fa-credit-card"></i>
+        </div>
+        <div class="header-text">
+          <h2>Paiement de la Réservation</h2>
+          <p>Complétez le paiement pour valider votre réservation.</p>
+        </div>
+      </header>
+
+      <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+        
+        <!-- Méthode de paiement -->
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-wallet"></i>
+            Méthode de paiement
+            <span class="required">*</span>
+          </label>
+          <div class="select-wrapper">
+            <select formControlName="paymentMethod" [class.error]="isInvalid('paymentMethod', paymentForm)">
+              <option value="MIXX_YAS">Mixx Yas</option>
+              <option value="MOOV_MONEY">Moov Money</option>
+              <option value="TMONEY">T-Money</option>
+              <option value="CASH">Espèces</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Numéro de téléphone -->
+        <div class="form-group" *ngIf="paymentForm.get('paymentMethod')?.value !== 'CASH'">
+          <label>
+            <i class="fa-solid fa-phone"></i>
+            Numéro de téléphone
+            <span class="required">*</span>
+          </label>
+          <input type="tel" formControlName="phoneNumber" [class.error]="isInvalid('phoneNumber', paymentForm)" placeholder="01 02 03 04 05">
+          <small class="err-msg" *ngIf="isInvalid('phoneNumber', paymentForm)">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            Numéro de téléphone invalide.
+          </small>
+        </div>
+
+        <!-- Montant -->
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Montant à payer (XOF)
+            <span class="required">*</span>
+          </label>
+          <input type="number" formControlName="amount" [class.error]="isInvalid('amount', paymentForm)" min="100">
+          <small class="err-msg" *ngIf="isInvalid('amount', paymentForm)">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            Le montant doit être d'au moins 100 FCFA.
+          </small>
+        </div>
+
+        <!-- Alerts -->
+        <div class="alert alert-danger" *ngIf="paymentErrorMessage">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          {{ paymentErrorMessage }}
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" routerLink="/citizen/reservations">
+            <i class="fa-solid fa-arrow-left"></i>
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="paymentLoading">
+            <i class="fa-solid" [class.fa-spinner]="paymentLoading" [class.fa-check-circle]="!paymentLoading" [class.fa-pulse]="paymentLoading"></i>
+            {{ paymentLoading ? 'Traitement en cours...' : 'Payer maintenant' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Payment Success -->
+    <div class="success-view" *ngIf="paymentSuccess">
+      <div class="check-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3>Paiement réussi !</h3>
+      <p>Votre réservation a été confirmée et votre paiement a été enregistré avec succès.</p>
+      <div class="success-actions">
+        <button class="btn-primary" routerLink="/citizen/reservations">
+          <i class="fa-solid fa-list"></i>
+          Voir mes réservations
+        </button>
+        <button class="btn-secondary" routerLink="/citizen/dashboard">
+          <i class="fa-solid fa-home"></i>
+          Retour au dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

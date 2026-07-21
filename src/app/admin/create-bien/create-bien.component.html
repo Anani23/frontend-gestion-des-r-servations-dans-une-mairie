@@ -1,0 +1,146 @@
+<div class="luxury-wrapper">
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="container-bien">
+
+    <div class="glass-header">
+      <div class="header-icon">
+        <i class="bi bi-building"></i>
+      </div>
+      <h2>{{ isEditing ? 'Modifier un bien municipal' : 'Nouveau bien municipal' }}</h2>
+      <p>Portail d'administration du patrimoine - Mairie de Lomé</p>
+    </div>
+
+    <form #f="ngForm" (ngSubmit)="onSubmit()" novalidate>
+
+      <div class="form-grid">
+
+        <!-- NOM -->
+        <div class="field">
+          <label>
+            <i class="bi bi-signpost"></i>
+            Nom du bien
+          </label>
+          <input
+            type="text"
+            name="nom"
+            required
+            [(ngModel)]="newBien.nom"
+            placeholder="Ex: Salle des fêtes d'Agoè">
+        </div>
+
+        <!-- CATEGORIE -->
+        <div class="field">
+          <label>
+            <i class="bi bi-tag"></i>
+            Catégorie
+          </label>
+          <select name="categorieId" required [(ngModel)]="newBien.categorieId">
+            <option [ngValue]="null">Choisir une catégorie</option>
+            <option *ngFor="let cat of categories" [ngValue]="cat.id">
+              {{ cat.nom }}
+            </option>
+          </select>
+          <small class="hint" *ngIf="newBien.categorieId">
+            Catégorie sélectionnée : <strong>{{ getCategorieLabel(newBien.categorieId) }}</strong>
+          </small>
+        </div>
+
+        <!-- LOCALISATION -->
+        <div class="field">
+          <label>
+            <i class="bi bi-geo-alt"></i>
+            Localisation
+          </label>
+          <input
+            type="text"
+            name="localisation"
+            [(ngModel)]="newBien.localisation"
+            placeholder="Ex: Agoè, Lomé">
+        </div>
+
+        <!-- PRIX -->
+        <div class="field">
+          <label>
+            <i class="bi bi-cash-coin"></i>
+            Tarif de location (FCFA)
+          </label>
+          <div class="input-with-suffix">
+            <input
+              type="number"
+              name="prixLocation"
+              min="0"
+              [(ngModel)]="newBien.prixLocation"
+              placeholder="Ex: 25000">
+            <span class="suffix">FCFA / jour</span>
+          </div>
+        </div>
+
+        <!-- DISPONIBILITE -->
+        <div class="field">
+          <label>
+            <i class="bi bi-check2-circle"></i>
+            Disponibilité
+          </label>
+          <div class="toggle-row" (click)="newBien.disponible = !newBien.disponible">
+            <div class="toggle-switch" [class.active]="newBien.disponible">
+              <div class="toggle-knob"></div>
+            </div>
+            <span>{{ newBien.disponible ? 'Disponible à la location' : 'Indisponible' }}</span>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="field full-width">
+          <label>
+            <i class="bi bi-text-left"></i>
+            Description
+          </label>
+          <textarea
+            name="description"
+            rows="4"
+            [(ngModel)]="newBien.description"
+            placeholder="Décrivez le bien, sa capacité, ses équipements..."></textarea>
+        </div>
+
+        <!-- MOYENS DE PAIEMENT -->
+        <div class="field full-width">
+          <label>
+            <i class="bi bi-wallet2"></i>
+            Moyens de paiement acceptés
+          </label>
+          <div class="payment-methods">
+            <button
+              type="button"
+              class="payment-chip"
+              *ngFor="let moyen of moyensPaiementDisponibles"
+              [class.selected]="isMoyenSelected(moyen.code)"
+              (click)="toggleMoyen(moyen.code)">
+              <span class="chip-icon">{{ moyen.icon }}</span>
+              {{ moyen.label }}
+            </button>
+          </div>
+          <small class="hint">Sélectionnez au moins un moyen de paiement accepté pour la réservation de ce bien.</small>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading || f.invalid">
+        <span *ngIf="!isLoading">
+          {{ isEditing ? 'Enregistrer les modifications' : 'Créer le bien' }}
+        </span>
+        <div class="loader" *ngIf="isLoading"></div>
+      </button>
+
+      <button type="button" class="btn-secondary-link" routerLink="/admin/biens">
+        <i class="bi bi-arrow-left"></i>
+        Retour à la liste des biens
+      </button>
+
+    </form>
+
+  </div>
+
+</div>

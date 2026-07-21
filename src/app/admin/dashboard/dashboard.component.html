@@ -1,0 +1,76 @@
+<div class="dashboard-wrapper">
+  
+  <!-- Barre de défilement (Marquee) -->
+  <div class="marquee-banner">
+    <div class="marquee-content">
+      <span>⚡ Système d'Administration de la Mairie de Lomé - Connecté au serveur Localhost:8080</span>
+      <span>•</span>
+      <span>📅 Prochain Conseil Municipal : Vendredi à 10h</span>
+      <span>•</span>
+      <span>🛡️ Sécurité : Session Administrateur active</span>
+    </div>
+  </div>
+
+  <div class="main-content">
+    
+    <!-- Header avec Titre et Recherche -->
+    <header class="dashboard-header">
+      <div class="welcome-text">
+        <span class="badge">Tableau de Bord</span>
+        <h1>Bonjour, <span class="gradient-text">{{ adminNom }}</span></h1>
+        <p class="subtitle">{{ today | date:'EEEE dd MMMM yyyy' }}</p>
+      </div>
+
+      <div class="search-area">
+        <div class="search-group">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (input)="filterCards()" 
+            placeholder="Rechercher un module (ex: Patrimoine)..."
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- État de chargement -->
+    <div *ngIf="isLoading" class="loader-container">
+      <div class="spinner"></div>
+      <p>Synchronisation avec la base de données...</p>
+    </div>
+
+    <!-- Grille de cartes -->
+    <div *ngIf="!isLoading" class="modules-grid">
+      <a 
+        *ngFor="let card of filteredCards" 
+        [routerLink]="card.link" 
+        class="module-card"
+        [style.--accent]="card.color"
+      >
+        <div class="card-header">
+          <div class="icon-box">{{ card.icon }}</div>
+          <div class="count-badge" [class.action]="card.count === '+' || card.count === 'Gérer'">
+            {{ card.count }}
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.desc }}</p>
+        </div>
+
+        <div class="card-footer">
+          <span>Accéder au module</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Si aucun résultat -->
+    <div *ngIf="!isLoading && filteredCards.length === 0" class="empty-state">
+      <p>🔍 Aucun module ne correspond à votre recherche.</p>
+    </div>
+
+  </div>
+</div>

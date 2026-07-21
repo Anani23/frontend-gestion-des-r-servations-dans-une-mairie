@@ -1,0 +1,56 @@
+<div class="notifications-wrapper">
+  <button class="notification-bell" (click)="toggleNotifications()">
+    <span class="bell-icon">🔔</span>
+    <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+  </button>
+
+  <div *ngIf="isOpen" class="notifications-dropdown">
+    <div class="notifications-header">
+      <h3>Notifications</h3>
+      <div class="header-actions">
+        <button class="btn-mark-all" (click)="markAllAsRead()" *ngIf="unreadCount > 0">
+          Tout marquer comme lu
+        </button>
+        <button class="btn-close" (click)="closeNotifications()">✕</button>
+      </div>
+    </div>
+
+    <div class="notifications-content">
+      <div *ngIf="isLoading" class="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <div *ngIf="!isLoading && notifications.length === 0" class="empty">
+        <span class="empty-icon">📭</span>
+        <p>Aucune notification</p>
+      </div>
+
+      <div *ngIf="!isLoading && notifications.length > 0" class="notifications-list">
+        <div
+          *ngFor="let notification of notifications"
+          class="notification-item"
+          [class.unread]="!notification.read"
+          (click)="navigateToLink(notification)"
+        >
+          <div class="notification-icon">
+            {{ getNotificationIcon(notification.type) }}
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">{{ notification.title }}</div>
+            <div class="notification-message">{{ notification.message }}</div>
+            <div class="notification-time">
+              {{ notification.createdAt | date:'short' }}
+            </div>
+          </div>
+          <button
+            class="btn-delete"
+            (click)="deleteNotification(notification, $event)"
+            title="Supprimer"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

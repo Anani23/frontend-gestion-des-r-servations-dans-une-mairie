@@ -1,0 +1,179 @@
+<div class="rdv-page">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <header class="hero">
+    <div class="hero-content">
+      <div class="badge">
+        <i class="fa-solid fa-landmark"></i>
+        Mairie de Lomé
+      </div>
+      <h1>Prendre un rendez-vous</h1>
+      <p>Réservez un créneau en présentiel pour finaliser vos démarches administratives</p>
+    </div>
+  </header>
+
+  <!-- Message de succès amélioré -->
+  <div class="success" *ngIf="isSuccess">
+    <div class="success-content">
+      <i class="fa-solid fa-check-circle"></i>
+      <div class="success-text">
+        <strong>Rendez-vous enregistré !</strong>
+        <p>Votre créneau a été enregistré et est en attente de confirmation par nos services.</p>
+      </div>
+      <a routerLink="/citizen/rdv/mes-rdv" class="success-link">
+        Voir mes rendez-vous
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div class="error-message" *ngIf="errorMessage">
+    <div class="error-content">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <div class="error-text">
+        <strong>Erreur</strong>
+        <p>{{ errorMessage }}</p>
+      </div>
+      <button class="error-close" (click)="errorMessage = null">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <section class="form-container">
+    <div class="form-card">
+      <div class="form-header">
+        <div class="header-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="header-text">
+          <h2>Planification de votre visite</h2>
+          <p>Vérifiez les liaisons de votre dossier de référence avant de valider.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        
+        <!-- Dossier pré-sélectionné depuis la création -->
+        <div class="form-group full" *ngIf="dossierId">
+          <label>
+            <i class="fa-solid fa-folder"></i>
+            Dossier administratif rattaché
+          </label>
+          <div class="dossier-badge">
+            <i class="fa-solid fa-file-alt"></i>
+            <span>{{ nomPrestation }} <span class="dossier-number">(Dossier N° {{ dossierId }})</span></span>
+            <span class="badge-status">✅ Sélectionné</span>
+          </div>
+        </div>
+
+        <!-- Sélection de dossier manuelle -->
+        <div class="form-group full" *ngIf="!dossierId">
+          <label>
+            <i class="fa-solid fa-folder-open"></i>
+            Sélectionner un dossier
+            <span class="required">*</span>
+          </label>
+          <div class="select-wrapper">
+            <select 
+              [(ngModel)]="form.dossierId" 
+              (change)="onDossierChange()"
+              [disabled]="isLoading"
+              required
+            >
+              <option value="">-- Choisir un dossier --</option>
+              <option *ngFor="let d of dossiers" [value]="d.id">
+                {{ d.typePrestation }} ({{ d.reference || 'Dossier N° ' + d.id }})
+              </option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-arrow"></i>
+          </div>
+          <div *ngIf="dossiers.length === 0 && !isLoading" class="no-dossiers">
+            <i class="fa-solid fa-inbox"></i>
+            <span>Aucun dossier disponible.</span>
+            <a routerLink="/citizen/dossiers/create" class="create-link">
+              Créer un dossier
+              <i class="fa-solid fa-plus"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-calendar-day"></i>
+            Date demandée (Début)
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="date" 
+            [(ngModel)]="form.dateDebut" 
+            [disabled]="(!form.dossierId && !dossierId) || isLoading" 
+            [min]="minDate"
+            required
+          >
+          <span class="helper-text">Choisissez une date (minimum aujourd'hui)</span>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <i class="fa-solid fa-calendar-week"></i>
+            Date alternative (Fin)
+          </label>
+          <input 
+            type="date" 
+            [(ngModel)]="form.dateFin" 
+            [disabled]="(!form.dossierId && !dossierId) || isLoading"
+            [min]="form.dateDebut || minDate"
+          >
+          <span class="helper-text">Optionnel - Une seconde plage possible</span>
+        </div>
+
+        <div class="form-group full">
+          <label>
+            <i class="fa-solid fa-pen-alt"></i>
+            Motif de la convocation / Visite
+            <span class="required">*</span>
+          </label>
+          <textarea
+            rows="4"
+            [(ngModel)]="form.motif"
+            [disabled]="(!form.dossierId && !dossierId) || isLoading"
+            placeholder="Ex: Dépôt des pièces d'identité originales, signature de registres..."
+            maxlength="500"
+          ></textarea>
+          <span class="helper-text" *ngIf="form.motif">
+            {{ form.motif.length }}/500 caractères
+          </span>
+        </div>
+
+      </div>
+
+      <div class="actions">
+        <button class="btn-secondary" type="button" [disabled]="isLoading" routerLink="/citizen/dashboard">
+          <i class="fa-solid fa-arrow-left"></i>
+          Retour au dashboard
+        </button>
+
+        <button class="btn-secondary" type="button" [disabled]="isLoading" routerLink="/citizen/rdv/mes-rdv">
+          <i class="fa-solid fa-calendar-alt"></i>
+          Mes rendez-vous
+        </button>
+
+        <button 
+          class="btn-primary" 
+          type="submit"
+          [disabled]="isLoading || (!form.dossierId && !dossierId) || !form.dateDebut || !form.motif" 
+          (click)="submit()"
+        >
+          <i class="fa-solid" [class.fa-spinner]="isLoading" [class.fa-calendar-plus]="!isLoading" [class.fa-pulse]="isLoading"></i>
+          <span *ngIf="!isLoading">Réserver mon créneau</span>
+          <span *ngIf="isLoading">Enregistrement en cours...</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+</div>

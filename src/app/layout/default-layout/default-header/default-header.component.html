@@ -1,0 +1,36 @@
+<header class="header-glass d-flex align-items-center">
+  <div class="header-container w-100 d-flex align-items-center justify-content-between">
+    
+    <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center gap-2">
+        <img src="assets/images/logo-mairie.png" alt="Logo Mairie" class="logo-img" />
+        <div class="breadcrumb-custom d-none d-md-flex flex-column">
+          <span class="text-main">Mairie de Lomé</span>
+          <small class="text-sub">Services en ligne</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div *ngIf="isLoggedIn; else guestButtons" class="profile-pill">
+        <div class="avatar-circle">
+          {{ (userName || 'U').charAt(0).toUpperCase() }}
+        </div>
+        <div class="profile-info d-none d-lg-block">
+          <span class="p-name">{{ userName }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout()" title="Déconnexion">
+          <i class="cil-account-logout"></i>
+        </button>
+      </div>
+
+      <ng-template #guestButtons>
+        <div class="d-flex gap-2">
+          <button class="btn btn-login" routerLink="/login">Connexion</button>
+          <button class="btn btn-register shadow-sm" routerLink="/register">S'inscrire</button>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+</header>

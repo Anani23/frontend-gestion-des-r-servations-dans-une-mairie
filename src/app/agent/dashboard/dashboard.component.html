@@ -1,0 +1,285 @@
+<div class="agent-container">
+  <!-- Banner Welcome -->
+  <div class="welcome-banner animate-fade-in">
+    <div class="welcome-text">
+      <h2>Bonjour, <span class="highlight">{{ userName }}</span> 👋</h2>
+      <p>Bienvenue sur votre tableau de bord agent municipal</p>
+    </div>
+    <div class="header-actions">
+      <div class="current-date">
+        <i class="fa-regular fa-calendar"></i>
+        {{ currentDate | date:'EEEE d MMMM yyyy' }}
+      </div>
+      <div class="notif-bell-wrapper">
+        <button class="btn-refresh" (click)="toggleNotifications()" title="Notifications">
+          <i class="fa-regular fa-bell"></i>
+          <span class="notif-badge" *ngIf="unreadNotifCount > 0">{{ unreadNotifCount }}</span>
+        </button>
+        <div class="notif-dropdown" *ngIf="showNotifications">
+          <div class="notif-dropdown-header">Notifications</div>
+          <div class="notif-list" *ngIf="notifications.length; else noNotif">
+            <div
+              class="notif-item"
+              *ngFor="let notif of notifications"
+              [class.unread]="!notif.read"
+              (click)="ouvrirNotification(notif)">
+              <strong>{{ notif.title }}</strong>
+              <p>{{ notif.message }}</p>
+            </div>
+          </div>
+          <ng-template #noNotif>
+            <div class="notif-empty">Aucune notification</div>
+          </ng-template>
+        </div>
+      </div>
+      <button class="btn-refresh" (click)="rafraichir()" title="Rafraîchir">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <div class="search-wrapper">
+      <i class="fa-solid fa-search search-icon"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        placeholder="Rechercher un dossier par référence, type ou ID..."
+        class="search-input"
+      />
+      <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loader">
+    <div class="spinner"></div>
+    <p>Chargement des données...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading" class="dashboard-content animate-fade-in">
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card pending" (click)="navigateToDossiers()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.enAttente }}</span>
+          <span class="stat-label">En attente</span>
+        </div>
+      </div>
+
+      <div class="stat-card progress" (click)="navigateToDossiers()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-spinner"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.enCours }}</span>
+          <span class="stat-label">En cours</span>
+        </div>
+      </div>
+
+      <div class="stat-card completed" (click)="navigateToDossiers()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.termines }}</span>
+          <span class="stat-label">Terminés</span>
+        </div>
+      </div>
+
+      <div class="stat-card total" (click)="navigateToDossiers()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-folder"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalDossiers }}</span>
+          <span class="stat-label">Total dossiers</span>
+        </div>
+      </div>
+
+      <div class="stat-card reservation" (click)="navigateToReservations()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.reservations }}</span>
+          <span class="stat-label">Réservations</span>
+        </div>
+      </div>
+
+      <div class="stat-card urgent" *ngIf="stats.urgents > 0" (click)="navigateToDossiers()">
+        <div class="stat-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.urgents }}</span>
+          <span class="stat-label">Urgents</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      
+      <!-- Left Column -->
+      <div class="priority-zone">
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              <i class="fa-solid fa-folder-open"></i>
+              Dossiers récents à traiter
+            </h3>
+            <button class="btn-link" (click)="navigateToDossiers()">
+              Voir tous <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="urgent-alert" *ngIf="stats.urgents > 0">
+            <div class="alert-icon">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="alert-text">
+              <strong>{{ stats.urgents }} dossier(s) urgent(s)</strong>
+              <span>Dossiers en attente depuis plus de 3 jours</span>
+            </div>
+            <button class="btn-go" (click)="navigateToDossiers()">
+              Traiter <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="dossiers-list">
+            <div *ngIf="filteredDossiers.length === 0" class="empty-state">
+              <i class="fa-solid fa-inbox"></i>
+              <p>Aucun dossier en attente</p>
+            </div>
+            
+            <div *ngFor="let dossier of filteredDossiers" class="dossier-item">
+              <div class="dossier-status">
+                <span class="status-badge" [class]="getStatusBadgeClass(dossier.statut)">
+                  {{ getStatusLabel(dossier.statut) }}
+                </span>
+              </div>
+              <div class="dossier-info">
+                <div class="dossier-title">
+                  <strong>{{ dossier.reference || 'Dossier #' + dossier.id }}</strong>
+                  <span class="dossier-type">{{ dossier.typePrestation }}</span>
+                </div>
+                <div class="dossier-meta">
+                  <span><i class="fa-regular fa-user"></i> {{ dossier.nomCitoyen || dossier.citoyen || 'Citoyen' }}</span>
+                  <span><i class="fa-regular fa-calendar"></i> {{ formatDate(dossier.dateCreation || dossier.createdAt) }}</span>
+                </div>
+              </div>
+              <button class="btn-treat" (click)="traiterDossier(dossier.id)" *ngIf="dossier.id">
+                Traiter <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Réservations en cours -->
+        <div class="card reservations-card">
+          <div class="card-header">
+            <h3>
+              <i class="fa-solid fa-calendar-week"></i>
+              Réservations en cours
+            </h3>
+            <button class="btn-link" (click)="navigateToReservations()">
+              Voir toutes <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="reservations-list">
+            <div *ngIf="filteredReservations.length === 0" class="empty-state">
+              <i class="fa-solid fa-calendar-xmark"></i>
+              <p>Aucune réservation en cours</p>
+            </div>
+            
+            <div *ngFor="let reservation of filteredReservations" class="reservation-item">
+              <div class="reservation-icon">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <div class="reservation-info">
+                <div class="reservation-title">
+                  <strong>{{ reservation.bienNom || 'Bien municipal' }}</strong>
+                  <span class="reservation-date">
+                    {{ formatDate(reservation.dateDebut) }} - {{ formatDate(reservation.dateFin) }}
+                  </span>
+                </div>
+                <div class="reservation-meta">
+                  <span><i class="fa-regular fa-user"></i> {{ reservation.nomCitoyen || reservation.userName || 'Citoyen' }}</span>
+                  <span *ngIf="reservation.userEmail"><i class="fa-regular fa-envelope"></i> {{ reservation.userEmail }}</span>
+                </div>
+                <div class="reservation-motif" *ngIf="reservation.motif">{{ reservation.motif | slice:0:80 }}...</div>
+              </div>
+              <div class="reservation-status">
+                <span class="status-badge" [class]="getReservationStatusClass(reservation.statut)">
+                  {{ getReservationStatusLabel(reservation.statut) }}
+                </span>
+                <button class="btn-view" (click)="voirReservation(reservation.id)">
+                  Voir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Navigation Rapide -->
+      <div class="quick-nav">
+        <div class="card">
+          <h3><i class="fa-solid fa-compass"></i> Navigation rapide</h3>
+          
+          <div class="nav-grid">
+            <div class="nav-card" (click)="navigateToDossiers()">
+              <div class="nav-icon">
+                <i class="fa-solid fa-folder-tree"></i>
+              </div>
+              <span>Dossiers</span>
+            </div>
+            
+            <div class="nav-card" (click)="navigateToReservations()">
+              <div class="nav-icon">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <span>Réservations</span>
+            </div>
+            
+            <div class="nav-card" (click)="navigateToRendezVous()">
+              <div class="nav-icon">
+                <i class="fa-solid fa-handshake"></i>
+              </div>
+              <span>Rendez-vous</span>
+            </div>
+          </div>
+
+          <div class="tips-card">
+            <h4>
+              <i class="fa-solid fa-lightbulb"></i>
+              Astuce du jour
+            </h4>
+            <p>Priorisez les dossiers en attente depuis plus de 48h pour un traitement rapide et une meilleure satisfaction citoyenne.</p>
+          </div>
+
+          <div class="quick-stats">
+            <h4><i class="fa-solid fa-chart-line"></i> Aperçu rapide</h4>
+            <div class="stat-item">
+              <span>Taux de traitement</span>
+              <strong>{{ stats.totalDossiers ? ((stats.termines / stats.totalDossiers) * 100).toFixed(0) : 0 }}%</strong>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="stats.totalDossiers ? (stats.termines / stats.totalDossiers) * 100 : 0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

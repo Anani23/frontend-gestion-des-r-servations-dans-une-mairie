@@ -1,0 +1,72 @@
+<div class="lb-container animate-fade-in">
+  <header class="lb-header">
+    <div class="lb-info">
+      <span class="badge-top">Inventaire Mairie de Lomé</span>
+      <h1>Patrimoine <span class="highlight">Municipal</span></h1>
+      <p>Gestion technique et suivi des infrastructures communales.</p>
+    </div>
+
+    <div class="lb-actions">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher un bien...">
+      </div>
+      <button class="btn-primary" routerLink="/admin/biens/create">
+        <span class="plus-icon">＋</span> Nouveau Bien
+      </button>
+    </div>
+  </header>
+
+  <nav class="filter-bar">
+    <button [class.active]="selectedCat === null" (click)="filterCat(null)">Tous les actifs</button>
+    <button *ngFor="let c of categories" 
+            [class.active]="selectedCat === c.id" 
+            (click)="filterCat(c.id)">
+      {{ c.nom }}
+    </button>
+  </nav>
+
+  <div class="biens-list" *ngIf="!isLoading; else loader">
+    <div class="bien-item shadow-sm" *ngFor="let b of getFiltered()">
+      <div class="item-main">
+        <span class="item-cat">{{ getCatNom(b.categorieId) }}</span>
+        <h3>{{ b.nom }}</h3>
+        <p class="location">
+          <span class="icon">📍</span> {{ b.localisation || 'Lomé, Togo' }}
+        </p>
+      </div>
+
+      <div class="item-btns">
+        <button class="edit-btn" [routerLink]="['/admin/biens/edit', b.id]" title="Modifier">✏️</button>
+        <button class="del-btn" (click)="supprimer(b.id)" title="Supprimer">🗑️</button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="getFiltered().length === 0">
+      <p>Aucun bien trouvé dans le patrimoine municipal.</p>
+    </div>
+  </div>
+
+  <section class="image-scroller-section">
+    <div class="section-title">
+      <h3>Aperçu visuel</h3>
+      <small>Galerie des actifs de la ville</small>
+    </div>
+
+    <div class="h-scroll">
+      <div class="scroll-card" *ngFor="let b of biens">
+        <div class="card-img-wrapper">
+          <img [src]="getImg(b)" (error)="onImgErr($event)" [alt]="b.nom">
+        </div>
+        <div class="scroll-info">
+          <span class="tag">{{ getCatNom(b.categorieId) }}</span>
+          <p>{{ b.nom }}</p>
+          <small>{{ b.localisation }}</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ng-template #loader>
+    <div class="loader-box">Chargement du répertoire...</div>
+  </ng-template>
+</div>

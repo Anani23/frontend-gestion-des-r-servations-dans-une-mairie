@@ -1,0 +1,208 @@
+// Variables de couleurs professionnelles
+$primary-dark: #1e293b;
+$primary-blue: #3b82f6;
+$bg-light: #f8fafc;
+$text-muted: #64748b;
+$shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+.organisation-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: $bg-light;
+  font-family: 'Inter', system-ui, sans-serif;
+
+  .org-header {
+    text-align: center;
+    margin-bottom: 50px;
+    
+    h1 {
+      font-size: 2.5rem;
+      color: $primary-dark;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      color: $text-muted;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.org-section {
+  margin-bottom: 40px;
+
+  .section-title {
+    margin-bottom: 25px;
+    border-left: 4px solid $primary-blue;
+    padding-left: 15px;
+    
+    h2 {
+      font-size: 1.5rem;
+      color: $primary-dark;
+      margin: 0;
+    }
+  }
+}
+
+// Grille des Pôles (Départements)
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+
+  .dept-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: $shadow-sm;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-top: 5px solid var(--accent-color);
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $shadow-md;
+    }
+
+    .dept-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      color: $primary-dark;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: $text-muted;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Grille principale (Directoire + Patrimoine)
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Liste de l'équipe (Directoire)
+.team-list {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: $shadow-sm;
+
+  .team-member {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f5f9;
+
+    &:last-child { border-bottom: none; }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      background: $primary-blue;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    .member-info {
+      h4 { margin: 0; font-size: 1rem; color: $primary-dark; }
+      p { margin: 0; font-size: 0.85rem; color: $text-muted; }
+    }
+  }
+}
+
+// Liste du Patrimoine
+.biens-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .bien-item {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+    height: 90px;
+
+    img {
+      width: 120px;
+      object-fit: cover;
+    }
+
+    .bien-info {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h4 { margin: 0 0 5px; font-size: 0.95rem; }
+      
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        
+        &.available { color: #10b981; }
+        &:not(.available) { color: #ef4444; }
+      }
+    }
+  }
+}
+
+// Footer des services
+.services-footer {
+  margin-top: 50px;
+  text-align: center;
+  background: $primary-dark;
+  color: white;
+  padding: 40px;
+  border-radius: 20px;
+
+  h3 { margin-bottom: 25px; font-weight: 300; letter-spacing: 1px; }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+
+    .tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        transform: scale(1.05);
+      }
+    }
+  }
+}

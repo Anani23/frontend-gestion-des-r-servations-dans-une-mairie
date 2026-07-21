@@ -1,0 +1,365 @@
+// =========================
+// 🎨 PALETTE (Clair)
+// =========================
+$violet: #7c3aed;
+$violet-light: #faf5ff;
+$violet-soft: #f3e8ff;
+
+$red: #dc2626;
+$green: #16a34a;
+$yellow: #ca8a04;
+
+$text-primary: #1e1b2e;
+$text-secondary: #6b6478;
+
+// =========================
+// CONTAINER GLOBAL
+// =========================
+.lb-container {
+  padding: 20px;
+  color: $text-primary;
+
+  background: linear-gradient(160deg, #f2e8fc 0%, #e9dbf9 45%, #f6e5f0 100%);
+  min-height: 100vh;
+}
+
+// =========================
+// HEADER
+// =========================
+.lb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+
+  padding: 20px;
+  border-radius: 18px;
+
+  background: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
+
+  flex-wrap: wrap;
+}
+
+// INFO
+.lb-info {
+  .badge-top {
+    background: rgba(124, 58, 237, 0.1);
+    color: #b45309;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    display: inline-block;
+  }
+
+  h1 {
+    margin-top: 8px;
+    font-size: 26px;
+    font-weight: 800;
+    color: $text-primary;
+
+    .highlight {
+      color: $violet;
+    }
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 14px;
+  }
+}
+
+// ACTIONS
+.lb-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+// SEARCH
+.search-box input {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  outline: none;
+
+  background: #faf9ff;
+  color: $text-primary;
+
+  transition: 0.3s ease;
+
+  &:focus {
+    box-shadow: 0 0 0 2px $violet;
+    background: white;
+  }
+}
+
+// BUTTON PRIMARY
+.btn-primary {
+  background: linear-gradient(90deg, $violet, $red);
+  border: none;
+  color: white;
+
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  cursor: pointer;
+  font-weight: 700;
+
+  transition: 0.3s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
+  }
+}
+
+// =========================
+// FILTER BAR
+// =========================
+.filter-bar {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  button {
+    padding: 8px 14px;
+    border-radius: 50px;
+
+    border: 1px solid rgba(124, 58, 237, 0.16);
+
+    background: #ffffff;
+    color: $text-primary;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+    &:hover {
+      background: rgba(124, 58, 237, 0.08);
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      background: $violet;
+      color: white;
+      font-weight: 700;
+      border-color: $violet;
+    }
+  }
+}
+
+// =========================
+// BIENS LIST
+// =========================
+.biens-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+// CARD ITEM
+.bien-item {
+  background: #ffffff;
+
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.14);
+
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.05);
+
+  transition: 0.3s ease;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: $violet;
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.12);
+  }
+}
+
+// MAIN INFO
+.item-main {
+  .item-cat {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 50px;
+
+    background: rgba(124, 58, 237, 0.1);
+    color: $violet;
+  }
+
+  h3 {
+    margin: 8px 0;
+    font-size: 16px;
+    color: $text-primary;
+  }
+
+  .location {
+    font-size: 13px;
+    color: $text-secondary;
+
+    .icon {
+      margin-right: 5px;
+    }
+  }
+}
+
+// ACTION BUTTONS
+.item-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  button {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+  }
+
+  .edit-btn {
+    background: $green;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .del-btn {
+    background: $red;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// =========================
+// EMPTY STATE
+// =========================
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 30px;
+
+  color: $text-secondary;
+}
+
+// =========================
+// IMAGE SCROLLER
+// =========================
+.image-scroller-section {
+  margin-top: 40px;
+}
+
+.section-title {
+  margin-bottom: 10px;
+
+  h3 {
+    font-size: 18px;
+    color: $text-primary;
+  }
+
+  small {
+    color: $text-secondary;
+  }
+}
+
+// SCROLL HORIZONTAL
+.h-scroll {
+  display: flex;
+  gap: 14px;
+
+  overflow-x: auto;
+  padding-bottom: 10px;
+
+  scroll-snap-type: x mandatory;
+}
+
+// CARD SCROLL
+.scroll-card {
+  min-width: 220px;
+
+  background: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.14);
+
+  border-radius: 14px;
+  overflow: hidden;
+
+  scroll-snap-align: start;
+
+  transition: 0.3s ease;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.05);
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+}
+
+// IMAGE
+.card-img-wrapper img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+}
+
+// INFO
+.scroll-info {
+  padding: 10px;
+
+  .tag {
+    font-size: 11px;
+    background: $violet;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 50px;
+  }
+
+  p {
+    margin: 6px 0;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  small {
+    color: $text-secondary;
+  }
+}
+
+// =========================
+// LOADER
+// =========================
+.loader-box {
+  text-align: center;
+  padding: 30px;
+  color: $text-secondary;
+}
+
+// =========================
+// RESPONSIVE
+// =========================
+@media (max-width: 768px) {
+  .lb-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .biens-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,171 @@
+<div class="agent-container animate-fade-in">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <header class="table-header">
+    <div class="header-info">
+      <div class="header-icon">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+      <div class="header-text">
+        <h1>Gestion des <span class="highlight">Dossiers</span></h1>
+        <p>Analyse et validation des demandes citoyennes</p>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (input)="applyFilter()"
+          placeholder="Rechercher un citoyen, une prestation..."
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-summary" *ngIf="!isLoading">
+    <div class="stat-card" (click)="filterByStatus('TOUS')">
+      <i class="fa-solid fa-chart-line"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ dossiers.length }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+    </div>
+    <div class="stat-card pending" (click)="filterByStatus('EN_ATTENTE')">
+      <i class="fa-regular fa-clock"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getPendingCount() }}</span>
+        <span class="stat-label">En attente</span>
+      </div>
+    </div>
+    <div class="stat-card validated" (click)="filterByStatus('VALIDE')">
+      <i class="fa-regular fa-circle-check"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getValidatedCount() }}</span>
+        <span class="stat-label">Validés</span>
+      </div>
+    </div>
+    <div class="stat-card rejected" (click)="filterByStatus('REJETE')">
+      <i class="fa-solid fa-circle-xmark"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getRejectedCount() }}</span>
+        <span class="stat-label">Rejetés</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement des dossiers...</p>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper" *ngIf="!isLoading">
+    <table class="dossier-table">
+      <thead>
+        <tr>
+          <th>Citoyen</th>
+          <th>Référence</th>
+          <th>Prestation</th>
+          <th>Détails</th>
+          <th>Pièces jointes</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of pagedDossiers">
+          <td>
+            <div class="citoyen-cell">
+              <div class="avatar">{{ getNomCitoyen(d).charAt(0).toUpperCase() }}</div>
+              <span class="name">{{ getNomCitoyen(d) }}</span>
+            </div>
+          </td>
+          <td><code class="ref-tag">{{ getReference(d) }}</code></td>
+          <td><strong>{{ d.typePrestation }}</strong></td>
+          <td>
+            <div *ngIf="d.details && getDetailsEntries(d.details).length > 0">
+              <div *ngFor="let e of getDetailsEntries(d.details)">
+                <small><strong>{{ e[0] }}:</strong> {{ e[1] }}</small>
+              </div>
+            </div>
+            <span *ngIf="!d.details || getDetailsEntries(d.details).length === 0" class="no-details">
+              Aucun détail
+            </span>
+          </td>
+          <td>
+            <div class="pieces-cell" *ngIf="d.piecesJointes?.length; else noPiece">
+              <button
+                *ngFor="let piece of d.piecesJointes"
+                class="btn-piece"
+                [disabled]="downloadingId === piece.id"
+                (click)="telecharger(piece.id, piece.nom)"
+                [title]="piece.nom">
+                📎 {{ downloadingId === piece.id ? '...' : piece.nom }}
+              </button>
+            </div>
+            <ng-template #noPiece>
+              <span class="no-details">Aucune</span>
+            </ng-template>
+          </td>
+          <td>{{ d.dateSoumission | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getBadgeClass(d.statut)">
+              <i [class]="getStatusIcon(d.statut)"></i>
+              {{ getStatusText(d.statut) }}
+            </span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <!-- BOUTON VALIDER -->
+              <button
+                *ngIf="peutIntervenir(d.statut)"
+                class="btn-validate"
+                (click)="valider(d)"
+                title="Valider le dossier">
+                <i class="fa-solid fa-check"></i>
+                Valider
+              </button>
+
+              <!-- BOUTON REJETER -->
+              <button
+                *ngIf="peutIntervenir(d.statut)"
+                class="btn-reject"
+                (click)="refuser(d)"
+                title="Rejeter le dossier">
+                <i class="fa-solid fa-times"></i>
+                Rejeter
+              </button>
+
+              <!-- STATUT POUR DOSSIERS DÉJÀ TRAITÉS -->
+              <span *ngIf="!peutIntervenir(d.statut)" class="already-processed">
+                <i class="fa-solid fa-check-circle"></i>
+                Traité
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="pagedDossiers.length === 0">
+          <td colspan="8" class="empty-row">
+            <i class="fa-regular fa-folder-open"></i>
+            <p>Aucun dossier en attente</p>
+            <span>Les nouveaux dossiers apparaîtront ici</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pagination" *ngIf="totalPages > 1">
+    <button (click)="changePage(-1)" [disabled]="currentPage === 1">← Précédent</button>
+    <span>Page {{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="changePage(1)" [disabled]="currentPage === totalPages">Suivant →</button>
+  </nav>
+</div>

@@ -1,0 +1,180 @@
+<div class="payment-container">
+  <div class="payment-card">
+    <div class="header">
+      <div class="icon">{{ getSelectedPaymentMethodIcon() }}</div>
+      <div>
+        <h1>Paiement sécurisé</h1>
+        <p>Effectuez votre paiement via mobile money</p>
+      </div>
+    </div>
+
+    <!-- Formulaire de paiement -->
+    <div *ngIf="view === 'form'" class="payment-form">
+      <div class="form-group">
+        <label for="amount">Montant à payer (XOF)</label>
+        <input
+          type="number"
+          id="amount"
+          [(ngModel)]="paymentRequest.amount"
+          min="1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Méthode de paiement</label>
+        <div class="payment-methods">
+          <div
+            *ngFor="let method of paymentMethods"
+            class="method-option"
+            [class.selected]="paymentRequest.paymentMethod === method.value"
+            (click)="paymentRequest.paymentMethod = method.value"
+          >
+            <span class="method-icon">{{ method.icon }}</span>
+            <span class="method-label">{{ method.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Numéro de téléphone</label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          [(ngModel)]="paymentRequest.phoneNumber"
+          placeholder="Ex: 90000000"
+          maxlength="8"
+          pattern="[0-9]{8}"
+        />
+        <small>Entrez votre numéro de mobile money (8 chiffres)</small>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="paymentRequest.description"
+          placeholder="Description du paiement..."
+          rows="2"
+        ></textarea>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <p class="gateway-note">
+        Vous serez redirigé vers la page de paiement sécurisée CinetPay pour saisir votre
+        code de confirmation auprès de votre opérateur.
+      </p>
+
+      <div class="actions">
+        <button class="btn-cancel" (click)="cancelPayment()" [disabled]="isLoading">
+          Annuler
+        </button>
+        <button
+          class="btn-confirm"
+          (click)="initiatePayment()"
+          [disabled]="isLoading"
+        >
+          {{ isLoading ? 'Traitement en cours...' : 'Confirmer le paiement' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Redirection vers la passerelle -->
+    <div *ngIf="view === 'redirecting'" class="payment-success">
+      <div class="success-icon">🔐</div>
+      <h2>Redirection en cours…</h2>
+      <p>Vous allez être redirigé vers la page de paiement sécurisée de votre opérateur.</p>
+    </div>
+
+    <!-- Paiement en attente (espèces à confirmer au guichet, ou mobile money non encore validé) -->
+    <div *ngIf="view === 'pending'" class="payment-success">
+      <div class="success-icon">⏳</div>
+      <h2>Paiement en attente</h2>
+      <p *ngIf="paymentResponse?.paymentMethod === 'CASH'">
+        Rendez-vous au guichet de la mairie pour régler ce montant en espèces. Référence à présenter :
+        <strong>{{ paymentResponse?.reference }}</strong>
+      </p>
+      <p *ngIf="paymentResponse?.paymentMethod !== 'CASH'">
+        Votre paiement est en cours de traitement par l'opérateur. Vous recevrez une notification
+        dès sa confirmation. Référence : <strong>{{ paymentResponse?.reference }}</strong>
+      </p>
+
+      <div class="success-actions">
+        <button class="btn-return" (click)="cancelPayment()">
+          Retour au tableau de bord
+        </button>
+      </div>
+    </div>
+
+    <!-- Échec du paiement -->
+    <div *ngIf="view === 'failed'" class="payment-success">
+      <div class="success-icon">❌</div>
+      <h2>Paiement échoué</h2>
+      <p>{{ errorMessage }}</p>
+
+      <div class="success-actions">
+        <button class="btn-cancel" (click)="retryPayment()">
+          Réessayer
+        </button>
+        <button class="btn-return" (click)="cancelPayment()">
+          Retour au tableau de bord
+        </button>
+      </div>
+    </div>
+
+    <!-- Succès du paiement -->
+    <div *ngIf="view === 'success'" class="payment-success">
+      <div class="success-icon">✅</div>
+      <h2>Paiement réussi !</h2>
+      <p>Une notification de confirmation vous a été envoyée.</p>
+
+      <div class="receipt" id="recu-paiement">
+        <div class="receipt-header">
+          <span class="receipt-title">Reçu de paiement</span>
+          <span class="receipt-subtitle">Mairie de Lomé</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Référence :</span>
+          <span class="value">{{ paymentResponse?.reference }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Montant :</span>
+          <span class="value">{{ paymentResponse?.amount | currency:'XOF' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Méthode :</span>
+          <span class="value">{{ paymentResponse?.paymentMethod }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Transaction ID :</span>
+          <span class="value">{{ paymentResponse?.transactionId }}</span>
+        </div>
+        <div class="detail-row" *ngIf="paymentResponse?.createdAt">
+          <span class="label">Date :</span>
+          <span class="value">{{ paymentResponse?.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="detail-row" *ngIf="paymentResponse?.description">
+          <span class="label">Objet :</span>
+          <span class="value">{{ paymentResponse?.description }}</span>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <button class="btn-cancel" (click)="imprimerRecu()">
+          🖨️ Imprimer le reçu
+        </button>
+        <button class="btn-return" (click)="cancelPayment()">
+          Retour au tableau de bord
+        </button>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="isLoading" class="loader-overlay">
+      <div class="spinner"></div>
+      <p>Traitement du paiement en cours...</p>
+    </div>
+  </div>
+</div>

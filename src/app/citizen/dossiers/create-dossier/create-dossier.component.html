@@ -1,0 +1,260 @@
+<div class="page">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <div class="card">
+    <div class="header">
+      <div class="icon-wrapper">
+        <div class="icon">📂</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="header-text">
+        <h1>Nouveau dossier</h1>
+        <p>Soumettez votre demande administrative à la Mairie de Lomé</p>
+      </div>
+    </div>
+
+    <!-- MESSAGE DE SUCCÈS APRÈS ENREGISTREMENT -->
+    <div class="success-message" *ngIf="isCreated && !showPaymentForm && !paymentSuccess">
+      <div class="check-icon">
+        <div class="check-circle">✓</div>
+      </div>
+      <h2>✅ Dossier enregistré avec succès !</h2>
+      <p>{{ successMessage }}</p>
+      <p class="dossier-id" *ngIf="dossierCreeId">
+        <strong>Référence du dossier :</strong> #{{ dossierCreeId }}
+      </p>
+
+      <div class="actions">
+        <button class="btn primary" (click)="showPaymentForm = true">
+          <i class="fa-solid fa-credit-card"></i>
+          Procéder au paiement
+        </button>
+        <button class="btn secondary" routerLink="/citizen/dossiers">
+          <i class="fa-solid fa-folder-open"></i>
+          Mes dossiers
+        </button>
+        <button class="btn ghost" (click)="retourAuDashboard()">
+          <i class="fa-solid fa-chart-line"></i>
+          Tableau de bord
+        </button>
+      </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="payment-section" *ngIf="showPaymentForm && !paymentSuccess">
+      <div class="header" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(139, 92, 246, 0.2);">
+        <div class="icon-wrapper" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <div class="icon">💳</div>
+          <div class="icon-glow"></div>
+        </div>
+        <div class="header-text">
+          <h1>Paiement du Dossier</h1>
+          <p>Complétez le paiement pour traiter votre demande administrative</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="submitPayment()">
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fa-solid fa-wallet"></i>
+            Méthode de paiement
+            <span class="required">*</span>
+          </label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="paymentMethod" name="paymentMethod" required>
+              <option value="MIXX_YAS">Mixx Yas</option>
+              <option value="MOOV_MONEY">Moov Money</option>
+              <option value="TMONEY">T-Money</option>
+              <option value="CASH">Espèces</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="paymentMethod !== 'CASH'">
+          <label class="form-label">
+            <i class="fa-solid fa-phone"></i>
+            Numéro de téléphone
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="tel" 
+            [(ngModel)]="phoneNumber" 
+            name="phoneNumber"
+            placeholder="01 02 03 04 05"
+            pattern="[0-9]{8,10}"
+            required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Montant à payer (XOF)
+            <span class="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            [(ngModel)]="paymentAmount" 
+            name="paymentAmount"
+            min="100"
+            required />
+        </div>
+
+        <div class="alert alert-danger" *ngIf="paymentErrorMessage">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          {{ paymentErrorMessage }}
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn ghost" routerLink="/citizen/dossiers">
+            <i class="fa-solid fa-arrow-left"></i>
+            Annuler
+          </button>
+          <button type="submit" class="btn primary" [disabled]="paymentLoading">
+            <i class="fa-solid" [class.fa-spinner]="paymentLoading" [class.fa-check-circle]="!paymentLoading" [class.fa-pulse]="paymentLoading"></i>
+            {{ paymentLoading ? 'Traitement en cours...' : 'Payer maintenant' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Payment Success -->
+    <div class="success-message" *ngIf="paymentSuccess">
+      <div class="check-icon">
+        <div class="check-circle">✓</div>
+      </div>
+      <h2>💰 Paiement réussi !</h2>
+      <p>Votre paiement a été enregistré avec succès.</p>
+      <p>Votre dossier est maintenant en cours de traitement.</p>
+
+      <div class="actions">
+        <button class="btn primary" routerLink="/citizen/dossiers">
+          <i class="fa-solid fa-folder-open"></i>
+          Mes dossiers
+        </button>
+        <button class="btn secondary" (click)="retourAuDashboard()">
+          <i class="fa-solid fa-chart-line"></i>
+          Tableau de bord
+        </button>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE PRINCIPAL -->
+    <form *ngIf="!isCreated" (ngSubmit)="creerDossier()">
+      
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fa-solid fa-building"></i>
+          Service municipal
+          <span class="required">*</span>
+        </label>
+        <div class="select-wrapper">
+          <select [(ngModel)]="serviceId" name="serviceId" (change)="onServiceChange()" required>
+            <option [ngValue]="null" disabled selected>-- Veuillez choisir un service municipal --</option>
+            <option *ngFor="let s of services" [ngValue]="s.id">
+              {{ s.nom || s.name }}
+            </option>
+          </select>
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+
+      <div class="form-group highlighted">
+        <label class="form-label">
+          <i class="fa-solid fa-tag"></i>
+          Type de prestation sélectionné
+        </label>
+        <div class="preview-box">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>{{ selectedServiceName || 'Aucun service sélectionné' }}</span>
+        </div>
+      </div>
+
+      <div class="upload-box">
+        <label class="form-label">
+          <i class="fa-solid fa-paperclip"></i>
+          Pièce justificative requise
+          <span class="required">*</span>
+          <span class="file-hint">(PDF, PNG, JPG - Max 100MB)</span>
+        </label>
+        <div class="file-input-wrapper">
+          <input type="file" (change)="onFileSelected($event)" accept=".pdf,.png,.jpg,.jpeg" required />
+          <div class="file-placeholder" *ngIf="!selectedFile">
+            <i class="fa-solid fa-cloud-upload-alt"></i>
+            <span>Cliquez ou glissez-déposez votre fichier</span>
+          </div>
+        </div>
+        <div class="file-preview" *ngIf="selectedFile">
+          <i class="fa-solid fa-file-alt"></i>
+          <span>{{ selectedFile.name }}</span>
+          <span class="file-size">({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+          <button type="button" class="remove-file" (click)="clearFile()">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fa-solid fa-align-left"></i>
+          Description / Détails additionnels
+        </label>
+        <textarea 
+          [(ngModel)]="description" 
+          name="description" 
+          rows="4"
+          placeholder="Fournissez des précisions concernant votre demande pour accélérer son traitement...">
+        </textarea>
+      </div>
+
+      <div class="dynamic" *ngIf="currentFields.length">
+        <div class="dynamic-header">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <h3>Informations complémentaires obligatoires</h3>
+        </div>
+        <div class="grid">
+          <div class="form-group" *ngFor="let f of currentFields">
+            <label class="form-label">
+              {{ f.label }}
+              <span class="required">*</span>
+            </label>
+            <input
+              *ngIf="f.type !== 'textarea'"
+              [type]="f.type"
+              [placeholder]="'Entrez ' + f.label.toLowerCase()"
+              [(ngModel)]="details[f.key]"
+              [name]="f.key"
+              required
+            />
+            <textarea
+              *ngIf="f.type === 'textarea'"
+              [(ngModel)]="details[f.key]"
+              [name]="f.key"
+              rows="3"
+              [placeholder]="'Décrivez ' + f.label.toLowerCase()"
+              required
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn ghost" (click)="retourAuDashboard()">
+          <i class="fa-solid fa-times"></i>
+          Annuler
+        </button>
+        <button type="button" class="btn secondary" routerLink="/citizen/dossiers">
+          <i class="fa-solid fa-folder-open"></i>
+          Mes dossiers
+        </button>
+        <button type="submit" class="btn primary" [disabled]="isLoading || !selectedFile || !serviceId">
+          <i class="fa-solid" [class.fa-spinner]="isLoading" [class.fa-paper-plane]="!isLoading" [class.fa-pulse]="isLoading"></i>
+          {{ isLoading ? 'Envoi en cours...' : 'Soumettre mon dossier' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

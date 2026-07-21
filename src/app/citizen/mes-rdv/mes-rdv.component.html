@@ -1,0 +1,96 @@
+<div class="reservations-container">
+  <header class="section-header">
+    <div class="text">
+      <h2 class="title-white">Mes rendez-vous</h2>
+      <p class="subtitle-white">
+        Suivez vos rendez-vous en mairie liés à vos dossiers administratifs.
+      </p>
+    </div>
+    <button class="btn-reserve-purple" routerLink="/citizen/rdv/nouveau">
+      <span>+</span> Prendre un rendez-vous
+    </button>
+  </header>
+
+  <!-- RECHERCHE -->
+  <div class="search-box">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      (input)="applyFilter()"
+      placeholder="Rechercher un dossier ou un motif..."
+    />
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading-spinner">
+    Chargement de vos rendez-vous...
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-responsive" *ngIf="!loading && filteredRdvs.length > 0; else noReservation">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Dossier / Motif</th>
+          <th>Date & Heure</th>
+          <th>Lieu</th>
+          <th>Statut</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredRdvs">
+          <td>
+            <div class="bien-info">
+              <img [src]="getImageByMotif(r.motif || '')" class="table-img">
+              <span class="bien-name">
+                {{ r.typePrestation || r.referenceDossier || r.motif }}
+              </span>
+            </div>
+          </td>
+          <td>{{ r.dateDebut | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>🏛️ Mairie de Lomé</td>
+          <td>
+            <span class="status-badge" [ngClass]="getBadgeClass(r.statut)">
+              {{ getStatusLabel(r.statut) }}
+            </span>
+          </td>
+          <td class="text-right">
+            <button (click)="selectedRdv = r" class="btn-info">Détail</button>
+            <button
+              (click)="annuler(r)"
+              [disabled]="r.statut === 'ANNULE'"
+              class="btn-cancel">
+              ✕ Annuler
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <ng-template #noReservation>
+    <div class="empty-view" *ngIf="!loading">
+      <div class="icon">🏛️</div>
+      <p>Aucun rendez-vous trouvé.</p>
+    </div>
+  </ng-template>
+
+  <!-- MODAL DETAIL -->
+  <div class="detail-modal-overlay" *ngIf="selectedRdv" (click)="closeDetail()">
+    <div class="detail-modal" (click)="$event.stopPropagation()">
+      <button class="detail-modal-close" (click)="closeDetail()">✕</button>
+      <h3>{{ selectedRdv.typePrestation || selectedRdv.motif }}</h3>
+      <div class="detail-row" *ngIf="selectedRdv.referenceDossier"><strong>Dossier</strong><span>{{ selectedRdv.referenceDossier }}</span></div>
+      <div class="detail-row"><strong>Motif</strong><span>{{ selectedRdv.motif || '—' }}</span></div>
+      <div class="detail-row"><strong>Date</strong><span>{{ selectedRdv.dateDebut | date:'dd/MM/yyyy HH:mm' }}</span></div>
+      <div class="detail-row">
+        <strong>Statut</strong>
+        <span class="status-badge" [ngClass]="getBadgeClass(selectedRdv.statut)">
+          {{ getStatusLabel(selectedRdv.statut) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

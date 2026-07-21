@@ -1,0 +1,207 @@
+<div class="mairie-container">
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+  <div class="bg-orb-3"></div>
+
+  <!-- HEADER PREMIUM -->
+  <header class="page-header">
+    <div class="container">
+      <div class="header-icon">
+        <i class="fa-solid fa-landmark"></i>
+      </div>
+      <span class="top-label">République Togolaise</span>
+      <h1>Patrimoine <span>Municipal</span></h1>
+      <p>Découvrez et réservez les biens disponibles de la Mairie de Lomé</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- RECHERCHE MODERNE -->
+    <div class="search-section">
+      <div class="search-grid single">
+        <div class="search-box">
+          <label>
+            <i class="fa-solid fa-building"></i>
+            Rechercher un bien
+          </label>
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" [(ngModel)]="searchBien" placeholder="Ex: Salle des fêtes, Terrain municipal...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION BIENS MUNICIPAUX -->
+    <section class="content-section">
+      <div class="section-title">
+        <div class="title-icon">
+          <i class="fa-solid fa-city"></i>
+        </div>
+        <div class="title-text">
+          <h2>Patrimoine & Locations</h2>
+          <p>{{ getFilteredBiens().length }} bien(s) disponible(s) à la location</p>
+        </div>
+        <div class="title-line"></div>
+      </div>
+
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des biens...</p>
+      </div>
+
+      <div *ngIf="!loading" class="modern-grid">
+        <div class="premium-card" *ngFor="let b of getFilteredBiens()">
+          <div class="card-image">
+            <img [src]="getImg(b)" (error)="onImgErr($event)" [alt]="b.nom">
+            <div class="image-overlay"></div>
+            <div class="status-badge" [class.available]="b.disponible">
+              <i class="fa-solid" [class.fa-check-circle]="b.disponible" [class.fa-clock]="!b.disponible"></i>
+              {{ b.disponible ? 'Disponible' : 'En usage' }}
+            </div>
+            <div class="price-badge">
+              <span class="price-amount">{{ b.prixLocation | number }}</span>
+              <span class="price-currency">FCFA</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h3>{{ b.nom }}</h3>
+            <p class="location">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ b.localisation || 'Lomé, Togo' }}
+            </p>
+            <p class="description">{{ (b.description || 'Aucune description disponible') | slice:0:80 }}...</p>
+            
+            <div class="card-footer">
+              <button class="btn-detail" (click)="openBienModal(b)">
+                <i class="fa-solid fa-arrow-right"></i>
+                Voir les détails
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="getFilteredBiens().length === 0" class="empty-state">
+          <i class="fa-solid fa-building-circle-xmark"></i>
+          <h3>Aucun bien trouvé</h3>
+          <p>Essayez une autre recherche</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIEN VERS LES SERVICES -->
+    <section class="cross-link">
+      <div class="cross-link-card">
+        <div class="cross-link-icon">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <div class="cross-link-text">
+          <h3>Vous cherchez une démarche administrative ?</h3>
+          <p>Consultez le catalogue de nos services municipaux en ligne</p>
+        </div>
+        <button class="btn-outline" routerLink="/services">
+          <i class="fa-solid fa-arrow-right"></i>
+          Voir les services
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL BIEN (Détails) -->
+  <div class="modal-overlay" *ngIf="selectedBien" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+
+      <div class="modal-body">
+        <div class="modal-image-section">
+          <img [src]="getImg(selectedBien)" (error)="onImgErr($event)" [alt]="selectedBien.nom">
+          <div class="modal-status-badge" [class.available]="selectedBien.disponible">
+            <i class="fa-solid" [class.fa-check-circle]="selectedBien.disponible" [class.fa-clock]="!selectedBien.disponible"></i>
+            {{ selectedBien.disponible ? 'Disponible' : 'En usage' }}
+          </div>
+        </div>
+
+        <div class="modal-info-section">
+          <div class="modal-header">
+            <div class="modal-icon">
+              <i class="fa-solid fa-building"></i>
+            </div>
+            <h2>{{ selectedBien.nom }}</h2>
+          </div>
+
+          <div class="modal-details">
+            <div class="detail-row">
+              <i class="fa-solid fa-location-dot"></i>
+              <div>
+                <strong>Localisation</strong>
+                <p>{{ selectedBien.localisation || 'Lomé, Togo' }}</p>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <i class="fa-solid fa-ruler-combined"></i>
+              <div>
+                <strong>Superficie</strong>
+                <p>{{ selectedBien.superficie || 'Non spécifiée' }} m²</p>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <i class="fa-solid fa-people-group"></i>
+              <div>
+                <strong>Capacité</strong>
+                <p>{{ selectedBien.capacite || 'Non spécifiée' }} personnes</p>
+              </div>
+            </div>
+
+            <div class="detail-row price-row">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <div>
+                <strong>Tarif de location</strong>
+                <p class="modal-price">{{ selectedBien.prixLocation | number }} <span>FCFA</span></p>
+                <small>/ par jour</small>
+              </div>
+            </div>
+
+            <div class="detail-row full-width">
+              <i class="fa-solid fa-align-left"></i>
+              <div>
+                <strong>Description</strong>
+                <p>{{ selectedBien.description || 'Aucune description disponible pour le moment.' }}</p>
+              </div>
+            </div>
+
+            <div class="detail-row full-width" *ngIf="selectedBien.equipements?.length">
+              <i class="fa-solid fa-microchip"></i>
+              <div>
+                <strong>Équipements inclus</strong>
+                <div class="equipments-list">
+                  <span class="equipment-tag" *ngFor="let eq of selectedBien.equipements">
+                    <i class="fa-solid fa-check-circle"></i>
+                    {{ eq }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeModal()">
+              <i class="fa-solid fa-times"></i>
+              Fermer
+            </button>
+            <button class="btn-primary" *ngIf="selectedBien.disponible" (click)="reserverBien(selectedBien)">
+              <i class="fa-solid fa-calendar-check"></i>
+              Réserver ce bien
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

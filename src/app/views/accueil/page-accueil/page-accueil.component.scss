@@ -15,6 +15,10 @@ $gradient-primary: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
 $gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
 $radius: 20px;
 
+// Couleurs d'accent supplémentaires pour varier les icônes/badges sans changer la charte de base
+$accent-teal: #0891b2;
+$accent-gold: #d97706;
+
 /* =========================
    GLOBAL
 ========================= */
@@ -103,14 +107,15 @@ $radius: 20px;
   }
 
   &-outline {
-    background: rgba(255, 255, 255, 0.9);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.92);
+    color: $primary-dark;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 
     &:hover {
       background: white;
       color: $primary-dark;
       transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
   }
 }
@@ -174,6 +179,10 @@ $radius: 20px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  // Le layout parent (.main-stage) ajoute un padding de 24px de chaque côté : on l'annule
+  // ici pour que la photo du hero remplisse vraiment toute la largeur de l'écran.
+  margin: -24px -24px 0;
+  width: calc(100% + 48px);
 
   .hero-slider {
     position: absolute;
@@ -292,6 +301,22 @@ $radius: 20px;
       i { font-size: 1.5rem; color: $primary; }
     }
 
+    // Une couleur d'accent différente par carte pour varier un peu la palette
+    &:nth-child(2) .stat-icon {
+      background: rgba($secondary, 0.1);
+      i { color: $secondary; }
+    }
+
+    &:nth-child(3) .stat-icon {
+      background: rgba($accent-teal, 0.1);
+      i { color: $accent-teal; }
+    }
+
+    &:nth-child(4) .stat-icon {
+      background: rgba($accent-gold, 0.1);
+      i { color: $accent-gold; }
+    }
+
     .stat-details {
       h3 {
         margin: 0 0 5px;
@@ -354,6 +379,22 @@ $radius: 20px;
       font-size: 0.95rem;
     }
   }
+}
+
+// Une touche de couleur différente par section pour rythmer la page
+.biens-section .section-header .header-icon {
+  background: rgba($accent-teal, 0.1);
+  i { color: $accent-teal; }
+}
+
+.testimonials-section .section-header .header-icon {
+  background: rgba($accent-gold, 0.1);
+  i { color: $accent-gold; }
+}
+
+.scroll-section .section-header .header-icon {
+  background: rgba($secondary, 0.12);
+  i { color: $secondary; }
 }
 
 /* =========================

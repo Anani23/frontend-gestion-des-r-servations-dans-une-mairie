@@ -42,6 +42,28 @@ export class PageAccueilComponent implements OnInit {
     { label: 'Satisfaction', value: '98%', icon: 'fa-solid fa-star' }
   ];
 
+  // Avis de citoyens affichés sur la page d'accueil (contenu éditorial statique).
+  testimonials = [
+    {
+      nom: 'Akouvi M.',
+      quartier: 'Agoè-Nyivé',
+      note: 5,
+      texte: "J'ai réservé la salle des fêtes pour un mariage en quelques minutes, tout s'est fait en ligne sans me déplacer. Un vrai gain de temps."
+    },
+    {
+      nom: 'Komla A.',
+      quartier: 'Bè',
+      note: 5,
+      texte: "Ma demande d'acte administratif a été traitée rapidement grâce au suivi de dossier en ligne. Je recommande la plateforme."
+    },
+    {
+      nom: 'Essi T.',
+      quartier: 'Tokoin',
+      note: 4,
+      texte: "Le paiement en ligne est pratique et sécurisé. J'ai pu régler ma redevance depuis mon téléphone sans passer au guichet."
+    }
+  ];
+
   ngOnInit(): void {
     this.loadMairieData();
   }
@@ -116,6 +138,22 @@ export class PageAccueilComponent implements OnInit {
 
   getRepeatedCategories(): any[] {
     return this.categories.length ? [...this.categories, ...this.categories] : [];
+  }
+
+  /**
+   * Durée de l'animation proportionnelle au nombre de catégories : évite un défilement
+   * trop rapide/saccadé quand il n'y a que peu de cartes, et trop lent quand il y en a beaucoup.
+   */
+  getMarqueeDuration(): number {
+    return Math.max(20, this.categories.length * 6);
+  }
+
+  getStars(note: number): number[] {
+    return Array(5).fill(0).map((_, i) => i < note ? 1 : 0);
+  }
+
+  trackByNom(index: number, item: any): string {
+    return item.nom;
   }
 
   trackByLabel(index: number, item: any): string {

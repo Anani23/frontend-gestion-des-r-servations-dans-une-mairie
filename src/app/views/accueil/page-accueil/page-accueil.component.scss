@@ -601,6 +601,96 @@ $radius: 20px;
 }
 
 /* =========================
+   AVIS CITOYENS
+========================= */
+.testimonials-section {
+  padding: 60px 30px;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  background: #ffffff;
+  border-radius: $radius;
+  border: 1px solid rgba($primary, 0.14);
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: $primary;
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.12);
+  }
+
+  .quote-icon {
+    font-size: 1.4rem;
+    color: rgba($primary, 0.25);
+    margin-bottom: 12px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+
+    i {
+      color: $warning;
+      font-size: 0.85rem;
+
+      &.empty {
+        color: rgba($text-secondary, 0.3);
+      }
+    }
+  }
+
+  .testimonial-text {
+    color: $text-primary;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    min-height: 80px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: $gradient-secondary;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    strong {
+      display: block;
+      color: $text-primary;
+      font-size: 0.9rem;
+    }
+
+    span {
+      color: $text-secondary;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+/* =========================
    CATEGORIES MARQUEE
 ========================= */
 .marquee-container {
@@ -626,6 +716,9 @@ $radius: 20px;
   width: max-content;
   animation: scrollMarquee 40s linear infinite;
   will-change: transform;
+  // Force le rendu sur son propre calque GPU pour un défilement fluide, sans saccades.
+  transform: translateZ(0);
+  backface-visibility: hidden;
 
   &:hover {
     animation-play-state: paused;
@@ -633,8 +726,8 @@ $radius: 20px;
 }
 
 @keyframes scrollMarquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% { transform: translateX(0) translateZ(0); }
+  100% { transform: translateX(-50%) translateZ(0); }
 }
 
 .card {

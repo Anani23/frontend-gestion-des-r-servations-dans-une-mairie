@@ -160,6 +160,37 @@
     </div>
   </section>
 
+  <!-- AVIS CITOYENS -->
+  <section class="testimonials-section">
+    <div class="section-header">
+      <div class="header-icon">
+        <i class="fa-solid fa-comment-dots"></i>
+      </div>
+      <div class="header-text">
+        <h2>Ce que disent nos citoyens</h2>
+        <div class="underline"></div>
+        <p>Des retours d'expérience sur les services et démarches en ligne</p>
+      </div>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let t of testimonials; trackBy: trackByNom">
+        <i class="fa-solid fa-quote-left quote-icon"></i>
+        <div class="stars">
+          <i class="fa-solid fa-star" *ngFor="let filled of getStars(t.note)" [class.empty]="!filled"></i>
+        </div>
+        <p class="testimonial-text">{{ t.texte }}</p>
+        <div class="testimonial-author">
+          <div class="avatar">{{ t.nom.charAt(0) }}</div>
+          <div>
+            <strong>{{ t.nom }}</strong>
+            <span>{{ t.quartier }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CATEGORIES SECTION (MARQUEE) -->
   <section class="scroll-section">
     <div class="section-header">
@@ -174,7 +205,7 @@
     </div>
 
     <div class="marquee-container">
-      <div class="marquee-track" *ngIf="categories.length">
+      <div class="marquee-track" *ngIf="categories.length" [style.animation-duration.s]="getMarqueeDuration()">
         <div class="card card-large" *ngFor="let c of getRepeatedCategories()">
           <img [src]="c.image || 'assets/images/mairie-centrale.jpg'" 
                [alt]="c.nom" 

@@ -879,7 +879,7 @@ $accent-gold: #d97706;
     margin-top: -30px;
   }
 
-  .services-section, .biens-section, .scroll-section {
+  .services-section, .biens-section, .scroll-section, .testimonials-section {
     padding: 40px 20px;
   }
 
@@ -887,7 +887,7 @@ $accent-gold: #d97706;
     font-size: 1.5rem;
   }
 
-  .services-grid, .biens-grid {
+  .services-grid, .biens-grid, .testimonials-grid {
     grid-template-columns: 1fr;
   }
 

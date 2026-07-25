@@ -3,5 +3,8 @@ export const environment = {
 
   // ✅ IMPORTANT
   // PAS DE /api ici
-  apiUrl: 'https://backend-de-gestion-d-une-mairie-production.up.railway.app'
+  // Vide = même origine que le site : les requêtes /api/... sont automatiquement
+  // redirigées vers le backend Railway via le rewrite proxy défini dans vercel.json.
+  // Ça permet d'avoir une seule adresse publique pour tout (frontend + backend).
+  apiUrl: ''
 };

@@ -228,8 +228,8 @@ export class AgentDashboardComponent implements OnInit {
   getReservationStatusClass(statut: string): string {
     const statusMap: Record<string, string> = {
       'EN_ATTENTE': 'status-pending',
-      'ACCEPTEE': 'status-confirmed',
-      'REFUSEE': 'status-rejected',
+      'CONFIRMEE': 'status-confirmed',
+      'TERMINEE': 'status-confirmed',
       'ANNULEE': 'status-rejected'
     };
     return statusMap[statut] || 'status-default';
@@ -238,8 +238,8 @@ export class AgentDashboardComponent implements OnInit {
   getReservationStatusLabel(statut: string): string {
     const labelMap: Record<string, string> = {
       'EN_ATTENTE': 'En attente',
-      'ACCEPTEE': 'Acceptée',
-      'REFUSEE': 'Refusée',
+      'CONFIRMEE': 'Confirmée',
+      'TERMINEE': 'Terminée',
       'ANNULEE': 'Annulée'
     };
     return labelMap[statut] || statut;

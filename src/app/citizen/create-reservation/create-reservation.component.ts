@@ -12,6 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 import { BienService } from '../../services/bien.service';
 import { ReservationService } from '../../services/reservation.service';
 import { PaymentService } from '../../services/payment.service';
+import { toLocalIsoDateTime } from '../../shared/utils/datetime.util';
 
 @Component({
   selector: 'app-create-reservation',
@@ -98,12 +99,6 @@ export class CreateReservationComponent implements OnInit {
     }
   }
 
-  private toLocalDateTime(value: string): string {
-    if (!value) return '';
-    const date = new Date(value);
-    return date.toISOString().slice(0, 19);
-  }
-
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -115,6 +110,11 @@ export class CreateReservationComponent implements OnInit {
     const debut = new Date(dateDebut);
     const fin = new Date(dateFin);
 
+    if (debut < new Date()) {
+      this.errorMessage = "La date de début ne peut pas être dans le passé.";
+      return;
+    }
+
     if (fin <= debut) {
       this.errorMessage = "La date de fin doit être strictement après la date de début.";
       return;
@@ -122,8 +122,11 @@ export class CreateReservationComponent implements OnInit {
 
     const payload = {
       bienId: Number(bienId),
-      dateDebut: this.toLocalDateTime(dateDebut),
-      dateFin: this.toLocalDateTime(dateFin),
+      // toLocalIsoDateTime garde l'heure locale telle que saisie (le backend stocke un
+      // LocalDateTime "naif", sans fuseau horaire) : ne pas utiliser Date.toISOString(),
+      // qui convertirait vers UTC et decalerait l'heure reellement voulue par le citoyen.
+      dateDebut: toLocalIsoDateTime(debut),
+      dateFin: toLocalIsoDateTime(fin),
       motif: motif
     };
 
@@ -147,7 +150,9 @@ export class CreateReservationComponent implements OnInit {
         if (err.status === 403) {
           this.errorMessage = "Session expirée. Veuillez vous reconnecter.";
         } else if (err.status === 409) {
-          this.errorMessage = "Ce créneau est déjà réservé pour ce bien.";
+          this.errorMessage = err.error?.message || "Ce créneau est déjà réservé pour ce bien.";
+        } else if (err.status === 400) {
+          this.errorMessage = err.error?.message || "Données invalides. Vérifiez les dates saisies.";
         } else {
           this.errorMessage = "Une erreur est survenue lors de l'envoi de votre demande.";
         }

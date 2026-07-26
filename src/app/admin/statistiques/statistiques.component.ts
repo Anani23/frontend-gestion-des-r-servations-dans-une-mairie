@@ -160,8 +160,10 @@ export class StatistiquesComponent implements OnInit {
         const reservations = res.reservations || [];
         this.stats.reservationsTotal = reservations.length;
         this.stats.reservationsEnAttente = reservations.filter((r: any) => r.statut === 'EN_ATTENTE').length;
-        this.stats.reservationsAcceptees = reservations.filter((r: any) => r.statut === 'ACCEPTEE').length;
-        this.stats.reservationsRefusees = reservations.filter((r: any) => r.statut === 'REFUSEE').length;
+        // ReservationStatus (backend) n'a pas d'etat "refuse" distinct : ACCEPTEE/REFUSEE
+        // n'existent pas, seuls EN_ATTENTE/CONFIRMEE/ANNULEE/TERMINEE sont possibles.
+        this.stats.reservationsAcceptees = reservations.filter((r: any) => r.statut === 'CONFIRMEE').length;
+        this.stats.reservationsRefusees = 0;
         this.stats.reservationsAnnulees = reservations.filter((r: any) => r.statut === 'ANNULEE').length;
         
         // Traitement des rendez-vous

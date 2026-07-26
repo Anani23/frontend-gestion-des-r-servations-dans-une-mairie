@@ -6,6 +6,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { RdvService, Rdv } from '../../services/rdv.service';
 import { DossiersService } from '../../services/dossiers.service';
 import { Dossier } from '../../models/dossier.model';
+import { toLocalIsoDateTime } from '../../shared/utils/datetime.util';
 
 @Component({
   selector: 'app-prendre-rdv',
@@ -45,10 +46,9 @@ export class PrendreRdvComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    // ✅ Définit la date minimale à aujourd'hui
-    const today = new Date();
-    this.minDate = today.toISOString().split('T')[0];
-    
+    // ✅ Définit la date/heure minimale à maintenant (format attendu par <input type="datetime-local">)
+    this.minDate = toLocalIsoDateTime(new Date()).slice(0, 16);
+
     this.loadDossiers();
     this.route.queryParams.subscribe(params => {
       this.dossierId = params['dossierId'] || null;
@@ -95,12 +95,26 @@ export class PrendreRdvComponent implements OnInit {
       return;
     }
     if (!this.form.dateDebut) {
-      this.errorMessage = 'Veuillez sélectionner une date.';
+      this.errorMessage = 'Veuillez sélectionner une date et une heure.';
       return;
     }
     if (!this.form.motif) {
       this.errorMessage = 'Veuillez renseigner le motif de votre visite.';
       return;
+    }
+
+    const debut = new Date(this.form.dateDebut);
+    if (debut < new Date()) {
+      this.errorMessage = 'La date et heure sélectionnées ne peuvent pas être dans le passé.';
+      return;
+    }
+
+    if (this.form.dateFin) {
+      const fin = new Date(this.form.dateFin);
+      if (fin <= debut) {
+        this.errorMessage = "L'heure de fin doit être postérieure à l'heure de début.";
+        return;
+      }
     }
 
     this.isLoading = true;
@@ -109,8 +123,10 @@ export class PrendreRdvComponent implements OnInit {
 
     const payload = {
       motif: this.form.motif,
-      dateDebut: `${this.form.dateDebut}T08:00:00`,
-      dateFin: this.form.dateFin ? `${this.form.dateFin}T09:00:00` : undefined,
+      // toLocalIsoDateTime garde l'heure locale telle que choisie (le backend stocke un
+      // LocalDateTime "naif") plutot que de la convertir en UTC.
+      dateDebut: toLocalIsoDateTime(this.form.dateDebut),
+      dateFin: this.form.dateFin ? toLocalIsoDateTime(this.form.dateFin) : undefined,
       dossierId: dossierIdValue ? Number(dossierIdValue) : undefined
     };
 

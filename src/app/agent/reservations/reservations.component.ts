@@ -9,9 +9,9 @@ type StatutFiltre = Reservation['statut'] | 'TOUS';
 const FILTER_QUERY_MAP: Record<string, StatutFiltre> = {
   all: 'TOUS',
   attente: 'EN_ATTENTE',
-  acceptees: 'ACCEPTEE',
-  refusees: 'REFUSEE',
-  annulees: 'ANNULEE'
+  acceptees: 'CONFIRMEE',
+  annulees: 'ANNULEE',
+  terminees: 'TERMINEE'
 };
 
 @Component({
@@ -111,7 +111,7 @@ export class AgentReservationsComponent implements OnInit {
 
   accepter(reservation: Reservation): void {
     if (!reservation.id) return;
-    this.reservationService.updateStatus(reservation.id, 'ACCEPTEE').subscribe({
+    this.reservationService.updateStatus(reservation.id, 'CONFIRMEE').subscribe({
       next: () => this.loadReservations(),
       error: (err) => console.error(err)
     });
@@ -119,7 +119,9 @@ export class AgentReservationsComponent implements OnInit {
 
   refuser(reservation: Reservation): void {
     if (!reservation.id) return;
-    this.reservationService.updateStatus(reservation.id, 'REFUSEE').subscribe({
+    // ReservationStatus (backend) n'a pas d'etat "refuse" distinct : une reservation
+    // refusee par l'agent est marquee ANNULEE, comme une annulation citoyenne.
+    this.reservationService.updateStatus(reservation.id, 'ANNULEE').subscribe({
       next: () => this.loadReservations(),
       error: (err) => console.error(err)
     });
@@ -127,8 +129,8 @@ export class AgentReservationsComponent implements OnInit {
 
   getStatusBadgeClass(statut: Reservation['statut']): string {
     switch (statut) {
-      case 'ACCEPTEE': return 'status-validated';
-      case 'REFUSEE': return 'status-rejected';
+      case 'CONFIRMEE': return 'status-validated';
+      case 'TERMINEE': return 'status-validated';
       case 'ANNULEE': return 'status-rejected';
       default: return 'status-pending';
     }
@@ -136,8 +138,8 @@ export class AgentReservationsComponent implements OnInit {
 
   getStatusText(statut: Reservation['statut']): string {
     switch (statut) {
-      case 'ACCEPTEE': return 'Acceptée';
-      case 'REFUSEE': return 'Refusée';
+      case 'CONFIRMEE': return 'Confirmée';
+      case 'TERMINEE': return 'Terminée';
       case 'ANNULEE': return 'Annulée';
       default: return 'En attente';
     }

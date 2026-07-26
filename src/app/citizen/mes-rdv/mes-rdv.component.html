@@ -84,7 +84,8 @@
       <h3>{{ selectedRdv.typePrestation || selectedRdv.motif }}</h3>
       <div class="detail-row" *ngIf="selectedRdv.referenceDossier"><strong>Dossier</strong><span>{{ selectedRdv.referenceDossier }}</span></div>
       <div class="detail-row"><strong>Motif</strong><span>{{ selectedRdv.motif || '—' }}</span></div>
-      <div class="detail-row"><strong>Date</strong><span>{{ selectedRdv.dateDebut | date:'dd/MM/yyyy HH:mm' }}</span></div>
+      <div class="detail-row"><strong>Début</strong><span>{{ selectedRdv.dateDebut | date:'dd/MM/yyyy HH:mm' }}</span></div>
+      <div class="detail-row" *ngIf="selectedRdv.dateFin"><strong>Fin</strong><span>{{ selectedRdv.dateFin | date:'dd/MM/yyyy HH:mm' }}</span></div>
       <div class="detail-row">
         <strong>Statut</strong>
         <span class="status-badge" [ngClass]="getBadgeClass(selectedRdv.statut)">

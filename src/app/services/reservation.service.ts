@@ -16,7 +16,7 @@ export interface Reservation {
   dateDebut: string;
   dateFin: string;
   motif?: string;
-  statut: 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE' | 'ANNULEE';
+  statut: 'EN_ATTENTE' | 'CONFIRMEE' | 'ANNULEE' | 'TERMINEE';
   createdAt?: string;
 }
 

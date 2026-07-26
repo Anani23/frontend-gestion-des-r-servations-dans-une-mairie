@@ -44,7 +44,8 @@
       <thead>
         <tr>
           <th>Bien / Service</th>
-          <th>Date de début</th>
+          <th>Début</th>
+          <th>Fin</th>
           <th>Localisation</th>
           <th>Statut</th>
           <th class="text-right">Actions</th>
@@ -67,19 +68,22 @@
             {{ r.dateDebut | date:'dd/MM/yyyy HH:mm' }}
            </td>
           <td>
+            {{ r.dateFin | date:'dd/MM/yyyy HH:mm' }}
+           </td>
+          <td>
             📍 Lomé, Togo
            </td>
           <td>
-            <!-- La classe dynamique gère EN_ATTENTE, ACCEPTEE, REFUSEE, ANNULEE -->
+            <!-- La classe dynamique gère EN_ATTENTE, CONFIRMEE, TERMINEE, ANNULEE -->
             <span class="status-badge" [ngClass]="getStatusClass(r.statut)">
               {{ getStatusLabel(r.statut) }}
             </span>
            </td>
           <td class="text-right">
-            <!-- On désactive si c'est déjà annulé ou refusé -->
+            <!-- On désactive si ce n'est plus modifiable -->
             <button
               (click)="annuler(r)"
-              [disabled]="r.statut === 'ANNULEE' || r.statut === 'REFUSEE'"
+              [disabled]="r.statut === 'ANNULEE' || r.statut === 'TERMINEE'"
               class="btn-cancel">
               ✕ Annuler
             </button>

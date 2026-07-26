@@ -113,10 +113,9 @@ export class ReservationsComponent implements OnInit {
     switch (statut) {
       case 'EN_ATTENTE':
         return 'status-pending';
-      case 'ACCEPTEE':
       case 'CONFIRMEE':
+      case 'TERMINEE':
         return 'status-success';
-      case 'REFUSEE':
       case 'ANNULEE':
         return 'status-danger';
       default:
@@ -128,11 +127,10 @@ export class ReservationsComponent implements OnInit {
     switch (statut) {
       case 'EN_ATTENTE':
         return 'En attente';
-      case 'ACCEPTEE':
       case 'CONFIRMEE':
-        return 'Acceptée';
-      case 'REFUSEE':
-        return 'Refusée';
+        return 'Confirmée';
+      case 'TERMINEE':
+        return 'Terminée';
       case 'ANNULEE':
         return 'Annulée';
       default:

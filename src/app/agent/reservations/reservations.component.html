@@ -43,18 +43,18 @@
         <span class="stat-label">En attente</span>
       </div>
     </div>
-    <div class="stat-card validated" [class.active]="selectedStatus === 'ACCEPTEE'" (click)="filterByStatus('ACCEPTEE')">
+    <div class="stat-card validated" [class.active]="selectedStatus === 'CONFIRMEE'" (click)="filterByStatus('CONFIRMEE')">
       <i class="fa-regular fa-circle-check"></i>
       <div class="stat-info">
-        <span class="stat-value">{{ getCount('ACCEPTEE') }}</span>
-        <span class="stat-label">Acceptées</span>
+        <span class="stat-value">{{ getCount('CONFIRMEE') }}</span>
+        <span class="stat-label">Confirmées</span>
       </div>
     </div>
-    <div class="stat-card rejected" [class.active]="selectedStatus === 'REFUSEE'" (click)="filterByStatus('REFUSEE')">
-      <i class="fa-solid fa-circle-xmark"></i>
+    <div class="stat-card validated" [class.active]="selectedStatus === 'TERMINEE'" (click)="filterByStatus('TERMINEE')">
+      <i class="fa-solid fa-flag-checkered"></i>
       <div class="stat-info">
-        <span class="stat-value">{{ getCount('REFUSEE') }}</span>
-        <span class="stat-label">Refusées</span>
+        <span class="stat-value">{{ getCount('TERMINEE') }}</span>
+        <span class="stat-label">Terminées</span>
       </div>
     </div>
     <div class="stat-card rejected" [class.active]="selectedStatus === 'ANNULEE'" (click)="filterByStatus('ANNULEE')">
@@ -97,7 +97,7 @@
           </td>
           <td data-label="Bien"><strong>{{ getNomBien(r) }}</strong></td>
           <td data-label="Période">
-            {{ r.dateDebut | date:'dd/MM/yyyy' }} → {{ r.dateFin | date:'dd/MM/yyyy' }}
+            {{ r.dateDebut | date:'dd/MM/yyyy HH:mm' }} → {{ r.dateFin | date:'dd/MM/yyyy HH:mm' }}
           </td>
           <td data-label="Motif">{{ r.motif || '—' }}</td>
           <td data-label="Statut">

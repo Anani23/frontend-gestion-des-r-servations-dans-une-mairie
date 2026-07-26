@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -17,7 +18,8 @@ const PREVIEW_COUNT = 6;
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   templateUrl: './page-accueil.component.html',
   styleUrls: ['./page-accueil.component.scss']
@@ -28,12 +30,15 @@ export class PageAccueilComponent implements OnInit {
   private bienService = inject(BienService);
   private serviceService = inject(ServiceService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
   public authService = inject(AuthService);
 
   categories: any[] = [];
   services: any[] = [];
   biens: any[] = [];
   isLoading = true;
+  heroSearchTerm = '';
+  readonly skeletonSlots = Array(PREVIEW_COUNT).fill(0);
 
   stats = [
     { label: 'Services Publics', value: '24+', icon: 'fa-solid fa-file-alt' },
@@ -162,5 +167,14 @@ export class PageAccueilComponent implements OnInit {
 
   onImgError(event: any): void {
     event.target.src = 'assets/images/mairie-centrale.jpg';
+  }
+
+  onHeroSearch(): void {
+    const term = this.heroSearchTerm.trim();
+    this.router.navigate(['/services'], term ? { queryParams: { q: term } } : {});
+  }
+
+  scrollToContent(): void {
+    document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' });
   }
 }

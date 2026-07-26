@@ -26,6 +26,16 @@
         Modernisation et transparence au service des citoyens de la capitale.
       </p>
 
+      <form class="hero-search" (ngSubmit)="onHeroSearch()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          name="heroSearch"
+          [(ngModel)]="heroSearchTerm"
+          placeholder="Rechercher une démarche, un acte, une salle...">
+        <button type="submit">Rechercher</button>
+      </form>
+
       <div class="hero-actions">
         <button class="btn btn-primary" routerLink="/services">
           <i class="fa-solid fa-file-alt"></i>
@@ -38,13 +48,17 @@
       </div>
     </div>
 
+    <a class="scroll-cue" href="javascript:void(0)" (click)="scrollToContent()" aria-label="Défiler vers le contenu">
+      <i class="fa-solid fa-chevron-down"></i>
+    </a>
+
     <svg class="hero-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0,40 C240,90 480,10 720,35 C960,60 1200,90 1440,45 L1440,100 L0,100 Z"></path>
     </svg>
   </section>
 
   <!-- STATS SECTION -->
-  <section class="stats-grid">
+  <section class="stats-grid" id="main-content">
     <div class="stat-item" *ngFor="let s of stats; trackBy: trackByLabel">
       <div class="stat-icon">
         <i [class]="getStatIcon(s.label)"></i>
@@ -57,7 +71,7 @@
   </section>
 
   <!-- SERVICES SECTION -->
-  <section class="services-section" *ngIf="services.length">
+  <section class="services-section" *ngIf="isLoading || services.length">
     <div class="section-header">
       <div class="header-icon">
         <i class="fa-solid fa-file-signature"></i>
@@ -69,7 +83,16 @@
       </div>
     </div>
 
-    <div class="services-grid">
+    <div class="services-grid skeleton-grid" *ngIf="isLoading">
+      <div class="skeleton-card" *ngFor="let i of skeletonSlots">
+        <div class="skeleton-block skeleton-image"></div>
+        <div class="skeleton-block skeleton-line w-70"></div>
+        <div class="skeleton-block skeleton-line w-100"></div>
+        <div class="skeleton-block skeleton-line w-40"></div>
+      </div>
+    </div>
+
+    <div class="services-grid" *ngIf="!isLoading">
       <div class="service-card" *ngFor="let s of services" routerLink="/services">
         <div class="service-image">
           <img [src]="s.image || 'assets/images/mairie-centrale.jpg'"
@@ -118,7 +141,16 @@
       </div>
     </div>
 
-    <div class="biens-grid">
+    <div class="biens-grid skeleton-grid" *ngIf="isLoading">
+      <div class="skeleton-card" *ngFor="let i of skeletonSlots">
+        <div class="skeleton-block skeleton-image"></div>
+        <div class="skeleton-block skeleton-line w-70"></div>
+        <div class="skeleton-block skeleton-line w-100"></div>
+        <div class="skeleton-block skeleton-line w-40"></div>
+      </div>
+    </div>
+
+    <div class="biens-grid" *ngIf="!isLoading">
       <div class="bien-card" *ngFor="let b of biens">
         <div class="bien-image">
           <img [src]="b.image || 'assets/images/mairie-centrale.jpg'"

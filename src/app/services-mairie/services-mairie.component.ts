@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -19,6 +19,7 @@ export class ServicesMairieComponent implements OnInit {
 
   private serviceService = inject(ServiceService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
 
   services: any[] = [];
   loading = true;
@@ -27,6 +28,7 @@ export class ServicesMairieComponent implements OnInit {
   selectedService: any = null;
 
   ngOnInit(): void {
+    this.searchService = this.route.snapshot.queryParamMap.get('q') || '';
     this.loadData();
   }
 

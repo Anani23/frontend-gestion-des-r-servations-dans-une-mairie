@@ -60,4 +60,14 @@
   <!-- Footer -->
   <app-default-footer *ngIf="!isAuthPage" class="footer-component"></app-default-footer>
 
+  <!-- Retour en haut -->
+  <button
+    class="back-to-top"
+    [class.visible]="showBackToTop"
+    *ngIf="!isAuthPage"
+    (click)="scrollToTop()"
+    aria-label="Retour en haut de page">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
 </div>

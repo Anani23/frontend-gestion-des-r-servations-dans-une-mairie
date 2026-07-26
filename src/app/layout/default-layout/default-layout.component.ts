@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -25,6 +25,16 @@ export class DefaultLayoutComponent implements OnInit {
   
   public isAuthPage: boolean = false;
   public navItems: NavItem[] = [];
+  public showBackToTop: boolean = false;
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.showBackToTop = (document.scrollingElement?.scrollTop || window.scrollY) > 400;
+  }
+
+  scrollToTop(): void {
+    document.scrollingElement?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   ngOnInit(): void {
     this.updateLayout();

@@ -1,29 +1,39 @@
-// Variables de couleurs professionnelles
-$primary-dark: #1e293b;
-$primary-blue: #3b82f6;
-$bg-light: #f8fafc;
-$text-muted: #64748b;
-$shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+// Palette harmonisee avec le reste du site public
+$primary: #7c3aed;
+$primary-dark: #6d28d9;
+$secondary: #ec4899;
+$success: #059669;
+$danger: #dc2626;
+$navy: #1e1b2e;
+$bg-light: #f2e8fc;
+$text-muted: #6b6478;
+$shadow-sm: 0 4px 18px rgba(124, 58, 237, 0.06);
+$shadow-md: 0 15px 30px rgba(124, 58, 237, 0.14);
+$gradient-primary: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+$gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
 
 .organisation-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  background-color: $bg-light;
+  background: linear-gradient(160deg, #f2e8fc 0%, #e9dbf9 45%, #f6e5f0 100%);
   font-family: 'Inter', system-ui, sans-serif;
 
   .org-header {
     text-align: center;
     margin-bottom: 50px;
-    
+
     h1 {
       font-size: 2.5rem;
-      color: $primary-dark;
+      color: $navy;
       font-weight: 800;
       margin-bottom: 10px;
+      background: $gradient-secondary;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    
+
     p {
       color: $text-muted;
       font-size: 1.1rem;
@@ -38,13 +48,23 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 
   .section-title {
     margin-bottom: 25px;
-    border-left: 4px solid $primary-blue;
-    padding-left: 15px;
-    
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 26px;
+      border-radius: 6px;
+      background: $gradient-secondary;
+    }
+
     h2 {
       font-size: 1.5rem;
-      color: $primary-dark;
+      color: $navy;
       margin: 0;
+      font-weight: 700;
     }
   }
 }
@@ -58,25 +78,43 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   .dept-card {
     background: white;
     padding: 30px;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: $shadow-sm;
+    position: relative;
+    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-top: 5px solid var(--accent-color);
+    border: 1px solid rgba(124, 58, 237, 0.12);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--accent-color, #{$primary});
+    }
 
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
       box-shadow: $shadow-md;
+      border-color: $primary;
+
+      .dept-icon { transform: scale(1.1) rotate(-4deg); }
     }
 
     .dept-icon {
       font-size: 2.5rem;
       margin-bottom: 15px;
+      display: inline-block;
+      transition: transform 0.35s ease;
     }
 
     h3 {
       font-size: 1.25rem;
-      color: $primary-dark;
+      color: $navy;
       margin-bottom: 10px;
+      font-weight: 700;
     }
 
     p {
@@ -103,21 +141,29 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 .team-list {
   background: white;
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: $shadow-sm;
+  border: 1px solid rgba(124, 58, 237, 0.12);
 
   .team-member {
     display: flex;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.08);
+    transition: transform 0.25s ease;
 
     &:last-child { border-bottom: none; }
+
+    &:hover {
+      transform: translateX(6px);
+
+      .avatar { transform: scale(1.08); }
+    }
 
     .avatar {
       width: 50px;
       height: 50px;
-      background: $primary-blue;
+      background: $gradient-secondary;
       color: white;
       border-radius: 50%;
       display: flex;
@@ -125,10 +171,13 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       justify-content: center;
       font-weight: bold;
       margin-right: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba($primary, 0.08);
+      transition: transform 0.25s ease;
     }
 
     .member-info {
-      h4 { margin: 0; font-size: 1rem; color: $primary-dark; }
+      h4 { margin: 0; font-size: 1rem; color: $navy; }
       p { margin: 0; font-size: 0.85rem; color: $text-muted; }
     }
   }
@@ -143,10 +192,18 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   .bien-item {
     display: flex;
     background: white;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     box-shadow: $shadow-sm;
+    border: 1px solid rgba(124, 58, 237, 0.12);
     height: 90px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: $shadow-md;
+      border-color: $primary;
+    }
 
     img {
       width: 120px;
@@ -159,14 +216,14 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       flex-direction: column;
       justify-content: center;
 
-      h4 { margin: 0 0 5px; font-size: 0.95rem; }
-      
+      h4 { margin: 0 0 5px; font-size: 0.95rem; color: $navy; }
+
       .badge {
         font-size: 0.75rem;
-        font-weight: 600;
-        
-        &.available { color: #10b981; }
-        &:not(.available) { color: #ef4444; }
+        font-weight: 700;
+
+        &.available { color: $success; }
+        &:not(.available) { color: $danger; }
       }
     }
   }
@@ -176,10 +233,10 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 .services-footer {
   margin-top: 50px;
   text-align: center;
-  background: $primary-dark;
+  background: $gradient-primary;
   color: white;
   padding: 40px;
-  border-radius: 20px;
+  border-radius: 24px;
 
   h3 { margin-bottom: 25px; font-weight: 300; letter-spacing: 1px; }
 
@@ -190,17 +247,17 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     gap: 10px;
 
     .tag {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       padding: 8px 18px;
       border-radius: 30px;
       font-size: 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       transition: all 0.3s ease;
       cursor: pointer;
 
       &:hover {
-        background: $primary-blue;
-        border-color: $primary-blue;
+        background: $secondary;
+        border-color: $secondary;
         transform: scale(1.05);
       }
     }

@@ -86,12 +86,16 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
     width: 80px;
     height: 80px;
     background: $gradient-secondary;
-    border-radius: 24px;
+    border-radius: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 25px;
-    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25), 0 0 0 8px rgba($primary, 0.06);
+    transform: rotate(-4deg);
+    transition: transform 0.4s ease;
+
+    &:hover { transform: rotate(0deg) scale(1.05); }
 
     i {
       font-size: 2rem;
@@ -153,23 +157,45 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
     padding: 24px;
     display: flex;
     gap: 18px;
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: 0 4px 18px rgba(124, 58, 237, 0.05);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background: $gradient-secondary;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.35s ease;
+    }
 
     &:hover {
       transform: translateX(8px);
       border-color: $primary;
       box-shadow: 0 10px 30px rgba(139, 92, 246, 0.12);
+
+      &::before { transform: scaleY(1); }
+
+      .info-icon { transform: scale(1.08); }
     }
 
     .info-icon {
       width: 50px;
       height: 50px;
-      background: rgba(139, 92, 246, 0.1);
-      border-radius: 16px;
+      background: rgba(139, 92, 246, 0.08);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba($primary, 0.06);
+      transition: transform 0.35s ease;
 
       i {
         font-size: 1.3rem;
@@ -232,8 +258,20 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
   border: 1px solid rgba(124, 58, 237, 0.16);
   border-radius: 32px;
   padding: 40px;
+  position: relative;
+  overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 24px rgba(124, 58, 237, 0.06);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: $gradient-secondary;
+  }
 
   &:hover {
     border-color: rgba(139, 92, 246, 0.35);
@@ -252,10 +290,11 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, $secondary 100%);
       width: 55px;
       height: 55px;
       background: rgba(139, 92, 246, 0.1);
-      border-radius: 18px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 0 4px rgba($primary, 0.06);
 
       i {
         font-size: 1.4rem;

@@ -91,22 +91,42 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
     width: 80px;
     height: 80px;
     background: $gradient-secondary;
-    border-radius: 24px;
+    border-radius: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
-    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25), 0 0 0 8px rgba(124, 58, 237, 0.06);
+    transform: rotate(-4deg);
+    transition: transform 0.4s ease;
+
+    &:hover { transform: rotate(0deg) scale(1.05); }
 
     i { font-size: 2rem; color: white; }
   }
 
   .top-label {
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba($primary, 0.08);
+    border: 1px solid rgba($primary, 0.2);
+    padding: 6px 18px;
+    border-radius: 100px;
+    font-size: 0.8rem;
     color: $primary;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     font-weight: 600;
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $secondary;
+      box-shadow: 0 0 0 3px rgba($secondary, 0.25);
+    }
   }
 
   h1 {
@@ -207,13 +227,17 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
     width: 45px;
     height: 45px;
     background: rgba(139, 92, 246, 0.12);
-    border-radius: 14px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: rotate(-6deg);
+    transition: transform 0.35s ease;
 
-    i { font-size: 1.3rem; color: $primary; }
+    i { font-size: 1.3rem; color: $primary; transform: rotate(6deg); }
   }
+
+  &:hover .title-icon { transform: rotate(0deg); }
 
   .title-text {
     h2 {
@@ -249,13 +273,32 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
   border: 1px solid $border-color;
   border-radius: 24px;
   overflow: hidden;
+  position: relative;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gradient-secondary;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: 2;
+  }
 
   &:hover {
     transform: translateY(-8px);
     border-color: $primary;
     box-shadow: 0 25px 45px rgba(139, 92, 246, 0.15);
+
+    &::before { transform: scaleX(1); }
+
+    .service-icon { transform: scale(1.08) rotate(-4deg); }
   }
 
   .card-content {
@@ -323,11 +366,13 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
     .service-icon {
       width: 50px;
       height: 50px;
-      background: rgba(139,92,246,0.12);
-      border-radius: 14px;
+      background: rgba(139,92,246,0.1);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 0 4px rgba($primary, 0.06);
+      transition: transform 0.35s ease;
 
       i { font-size: 1.5rem; color: $primary; }
     }
@@ -672,11 +717,13 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
   width: 80px;
   height: 80px;
   background: $gradient-secondary;
-  border-radius: 24px;
+  border-radius: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+  transform: rotate(-4deg);
+  box-shadow: 0 0 0 8px rgba($primary, 0.06);
 
   i {
     font-size: 2.2rem;

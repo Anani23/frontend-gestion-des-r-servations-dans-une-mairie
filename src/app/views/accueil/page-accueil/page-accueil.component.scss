@@ -78,6 +78,11 @@ $accent-gold: #d97706;
   50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
 }
 
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.15); }
+}
+
 /* =========================
    BUTTONS
 ========================= */
@@ -210,24 +215,45 @@ $accent-gold: #d97706;
       width: 80px;
       height: 80px;
       background: $gradient-secondary;
-      border-radius: 24px;
+      border-radius: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 25px;
-      box-shadow: 0 15px 35px rgba($primary, 0.3);
+      box-shadow: 0 15px 35px rgba($primary, 0.3), 0 0 0 8px rgba(255, 255, 255, 0.08);
+      position: relative;
+      transform: rotate(-4deg);
+      transition: transform 0.4s ease;
+
+      &:hover { transform: rotate(0deg) scale(1.05); }
 
       i { font-size: 2rem; color: white; }
     }
 
     .top-badge {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 8px 22px;
       border-radius: 100px;
-      font-size: 0.8rem;
-      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 20px;
       color: #e9d5ff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+
+      &::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: $secondary;
+        box-shadow: 0 0 0 3px rgba($secondary, 0.35);
+      }
     }
 
     h1 {
@@ -257,6 +283,20 @@ $accent-gold: #d97706;
       flex-wrap: wrap;
     }
   }
+
+  .hero-wave {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 90px;
+    z-index: 4;
+    pointer-events: none;
+
+    path {
+      fill: #f2e8fc;
+    }
+  }
 }
 
 /* =========================
@@ -274,7 +314,7 @@ $accent-gold: #d97706;
 
   .stat-item {
     background: #ffffff;
-    padding: 20px;
+    padding: 22px 20px;
     border-radius: $radius;
     display: flex;
     gap: 15px;
@@ -282,40 +322,69 @@ $accent-gold: #d97706;
     border: 1px solid rgba($primary, 0.14);
     transition: all 0.3s ease;
     box-shadow: 0 10px 30px rgba(124, 58, 237, 0.08);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: $gradient-secondary;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
 
     &:hover {
       transform: translateY(-5px);
       border-color: $primary;
       box-shadow: 0 15px 35px rgba($primary, 0.15);
+
+      &::before { transform: scaleX(1); }
+
+      .stat-icon { transform: scale(1.08); }
     }
 
     .stat-icon {
       width: 55px;
       height: 55px;
-      background: rgba($primary, 0.1);
-      border-radius: 16px;
+      background: rgba($primary, 0.08);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba($primary, 0.06);
+      transition: transform 0.35s ease;
 
-      i { font-size: 1.5rem; color: $primary; }
+      i { font-size: 1.4rem; color: $primary; }
     }
 
     // Une couleur d'accent différente par carte pour varier un peu la palette
     &:nth-child(2) .stat-icon {
-      background: rgba($secondary, 0.1);
+      background: rgba($secondary, 0.08);
+      box-shadow: 0 0 0 4px rgba($secondary, 0.06);
       i { color: $secondary; }
     }
 
     &:nth-child(3) .stat-icon {
-      background: rgba($accent-teal, 0.1);
+      background: rgba($accent-teal, 0.08);
+      box-shadow: 0 0 0 4px rgba($accent-teal, 0.06);
       i { color: $accent-teal; }
     }
 
     &:nth-child(4) .stat-icon {
-      background: rgba($accent-gold, 0.1);
+      background: rgba($accent-gold, 0.08);
+      box-shadow: 0 0 0 4px rgba($accent-gold, 0.06);
       i { color: $accent-gold; }
     }
+
+    &:nth-child(2)::before { background: linear-gradient(135deg, $secondary, $primary); }
+    &:nth-child(3)::before { background: linear-gradient(135deg, $accent-teal, $primary-light); }
+    &:nth-child(4)::before { background: linear-gradient(135deg, $accent-gold, $secondary); }
 
     .stat-details {
       h3 {
@@ -349,14 +418,18 @@ $accent-gold: #d97706;
     width: 60px;
     height: 60px;
     background: rgba($primary, 0.1);
-    border-radius: 18px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 15px;
+    transform: rotate(-6deg);
+    transition: transform 0.35s ease;
 
-    i { font-size: 1.6rem; color: $primary; }
+    i { font-size: 1.6rem; color: $primary; transform: rotate(6deg); }
   }
+
+  &:hover .header-icon { transform: rotate(0deg); }
 
   .header-text {
     h2 {
@@ -372,6 +445,20 @@ $accent-gold: #d97706;
       background: $gradient-primary;
       margin: 0 auto 12px;
       border-radius: 20px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: $secondary;
+        border: 2px solid #fff;
+      }
     }
 
     p {
@@ -420,11 +507,28 @@ $accent-gold: #d97706;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gradient-secondary;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: 4;
+  }
 
   &:hover {
     transform: translateY(-8px);
     border-color: $primary;
     box-shadow: 0 25px 45px rgba($primary, 0.15);
+
+    &::before { transform: scaleX(1); }
   }
 
   .service-image {
@@ -487,12 +591,24 @@ $accent-gold: #d97706;
       .service-badge {
         background: rgba($primary, 0.1);
         color: $primary;
-        padding: 5px 12px;
+        padding: 5px 12px 5px 5px;
         border-radius: 20px;
         font-size: 0.7rem;
+        font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
+
+        i {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: rgba($primary, 0.18);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.6rem;
+        }
       }
     }
   }
@@ -537,11 +653,28 @@ $accent-gold: #d97706;
   border: 1px solid rgba($primary, 0.14);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, $accent-teal, $primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: 4;
+  }
 
   &:hover {
     transform: translateY(-8px);
     border-color: $primary;
     box-shadow: 0 25px 45px rgba($primary, 0.15);
+
+    &::before { transform: scaleX(1); }
   }
 
   .bien-image {
@@ -562,15 +695,34 @@ $accent-gold: #d97706;
       position: absolute;
       top: 15px;
       right: 15px;
-      background: rgba($danger, 0.9);
+      background: rgba($danger, 0.92);
+      backdrop-filter: blur(6px);
       color: white;
-      padding: 5px 12px;
+      padding: 6px 14px 6px 12px;
       border-radius: 20px;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+
+      &::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #fff;
+      }
 
       &.disponible {
-        background: rgba($success, 0.9);
+        background: rgba($success, 0.92);
+
+        &::before {
+          box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+          animation: pulseDot 1.8s ease-in-out infinite;
+        }
       }
     }
   }
@@ -662,8 +814,21 @@ $accent-gold: #d97706;
   border: 1px solid rgba($primary, 0.14);
   padding: 30px;
   position: relative;
+  overflow: hidden;
   box-shadow: 0 4px 20px rgba(124, 58, 237, 0.06);
   transition: all 0.3s ease;
+
+  &::after {
+    content: '\201C';
+    position: absolute;
+    top: -35px;
+    right: 10px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: rgba($primary, 0.05);
+    pointer-events: none;
+  }
 
   &:hover {
     transform: translateY(-6px);
@@ -671,10 +836,16 @@ $accent-gold: #d97706;
     box-shadow: 0 20px 40px rgba(124, 58, 237, 0.12);
   }
 
+  @media (min-width: 769px) {
+    &:nth-child(2) { transform: translateY(18px); }
+    &:nth-child(2):hover { transform: translateY(12px); }
+  }
+
   .quote-icon {
     font-size: 1.4rem;
     color: rgba($primary, 0.25);
     margin-bottom: 12px;
+    position: relative;
   }
 
   .stars {
@@ -716,6 +887,7 @@ $accent-gold: #d97706;
       justify-content: center;
       font-weight: 700;
       flex-shrink: 0;
+      box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba($secondary, 0.25);
     }
 
     strong {
@@ -790,8 +962,11 @@ $accent-gold: #d97706;
   &:hover {
     transform: translateY(-6px);
     border-color: $primary;
+    box-shadow: 0 20px 40px rgba($primary, 0.2);
 
     img { transform: scale(1.08); }
+
+    .card-icon { transform: scale(1.1) rotate(-6deg); }
   }
 
   &.card-large {
@@ -811,12 +986,14 @@ $accent-gold: #d97706;
       .card-icon {
         width: 50px;
         height: 50px;
-        background: rgba($primary, 0.25);
-        border-radius: 14px;
+        background: rgba($primary, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 15px;
+        transition: transform 0.35s ease;
 
         i { font-size: 1.3rem; color: white; }
       }

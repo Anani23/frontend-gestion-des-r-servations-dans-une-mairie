@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { BienService } from '../../../services/bien.service';
 import { getFallbackImageByKeyword } from '../../../shared/utils/image-fallback.util';
 
@@ -12,6 +12,7 @@ import { getFallbackImageByKeyword } from '../../../shared/utils/image-fallback.
 })
 export class OrganisationComponent implements OnInit {
   private bienService = inject(BienService);
+  private cdr = inject(ChangeDetectorRef);
 
   description: string = "Structure administrative et gestion du patrimoine de la commune de Lomé.";
 
@@ -57,11 +58,15 @@ export class OrganisationComponent implements OnInit {
           image: b.imageUrl || getFallbackImageByKeyword(b.nom)
         }));
         this.isLoading = false;
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erreur chargement des biens municipaux', err);
         this.biens = [];
         this.isLoading = false;
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }

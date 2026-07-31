@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';  // ← AJOUTER CET IMPORT
 import { ReservationService, Reservation } from '../../services/reservation.service';
+import { getFallbackImageByKeyword } from '../../shared/utils/image-fallback.util';
 
 @Component({
   selector: 'app-reservations',
@@ -99,14 +100,7 @@ export class ReservationsComponent implements OnInit {
   }
 
   getImageByBien(nomBien: string | undefined): string {
-    if (!nomBien) return 'assets/images/mairie-lome-default.jpg';
-    
-    const b = nomBien.toLowerCase();
-    if (b.includes('salle')) return 'assets/images/salle-fete.jpg';
-    if (b.includes('stade') || b.includes('terrain')) return 'assets/images/stade.jpg';
-    if (b.includes('materiel') || b.includes('chaise')) return 'assets/images/materiel.jpg';
-    
-    return 'assets/images/mairie-lome-default.jpg';
+    return getFallbackImageByKeyword(nomBien);
   }
 
   getStatusClass(statut: string): string {

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Rdv, RdvService, RdvStatut } from '../../services/rdv.service';
+import { getFallbackImageByKeyword } from '../../shared/utils/image-fallback.util';
 
 @Component({
   selector: 'app-mes-rdv',
@@ -91,11 +92,6 @@ export class MesRdvComponent implements OnInit {
   }
 
   getImageByMotif(motif?: string): string {
-    if (!motif) return 'assets/images/default.jpg';
-    const m = motif.toLowerCase();
-    if (m.includes('naissance')) return 'assets/images/naissance.jpg';
-    if (m.includes('mariage')) return 'assets/images/mariage.jpg';
-    if (m.includes('acte')) return 'assets/images/acte.jpg';
-    return 'assets/images/default-mairie.jpg';
+    return getFallbackImageByKeyword(motif);
   }
 }

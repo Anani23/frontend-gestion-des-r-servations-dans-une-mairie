@@ -40,34 +40,9 @@ export class PageAccueilComponent implements OnInit {
   heroSearchTerm = '';
   readonly skeletonSlots = Array(PREVIEW_COUNT).fill(0);
 
-  stats = [
-    { label: 'Services Publics', value: '24+', icon: 'fa-solid fa-file-alt' },
-    { label: 'Biens Recensés', value: '1,250', icon: 'fa-solid fa-building' },
-    { label: 'Agents Actifs', value: '85', icon: 'fa-solid fa-users' },
-    { label: 'Satisfaction', value: '98%', icon: 'fa-solid fa-star' }
-  ];
-
-  // Avis de citoyens affichés sur la page d'accueil (contenu éditorial statique).
-  testimonials = [
-    {
-      nom: 'Akouvi M.',
-      quartier: 'Agoè-Nyivé',
-      note: 5,
-      texte: "J'ai réservé la salle des fêtes pour un mariage en quelques minutes, tout s'est fait en ligne sans me déplacer. Un vrai gain de temps."
-    },
-    {
-      nom: 'Komla A.',
-      quartier: 'Bè',
-      note: 5,
-      texte: "Ma demande d'acte administratif a été traitée rapidement grâce au suivi de dossier en ligne. Je recommande la plateforme."
-    },
-    {
-      nom: 'Essi T.',
-      quartier: 'Tokoin',
-      note: 4,
-      texte: "Le paiement en ligne est pratique et sécurisé. J'ai pu régler ma redevance depuis mon téléphone sans passer au guichet."
-    }
-  ];
+  // Statistiques calculees a partir des vraies donnees chargees depuis l'API
+  // (plus de chiffres fictifs codes en dur).
+  stats: { label: string; value: string; icon: string }[] = [];
 
   ngOnInit(): void {
     this.loadMairieData();
@@ -77,8 +52,7 @@ export class PageAccueilComponent implements OnInit {
     const icons: { [key: string]: string } = {
       'Services Publics': 'fa-solid fa-file-alt',
       'Biens Recensés': 'fa-solid fa-building',
-      'Agents Actifs': 'fa-solid fa-users',
-      'Satisfaction': 'fa-solid fa-star'
+      'Catégories': 'fa-solid fa-layer-group'
     };
     return icons[label] || 'fa-solid fa-chart-line';
   }
@@ -122,8 +96,17 @@ export class PageAccueilComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         this.categories = res.cats || [];
-        this.services = (res.servs || []).slice(0, PREVIEW_COUNT);
-        this.biens = (res.biensData || []).slice(0, PREVIEW_COUNT);
+        const allServices = res.servs || [];
+        const allBiens = res.biensData || [];
+        this.services = allServices.slice(0, PREVIEW_COUNT);
+        this.biens = allBiens.slice(0, PREVIEW_COUNT);
+
+        this.stats = [
+          { label: 'Services Publics', value: String(allServices.length), icon: 'fa-solid fa-file-alt' },
+          { label: 'Biens Recensés', value: String(allBiens.length), icon: 'fa-solid fa-building' },
+          { label: 'Catégories', value: String(this.categories.length), icon: 'fa-solid fa-layer-group' }
+        ];
+
         this.isLoading = false;
         this.cdr.markForCheck();
         this.cdr.detectChanges();
@@ -151,14 +134,6 @@ export class PageAccueilComponent implements OnInit {
    */
   getMarqueeDuration(): number {
     return Math.max(20, this.categories.length * 6);
-  }
-
-  getStars(note: number): number[] {
-    return Array(5).fill(0).map((_, i) => i < note ? 1 : 0);
-  }
-
-  trackByNom(index: number, item: any): string {
-    return item.nom;
   }
 
   trackByLabel(index: number, item: any): string {

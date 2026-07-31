@@ -48,7 +48,7 @@ export class ListeActualitesComponent implements OnInit {
     const nouvelleActu = {
       titre: this.titre,
       contenu: this.contenu,
-      image: this.imageUrl || 'assets/images/default-mairie.jpg',
+      image: this.imageUrl || 'assets/images/mairie-centrale.jpg',
       published: true
     };
 

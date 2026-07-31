@@ -59,15 +59,23 @@
 
   <!-- STATS SECTION -->
   <section class="stats-grid" id="main-content">
-    <div class="stat-item" *ngFor="let s of stats; trackBy: trackByLabel">
-      <div class="stat-icon">
-        <i [class]="getStatIcon(s.label)"></i>
+    <ng-container *ngIf="!isLoading; else statsSkeleton">
+      <div class="stat-item" *ngFor="let s of stats; trackBy: trackByLabel">
+        <div class="stat-icon">
+          <i [class]="getStatIcon(s.label)"></i>
+        </div>
+        <div class="stat-details">
+          <h3>{{ s.value }}</h3>
+          <p>{{ s.label }}</p>
+        </div>
       </div>
-      <div class="stat-details">
-        <h3>{{ s.value }}</h3>
-        <p>{{ s.label }}</p>
+    </ng-container>
+    <ng-template #statsSkeleton>
+      <div class="skeleton-card" *ngFor="let i of [0, 1, 2]">
+        <div class="skeleton-block skeleton-line w-40"></div>
+        <div class="skeleton-block skeleton-line w-70"></div>
       </div>
-    </div>
+    </ng-template>
   </section>
 
   <!-- SERVICES SECTION -->
@@ -193,37 +201,6 @@
         Voir tous les biens disponibles
         <i class="fa-solid fa-arrow-right"></i>
       </button>
-    </div>
-  </section>
-
-  <!-- AVIS CITOYENS -->
-  <section class="testimonials-section">
-    <div class="section-header">
-      <div class="header-icon">
-        <i class="fa-solid fa-comment-dots"></i>
-      </div>
-      <div class="header-text">
-        <h2>Ce que disent nos citoyens</h2>
-        <div class="underline"></div>
-        <p>Des retours d'expérience sur les services et démarches en ligne</p>
-      </div>
-    </div>
-
-    <div class="testimonials-grid">
-      <div class="testimonial-card" *ngFor="let t of testimonials; trackBy: trackByNom">
-        <i class="fa-solid fa-quote-left quote-icon"></i>
-        <div class="stars">
-          <i class="fa-solid fa-star" *ngFor="let filled of getStars(t.note)" [class.empty]="!filled"></i>
-        </div>
-        <p class="testimonial-text">{{ t.texte }}</p>
-        <div class="testimonial-author">
-          <div class="avatar">{{ t.nom.charAt(0) }}</div>
-          <div>
-            <strong>{{ t.nom }}</strong>
-            <span>{{ t.quartier }}</span>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 

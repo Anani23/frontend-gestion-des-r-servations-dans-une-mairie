@@ -103,7 +103,7 @@
   <div *ngIf="!isLoading && actualites.length > 0; else emptyState" class="news-grid">
     <article class="news-card" *ngFor="let a of actualites">
       <div class="card-image">
-        <img [src]="a.image" [alt]="a.titre" (error)="a.image = 'assets/images/default-mairie.jpg'">
+        <img [src]="a.image" [alt]="a.titre" (error)="a.image = 'assets/images/mairie-centrale.jpg'">
         <div class="image-overlay"></div>
         <div class="date-badge">
           <i class="fa-regular fa-calendar"></i>

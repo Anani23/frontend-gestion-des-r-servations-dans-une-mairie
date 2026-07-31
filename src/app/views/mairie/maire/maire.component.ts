@@ -15,11 +15,12 @@ export class MaireComponent implements OnInit {
   // Correction TS2339 effectuée
   descriptionMairie: string = 'L’administration municipale de Lomé vous accompagne dans toutes vos démarches administratives et veille à l’amélioration constante de votre cadre de vie.';
 
+  // Aucun nom precis n'est affiche tant qu'il n'est pas verifie/fourni par la mairie.
   maire = {
-    nom: 'M. Fogan ADEDZE', // Nom actuel (ou selon tes données de test)
+    nom: 'Maire de la Commune de Lomé',
     mandat: '2024 - 2029',
-    photo: 'assets/images/mairie-centrale.jpg', 
-    biographie: 'Engagé pour le développement durable et la modernisation des services numériques de la capitale, Monsieur le Maire œuvre pour une ville plus connectée et au service de ses citoyens.'
+    photo: 'assets/images/mairie-centrale.jpg',
+    biographie: 'Engagé pour le développement durable et la modernisation des services numériques de la capitale, le Maire de Lomé œuvre pour une ville plus connectée et au service de ses citoyens.'
   };
 
   contact = {

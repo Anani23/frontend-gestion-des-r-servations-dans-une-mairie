@@ -103,9 +103,9 @@
     <div class="services-grid" *ngIf="!isLoading">
       <div class="service-card" *ngFor="let s of services" routerLink="/services">
         <div class="service-image">
-          <img [src]="s.image || 'assets/images/mairie-centrale.jpg'"
+          <img [src]="s.image"
                [alt]="s.nom"
-               (error)="onImgError($event)"
+               (error)="onImgError($event, s.nom)"
                loading="lazy">
           <div class="service-overlay">
             <i class="fa-solid fa-arrow-right"></i>
@@ -161,9 +161,9 @@
     <div class="biens-grid" *ngIf="!isLoading">
       <div class="bien-card" *ngFor="let b of biens">
         <div class="bien-image">
-          <img [src]="b.image || 'assets/images/mairie-centrale.jpg'"
+          <img [src]="b.image"
                [alt]="b.nom"
-               (error)="onImgError($event)"
+               (error)="onImgError($event, b.nom)"
                loading="lazy">
           <div class="bien-status disponible">
             Disponible

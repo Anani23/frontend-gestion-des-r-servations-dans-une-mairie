@@ -54,7 +54,7 @@
       <div *ngIf="!loading" class="modern-grid">
         <div class="premium-card" *ngFor="let b of getFilteredBiens()">
           <div class="card-image">
-            <img [src]="getImg(b)" (error)="onImgErr($event)" [alt]="b.nom">
+            <img [src]="getImg(b)" (error)="onImgErr($event, b.nom)" [alt]="b.nom">
             <div class="image-overlay"></div>
             <div class="status-badge" [class.available]="b.disponible">
               <i class="fa-solid" [class.fa-check-circle]="b.disponible" [class.fa-clock]="!b.disponible"></i>
@@ -119,7 +119,7 @@
 
       <div class="modal-body">
         <div class="modal-image-section">
-          <img [src]="getImg(selectedBien)" (error)="onImgErr($event)" [alt]="selectedBien.nom">
+          <img [src]="getImg(selectedBien)" (error)="onImgErr($event, selectedBien.nom)" [alt]="selectedBien.nom">
           <div class="modal-status-badge" [class.available]="selectedBien.disponible">
             <i class="fa-solid" [class.fa-check-circle]="selectedBien.disponible" [class.fa-clock]="!selectedBien.disponible"></i>
             {{ selectedBien.disponible ? 'Disponible' : 'En usage' }}

@@ -357,6 +357,23 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
     }
   }
 
+  .service-image {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+  }
+
+  &:hover .service-image img {
+    transform: scale(1.06);
+  }
+
   .card-header-service {
     display: flex;
     align-items: center;
@@ -713,6 +730,21 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
   grid-template-columns: 1fr;
 }
 
+.modal-image-banner {
+  position: relative;
+  height: 200px;
+  border-radius: 24px;
+  overflow: visible;
+  margin-bottom: 45px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+  }
+}
+
 .modal-icon-large {
   width: 80px;
   height: 80px;
@@ -721,9 +753,11 @@ $gradient-secondary: linear-gradient(135deg, $primary 0%, #ec4899 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  transform: rotate(-4deg);
-  box-shadow: 0 0 0 8px rgba($primary, 0.06);
+  position: absolute;
+  left: 50%;
+  bottom: -35px;
+  transform: translateX(-50%) rotate(-4deg);
+  box-shadow: 0 10px 25px rgba($primary, 0.3), 0 0 0 8px #fff;
 
   i {
     font-size: 2.2rem;

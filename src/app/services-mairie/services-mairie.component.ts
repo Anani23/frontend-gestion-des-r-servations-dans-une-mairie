@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 
 import { ServiceService } from '../services/service.service';
 import { environment } from '../../environments/environment';
+import { getFallbackImageByKeyword } from '../shared/utils/image-fallback.util';
 
 @Component({
   selector: 'app-services-mairie',
@@ -76,5 +77,18 @@ export class ServicesMairieComponent implements OnInit {
   getPiecesPathUrl(path: string | null | undefined): string {
     if (!path) return '';
     return path.startsWith('http') ? path : `${environment.apiUrl}${path}`;
+  }
+
+  getImg(s: any): string {
+    if (!s) return getFallbackImageByKeyword(undefined);
+    return s.imageUrl || s.image || getFallbackImageByKeyword(s.nom || s.categorieNom);
+  }
+
+  onImgErr(event: Event, nom?: string): void {
+    const img = event.target as HTMLImageElement;
+    const fallbackSrc = getFallbackImageByKeyword(nom);
+    if (img.src !== window.location.origin + '/' + fallbackSrc) {
+      img.src = fallbackSrc;
+    }
   }
 }

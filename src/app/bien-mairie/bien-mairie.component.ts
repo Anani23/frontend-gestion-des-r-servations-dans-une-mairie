@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 
 import { BienService } from '../services/bien.service';
 import { environment } from '../../environments/environment';
+import { getFallbackImageByKeyword } from '../shared/utils/image-fallback.util';
 
 @Component({
   selector: 'app-bien-mairie',
@@ -86,18 +87,18 @@ export class BienMairieComponent implements OnInit {
   getImg(b: any): string {
     const baseUrl = `${environment.apiUrl}/uploads/`;
 
-    if (!b) return 'assets/images/mairie-centrale.jpg';
+    if (!b) return getFallbackImageByKeyword(undefined);
 
     if (b.imageUrl) return b.imageUrl;
 
     if (b.image) return baseUrl + b.image;
 
-    return 'assets/images/mairie-centrale.jpg';
+    return getFallbackImageByKeyword(b.nom);
   }
 
-  onImgErr(event: Event): void {
+  onImgErr(event: Event, nom?: string): void {
     const img = event.target as HTMLImageElement;
-    const fallbackSrc = 'assets/images/mairie-centrale.jpg';
+    const fallbackSrc = getFallbackImageByKeyword(nom);
     if (img.src !== window.location.origin + '/' + fallbackSrc) {
       img.src = fallbackSrc;
     }

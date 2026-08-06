@@ -53,6 +53,9 @@
 
       <div *ngIf="!loading" class="modern-grid">
         <div class="premium-card service-card" *ngFor="let s of getFilteredServices()">
+          <div class="service-image">
+            <img [src]="getImg(s)" [alt]="s.nom" (error)="onImgErr($event, s.nom)" loading="lazy">
+          </div>
           <div class="card-header-service">
             <div class="service-icon">
               <i class="fa-solid fa-file-alt"></i>
@@ -110,8 +113,11 @@
       </button>
 
       <div class="modal-body">
-        <div class="modal-icon-large">
-          <i class="fa-solid fa-file-alt"></i>
+        <div class="modal-image-banner">
+          <img [src]="getImg(selectedService)" [alt]="selectedService.nom" (error)="onImgErr($event, selectedService.nom)">
+          <div class="modal-icon-large">
+            <i class="fa-solid fa-file-alt"></i>
+          </div>
         </div>
 
         <div class="modal-info-section full-width">

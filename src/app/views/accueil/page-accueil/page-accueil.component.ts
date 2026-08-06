@@ -10,6 +10,7 @@ import { AuthService } from '../../../services/auth.service';
 import { BienService } from '../../../services/bien.service';
 import { CategorieBienService } from '../../../services/categorie-bien.service';
 import { ServiceService } from '../../../services/service.service';
+import { getFallbackImageByKeyword } from '../../../shared/utils/image-fallback.util';
 
 const PREVIEW_COUNT = 6;
 
@@ -65,7 +66,7 @@ export class PageAccueilComponent implements OnInit {
         map((cats: any[]) => {
           return cats.map(cat => ({
             ...cat,
-            image: cat.image || 'assets/images/mairie-centrale.jpg'
+            image: cat.image || getFallbackImageByKeyword(cat.nom)
           }));
         }),
         catchError(err => {
@@ -74,7 +75,12 @@ export class PageAccueilComponent implements OnInit {
         })
       ),
       servs: this.serviceService.getServicesPublics().pipe(
-        map((items: any[]) => (items || []).filter(s => s.actif !== false)),
+        map((items: any[]) => (items || [])
+          .filter(s => s.actif !== false)
+          .map(s => ({
+            ...s,
+            image: s.imageUrl || s.image || getFallbackImageByKeyword(s.nom || s.categorieNom)
+          }))),
         catchError(err => {
           console.error('Erreur services', err);
           return of([]);
@@ -84,7 +90,7 @@ export class PageAccueilComponent implements OnInit {
         map((items: any[]) => {
           return items.map(item => ({
             ...item,
-            image: item.imageUrl || item.image || 'assets/images/mairie-centrale.jpg',
+            image: item.imageUrl || item.image || getFallbackImageByKeyword(item.nom),
             alt: item.nom || 'Image mairie'
           }));
         }),
@@ -140,8 +146,8 @@ export class PageAccueilComponent implements OnInit {
     return item.label;
   }
 
-  onImgError(event: any): void {
-    event.target.src = 'assets/images/mairie-centrale.jpg';
+  onImgError(event: any, nom?: string): void {
+    event.target.src = getFallbackImageByKeyword(nom);
   }
 
   onHeroSearch(): void {

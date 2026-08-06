@@ -43,6 +43,9 @@ export class CreateBienComponent implements OnInit {
 
   selectedMoyens: Set<string> = new Set();
 
+  selectedImageFile: File | null = null;
+  imagePreviewUrl: string | null = null;
+
   newBien = {
     nom: '',
     description: '',
@@ -97,6 +100,19 @@ export class CreateBienComponent implements OnInit {
     return this.selectedMoyens.has(code);
   }
 
+  onImageSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      alert('Seules les images sont acceptées');
+      return;
+    }
+    this.selectedImageFile = file;
+    this.imagePreviewUrl = URL.createObjectURL(file);
+  }
+
   private loadBien(id: number): void {
     this.bienService.getBienById(id).subscribe({
       next: (bien: any) => {
@@ -114,6 +130,7 @@ export class CreateBienComponent implements OnInit {
         this.selectedMoyens = new Set(
           (bien.moyensPaiement || '').split(',').map((m: string) => m.trim()).filter(Boolean)
         );
+        this.imagePreviewUrl = bien.imageUrl || null;
         this.cdr.markForCheck();
         this.cdr.detectChanges();
       },
@@ -135,8 +152,8 @@ export class CreateBienComponent implements OnInit {
     this.isLoading = true;
 
     const operation = this.isEditing && this.bienId
-      ? this.bienService.modifierBien(this.bienId, this.newBien)
-      : this.bienService.ajouterBien(this.newBien);
+      ? this.bienService.modifierBien(this.bienId, this.newBien, this.selectedImageFile)
+      : this.bienService.ajouterBien(this.newBien, this.selectedImageFile);
 
     operation.subscribe({
       next: () => {
@@ -161,6 +178,8 @@ export class CreateBienComponent implements OnInit {
     this.isEditing = false;
     this.bienId = undefined;
     this.selectedMoyens = new Set();
+    this.selectedImageFile = null;
+    this.imagePreviewUrl = null;
     this.newBien = {
       nom: '',
       description: '',

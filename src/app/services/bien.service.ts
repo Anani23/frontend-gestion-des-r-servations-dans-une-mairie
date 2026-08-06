@@ -22,8 +22,13 @@ export class BienService {
   }
 
   // ✅ Créer un bien (Le POST qui bloquait)
-  ajouterBien(bien: any): Observable<any> {
-    return this.http.post<any>(this.API, bien);
+  ajouterBien(bien: any, imageFile?: File | null): Observable<any> {
+    const formData = new FormData();
+    formData.append('bien', JSON.stringify(bien));
+    if (imageFile) {
+      formData.append('file', imageFile);
+    }
+    return this.http.post<any>(this.API, formData);
   }
 
   getBienById(id: number | string): Observable<any> {
@@ -34,8 +39,13 @@ export class BienService {
     return this.http.get<any[]>(`${this.API}/categorie/${categorieId}`);
   }
 
-  modifierBien(id: number | string, bien: any): Observable<any> {
-    return this.http.put<any>(`${this.API}/${id}`, bien);
+  modifierBien(id: number | string, bien: any, imageFile?: File | null): Observable<any> {
+    const formData = new FormData();
+    formData.append('bien', JSON.stringify(bien));
+    if (imageFile) {
+      formData.append('file', imageFile);
+    }
+    return this.http.put<any>(`${this.API}/${id}`, formData);
   }
 
   supprimerBien(id: number | string): Observable<void> {

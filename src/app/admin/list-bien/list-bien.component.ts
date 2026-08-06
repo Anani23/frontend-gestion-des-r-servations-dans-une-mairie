@@ -85,11 +85,7 @@ export class ListBienComponent implements OnInit {
   }
 
   getImg(b: Bien): string {
-    if (b.images && b.images.length > 0) {
-      const img = b.images[0];
-      return (img.startsWith('data:') || img.startsWith('http')) ? img : `assets/images/${img}`;
-    }
-    return 'assets/images/mairie-togo.jpg';
+    return b.imageUrl || 'assets/images/mairie-togo.jpg';
   }
 
   onImgErr(event: any): void {

@@ -27,6 +27,7 @@
 
   <div class="biens-list" *ngIf="!isLoading; else loader">
     <div class="bien-item shadow-sm" *ngFor="let b of getFiltered()">
+      <img class="item-thumb" [src]="getImg(b)" (error)="onImgErr($event)" [alt]="b.nom">
       <div class="item-main">
         <span class="item-cat">{{ getCatNom(b.categorieId) }}</span>
         <h3>{{ b.nom }}</h3>

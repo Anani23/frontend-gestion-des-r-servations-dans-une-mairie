@@ -10,5 +10,5 @@ export interface Bien {
   prixLocation: number;
   disponible: boolean;
 
-  images?: string[]; // uniquement pour affichage UI
+  imageUrl?: string;
 }

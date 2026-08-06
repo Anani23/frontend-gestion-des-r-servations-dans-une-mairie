@@ -125,6 +125,32 @@
           <small class="hint">Sélectionnez au moins un moyen de paiement accepté pour la réservation de ce bien.</small>
         </div>
 
+        <!-- IMAGE DU BIEN -->
+        <div class="field full-width">
+          <label>
+            <i class="bi bi-image"></i>
+            Photo du bien
+          </label>
+
+          <div class="upload-card">
+            <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Aperçu" class="image-preview">
+
+            <label for="image-upload" class="custom-file-upload">
+              <i class="bi bi-cloud-arrow-up"></i>
+              <span>
+                {{ selectedImageFile ? selectedImageFile.name : (imagePreviewUrl ? 'Remplacer la photo' : 'Déposer une photo du bien ici') }}
+              </span>
+            </label>
+
+            <input
+              id="image-upload"
+              type="file"
+              (change)="onImageSelected($event)"
+              accept="image/*">
+          </div>
+          <small class="hint">Si aucune photo n'est ajoutée, l'image de la catégorie sera utilisée par défaut.</small>
+        </div>
+
       </div>
 
       <button type="submit" class="btn-submit" [disabled]="isLoading || f.invalid">

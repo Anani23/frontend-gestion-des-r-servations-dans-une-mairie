@@ -16,7 +16,7 @@
     h2 {
       font-size: 1.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #5b21b6, #7c3aed);
+      background: linear-gradient(135deg, #14293f, #1e3a5f);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 6px;
@@ -85,9 +85,9 @@
 
           &:focus {
             outline: none;
-            border-color: #8b5cf6;
+            border-color: #1e3a5f;
             background: white;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
           }
         }
 
@@ -139,9 +139,9 @@
         }
 
         &.primary {
-          background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+          background: linear-gradient(135deg, #1e3a5f, #2d5a8c);
           color: white;
-          &:hover { box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+          &:hover { box-shadow: 0 4px 12px rgba(30, 58, 95, 0.4); }
         }
 
         &.secondary {
@@ -203,7 +203,7 @@
       .view-all-btn, .small-btn {
         background: none;
         border: none;
-        color: #8b5cf6;
+        color: #1e3a5f;
         font-size: 0.8rem;
         font-weight: 600;
         cursor: pointer;
@@ -215,7 +215,7 @@
         gap: 6px;
 
         &:hover {
-          background: #f3e8ff;
+          background: #e2e8f0;
           transform: translateX(2px);
         }
       }
@@ -412,7 +412,7 @@
 
   tbody tr:hover { background: #f8fafc; }
 
-  .ref { font-family: monospace; font-weight: 600; color: #8b5cf6; }
+  .ref { font-family: monospace; font-weight: 600; color: #1e3a5f; }
   .montant { font-weight: 700; color: #1e293b; }
 
   .status-badge {
@@ -434,10 +434,10 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 0.75rem;
-    color: #8b5cf6;
+    color: #1e3a5f;
     cursor: pointer;
     transition: all 0.2s;
-    &:hover { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+    &:hover { background: #1e3a5f; color: white; border-color: #1e3a5f; }
   }
 
   .no-data { text-align: center; padding: 40px; color: #94a3b8; }
@@ -452,7 +452,7 @@
     margin-bottom: 8px;
     background: #f8f7ff;
     border: 1px solid #e2e8f0;
-    border-left: 3px solid #8b5cf6;
+    border-left: 3px solid #1e3a5f;
     border-radius: 8px;
     font-size: 0.8rem;
     color: #475569;
@@ -518,7 +518,7 @@
 
         a {
           font-size: 0.75rem;
-          color: #8b5cf6;
+          color: #1e3a5f;
           text-decoration: none;
           cursor: pointer;
           &:hover { text-decoration: underline; }
@@ -571,9 +571,9 @@
     font-size: 0.85rem;
 
     &:hover:not(:disabled) {
-      background: #8b5cf6;
+      background: #1e3a5f;
       color: white;
-      border-color: #8b5cf6;
+      border-color: #1e3a5f;
     }
 
     &:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -598,7 +598,7 @@
       font-size: 0.85rem;
 
       &:hover { background: #f1f5f9; }
-      &.active { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+      &.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
     }
   }
 }
@@ -632,14 +632,14 @@
   p { color: #64748b; font-size: 1rem; margin-bottom: 20px; }
   .reset-btn {
     padding: 10px 24px;
-    background: #8b5cf6;
+    background: #1e3a5f;
     color: white;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
-    &:hover { background: #7c3aed; transform: translateY(-2px); }
+    &:hover { background: #14293f; transform: translateY(-2px); }
   }
 }
 

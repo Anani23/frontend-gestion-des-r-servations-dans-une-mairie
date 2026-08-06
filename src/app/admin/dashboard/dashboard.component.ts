@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
             count: res.biens.length,
             link: '/admin/biens',
             icon: '🏢',
-            color: '#6366f1',
+            color: '#1e3a5f',
             desc: 'Gestion des infrastructures et bâtiments.',
             category: 'stats'
           },
@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
             count: res.services.length,
             link: '/admin/services',
             icon: '🤝',
-            color: '#10b981',
+            color: '#b45309',
             desc: 'Catalogue des prestations municipales.',
             category: 'stats'
           },
@@ -81,7 +81,7 @@ export class DashboardComponent implements OnInit {
             count: 'Voir',
             link: '/actualites',
             icon: '📢',
-            color: '#f43f5e',
+            color: '#2d5a8c',
             desc: 'Articles et communication citoyenne.',
             category: 'action'
           },
@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit {
             count: '+',
             link: '/admin/biens/create',
             icon: '🏗️',
-            color: '#8b5cf6',
+            color: '#14293f',
             desc: 'Ajouter une unité au patrimoine.',
             category: 'action'
           },
@@ -108,7 +108,7 @@ export class DashboardComponent implements OnInit {
             count: '+',
             link: '/admin/services/create',
             icon: '✨',
-            color: '#06b6d4',
+            color: '#92400e',
             desc: 'Créer une nouvelle prestation.',
             category: 'action'
           }

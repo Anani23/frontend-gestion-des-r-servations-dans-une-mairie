@@ -1,12 +1,17 @@
 :host {
-  --bg-color: #faf9ff;
-  --text-main: #1e1b4b;
+  // Identite visuelle Admin / Super-Admin : indigo -> ambre (autorite,
+  // supervision), coherente avec la nav (theme-admin) plutot que le
+  // violet generique du reste du site.
+  --bg-color: #f4f6f9;
+  --text-main: #1e293b;
   --text-muted: #6b7280;
   --card-bg: #ffffff;
-  --primary: #7c3aed;
-  --primary-light: #8b5cf6;
-  --primary-dark: #6d28d9;
-  --primary-soft: #ede9fe;
+  --primary: #1e3a5f;
+  --primary-light: #2d5a8c;
+  --primary-dark: #14293f;
+  --primary-soft: #e2e8f0;
+  --accent-amber: #b45309;
+  --accent-amber-soft: #fef3c7;
 }
 
 .dashboard-wrapper {
@@ -15,7 +20,7 @@
   font-family: 'Inter', system-ui, sans-serif;
 
   .marquee-banner {
-    background: linear-gradient(90deg, #5b21b6, #7c3aed, #8b5cf6);
+    background: linear-gradient(90deg, #14293f, #1e3a5f, #b45309);
     color: white;
     padding: 12px 0;
     overflow: hidden;
@@ -84,7 +89,7 @@
       font-weight: 700;
       
       .gradient-text {
-        background: linear-gradient(135deg, var(--primary) 0%, #c084fc 50%, var(--primary-light) 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent-amber) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;

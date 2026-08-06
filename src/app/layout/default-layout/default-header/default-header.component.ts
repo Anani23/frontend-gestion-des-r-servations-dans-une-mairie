@@ -39,6 +39,14 @@ export class DefaultHeaderComponent implements OnInit {
     this.toggleSidebar.emit();
   }
 
+  /** Identite visuelle par role, cohérente avec la nav (default-layout). */
+  get roleThemeClass(): string {
+    if (this.role === 'ROLE_ADMIN' || this.role === 'ROLE_SUPER_ADMIN') return 'theme-admin';
+    if (this.role === 'ROLE_AGENT') return 'theme-agent';
+    if (this.role === 'ROLE_CITOYEN') return 'theme-citoyen';
+    return '';
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

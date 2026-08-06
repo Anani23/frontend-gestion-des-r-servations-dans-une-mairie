@@ -1,4 +1,4 @@
-<div class="app-container">
+<div class="app-container" [ngClass]="roleThemeClass">
 
   <!-- Header -->
   <header class="glass-header" *ngIf="!isAuthPage">
@@ -6,7 +6,7 @@
   </header>
 
   <!-- Navigation Bar Horizontale -->
-  <nav class="modern-nav" *ngIf="!isAuthPage">
+  <nav class="modern-nav" [ngClass]="roleThemeClass" *ngIf="!isAuthPage">
     <div class="nav-content">
       
       <!-- Liens générés dynamiquement -->

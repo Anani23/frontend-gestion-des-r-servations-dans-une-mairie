@@ -82,4 +82,16 @@ export class DefaultLayoutComponent implements OnInit {
     const initial = (firstInitial || lastInitial || 'U').toUpperCase();
     return initial;
   }
+
+  /**
+   * Identite visuelle distincte par role : chaque espace (citoyen, agent,
+   * admin/super-admin) a sa propre teinte de degrade sur la nav et le fond.
+   */
+  get roleThemeClass(): string {
+    const role = this.authService.getRole();
+    if (role === 'ROLE_ADMIN' || role === 'ROLE_SUPER_ADMIN') return 'theme-admin';
+    if (role === 'ROLE_AGENT') return 'theme-agent';
+    if (role === 'ROLE_CITOYEN') return 'theme-citoyen';
+    return '';
+  }
 }

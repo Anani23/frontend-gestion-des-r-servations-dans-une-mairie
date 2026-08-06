@@ -41,7 +41,7 @@
         <tr *ngFor="let user of filteredUsers; let i = index">
           <td><strong>{{ user.nom }}</strong> {{ user.prenom }}</td>
           <td>{{ user.email }}</td>
-          <td><span class="role-badge">{{ user.role }}</span></td>
+          <td><span class="role-badge" [ngClass]="user.role.toLowerCase()">{{ user.role.replace('ROLE_', '') }}</span></td>
           <td>
             <span class="status-indicator" [class.active]="user.enabled">
               {{ user.enabled ? 'Actif' : 'En attente' }}

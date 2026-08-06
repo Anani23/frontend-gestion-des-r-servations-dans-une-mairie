@@ -13,6 +13,15 @@ $text-dark: #1e293b;
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  // Identite par role : agent = sarcelle/bleu, admin/super-admin = navy/ambre
+  &.theme-agent {
+    background: linear-gradient(135deg, rgba(#0f766e, 0.95), rgba(#0891b2, 0.85));
+  }
+
+  &.theme-admin {
+    background: linear-gradient(135deg, rgba(#1e3a5f, 0.95), rgba(#b45309, 0.85));
+  }
 }
 
 .logo-img {
